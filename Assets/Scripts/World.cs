@@ -17,7 +17,7 @@ public class World
         return chunkDict[key];
     }
 
-    public void SetChunk(Vector2 pos,Chunk newChunk)
+    public void AddChunk(Vector2 pos,Chunk newChunk)
     {
         chunkDict.Add(pos, newChunk);
     }

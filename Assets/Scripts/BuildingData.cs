@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Builing", menuName = "Building")]
 public class BuildingData : ScriptableObject
@@ -16,4 +14,6 @@ public class BuildingData : ScriptableObject
     [Space]
     public int TileSizeX;
     public int TileSizeZ;
+
+    //prefabs
 }
