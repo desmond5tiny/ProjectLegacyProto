@@ -1,18 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
+[SelectionBase]
+[RequireComponent(typeof(NavMeshAgent))]
 public class Unit : MonoBehaviour
 {
-    // Start is called before the first frame update
+    private NavMeshAgent agent;
     void Start()
+    {
+        agent = GetComponent<NavMeshAgent>();
+    }
+
+    void Update()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public void move(Vector3 target)
     {
-        
+        agent.SetDestination(target);
     }
 }
