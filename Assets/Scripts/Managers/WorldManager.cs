@@ -18,9 +18,9 @@ public class WorldManager : MonoBehaviour
     #endregion
 
     public float gridSize;
+    public float chunkSize = 50;
 
-    [SerializeField]
-    private Chunk sceneChunk;
+    public Chunk sceneChunk;
 
     private World world;
 
@@ -38,9 +38,17 @@ public class WorldManager : MonoBehaviour
     public void AddChunk()
     {
         Vector2 chunkPos = new Vector2(sceneChunk.transform.position.x, sceneChunk.transform.position.z);
+        //Debug.Log("chunk key: " + chunkPos);
         world.AddChunk(chunkPos, sceneChunk);
         sceneChunk.gridSize = gridSize;
         sceneChunk.SetGrid();
+    }
+
+    public Chunk GetChunk(Vector3 pos)
+    {
+        Vector2 key = new Vector2(Mathf.FloorToInt(pos.x / chunkSize), Mathf.FloorToInt(pos.z / chunkSize)) *chunkSize;
+        //Debug.Log(key);
+        return world.GetChunk(key);
     }
 
     void AddNature()//temp method
@@ -51,7 +59,6 @@ public class WorldManager : MonoBehaviour
         {
             //Debug.Log("found tree at: " + trees[i].transform.position.x +","+ trees[i].transform.position.z);
             sceneChunk.SetGridPointContent(new Vector2(trees[i].transform.position.x,trees[i].transform.position.z), Point.PointContent.Tree);
-            //Debug.Log(sceneChunk.GetPoint(new Vector2(trees[i].transform.position.x, trees[i].transform.position.z)));
             i++;
         }
     }

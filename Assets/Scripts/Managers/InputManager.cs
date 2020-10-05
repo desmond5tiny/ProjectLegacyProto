@@ -17,33 +17,44 @@ public class InputManager : MonoBehaviour
     #endregion
 
     public LayerMask groundLayer;
-
     private Vector3 mouseDownClickPos;
     private Vector3 mouseUpClickPos;
+
+    private ConstructionManager constructManager;
     [HideInInspector]
     public bool buildMode;
+    public PathData dirtPath;
+
+    private UnitManager unitManager;
     private bool dragSelect;
 
     void Start()
     {
+        constructManager = ConstructionManager.Instance;
+        unitManager = UnitManager.Instance;
         dragSelect = false;
         buildMode = false;
     }
 
     void Update()
     {
-        //if (EventSystem.current.IsPointerOverGameObject()) { return; }
+        if (EventSystem.current.IsPointerOverGameObject()) { return; }
 
         if (Input.GetMouseButtonDown(0))
         {
             mouseDownClickPos = Input.mousePosition;
+            if (buildMode)
+            {
+                constructManager.PlaceContruct();
+            }
         }
 
         if (Input.GetMouseButton(0)) 
         {
-            if ((mouseDownClickPos - Input.mousePosition).magnitude > 30)
+            if (!dragSelect && (mouseDownClickPos - Input.mousePosition).magnitude > 20)
             {
                 dragSelect = true;
+                if (buildMode) { constructManager.dragBuild = true; }
             }
         }
 
@@ -55,7 +66,9 @@ public class InputManager : MonoBehaviour
             {
                 GlobalSelection.Instance.MakeSelection(dragSelect, mouseDownClickPos, mouseUpClickPos);
             }
+
             dragSelect = false;
+            constructManager.dragBuild = false;
         }
 
         if (Input.GetMouseButtonUp(1))
@@ -66,7 +79,12 @@ public class InputManager : MonoBehaviour
                 RaycastHit hit;
                 Physics.Raycast(ray, out hit, 5000.0f, groundLayer);
 
-                UnitManager.Instance.MoveUnits(hit.point);
+                unitManager.MoveUnits(hit.point);
+            }
+            if (buildMode)
+            {
+                constructManager.StopPreview();
+                buildMode = false;
             }
         }
 
@@ -75,7 +93,17 @@ public class InputManager : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             Physics.Raycast(ray, out hit, 5000.0f,groundLayer);
-            UnitManager.Instance.SpawnUnit(hit.point);
+            unitManager.SpawnUnit(hit.point);
+        }
+
+        if (Input.GetKeyDown(KeyCode.B) && !buildMode)
+        {
+            buildMode = true;
+            if (buildMode)
+            {
+                constructManager.PreviewPlacement( ConstructionManager.ConstructType.Path, dirtPath);
+            }
+            //Debug.Log("buildmode: "+ buildMode);
         }
     }
 

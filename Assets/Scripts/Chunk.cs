@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,22 +14,27 @@ public class Chunk : MonoBehaviour
     void Start()
     {
         surface = GetComponent<NavMeshSurface>();
-        //SetGrid();
     }
 
-    public void SetGridPointContent(Vector2 pos,Point.PointContent newContent)
+    public void SetGridPointContent(Vector2 pos, Point.PointContent newContent)
     {
 
-        int posX = Mathf.RoundToInt((pos.x - transform.position.x) / gridSize);
-        int posY = Mathf.RoundToInt((pos.y - transform.position.z) / gridSize); ;
+        int posX = Mathf.FloorToInt((pos.x - transform.position.x) / gridSize);
+        int posY = Mathf.FloorToInt((pos.y - transform.position.z) / gridSize); ;
 
         pointArray[posX,posY].contains = newContent;
-        Debug.Log("added: "+pointArray[posX, posY].contains + " at: " + posX + "," + posY);
+
+        if (newContent == Point.PointContent.Path)
+        {
+            pointArray[posX, posY].buildable = false;
+        }
+
+        //Debug.Log("added: "+pointArray[posX, posY].contains + " at: " + posX + "," + posY);
     }
     public Point GetPoint(Vector2 pos)
     {
-        int posX = Mathf.RoundToInt((pos.x - transform.position.x) / gridSize);
-        int posY = Mathf.RoundToInt((pos.y - transform.position.z) / gridSize);
+        int posX = Mathf.FloorToInt((pos.x - transform.position.x) / gridSize);
+        int posY = Mathf.FloorToInt((pos.y - transform.position.z) / gridSize);
         return pointArray[posX, posY];
     }
 
@@ -46,8 +52,10 @@ public class Chunk : MonoBehaviour
                 Point gridPoint = new Point();
                 gridPoint.contains = Point.PointContent.Empty;
                 gridPoint.buildHeight = 0;
+                gridPoint.buildable = true;
                 pointArray[x, z] = gridPoint;
             }
         }
     }
+
 }
