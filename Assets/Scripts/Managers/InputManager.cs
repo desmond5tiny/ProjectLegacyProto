@@ -23,7 +23,7 @@ public class InputManager : MonoBehaviour
     private ConstructionManager constructManager;
     [HideInInspector]
     public bool buildMode;
-    public PathData dirtPath;
+    public ScriptableObject dirtPath;
 
     private UnitManager unitManager;
     private bool dragSelect;
@@ -94,16 +94,6 @@ public class InputManager : MonoBehaviour
             RaycastHit hit;
             Physics.Raycast(ray, out hit, 5000.0f,groundLayer);
             unitManager.SpawnUnit(hit.point);
-        }
-
-        if (Input.GetKeyDown(KeyCode.B) && !buildMode)
-        {
-            buildMode = true;
-            if (buildMode)
-            {
-                constructManager.PreviewPlacement( ConstructionManager.ConstructType.Path, dirtPath);
-            }
-            //Debug.Log("buildmode: "+ buildMode);
         }
     }
 

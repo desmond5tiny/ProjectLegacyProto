@@ -15,5 +15,7 @@ public class BuildingData : ScriptableObject
     public int TileSizeX;
     public int TileSizeZ;
 
-    //prefabs
+    [Header("Path Prefabs")]
+    public GameObject buildingFloor;
+    public GameObject buildingMain;
 }

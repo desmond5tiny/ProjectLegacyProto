@@ -28,6 +28,10 @@ public class Chunk : MonoBehaviour
         {
             pointArray[posX, posY].buildable = false;
         }
+        if (newContent == Point.PointContent.Building)
+        {
+            pointArray[posX, posY].buildable = false;
+        }
 
         //Debug.Log("added: "+pointArray[posX, posY].contains + " at: " + posX + "," + posY);
     }

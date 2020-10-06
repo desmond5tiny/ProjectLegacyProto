@@ -22,22 +22,28 @@ public class ConstructionManager : MonoBehaviour
 
     private WorldManager worldManager;
     private CityManager cityManager;
+    private Chunk currentChunk;
     private LayerMask groundLayer;
     private float gridSize = 2.5f;
-    private Chunk currentChunk;
-    private Vector2 currentPoint = new Vector2(0,0);
-    private Vector2 prevPoint = new Vector2(0, 0);
+
+    private Vector2 currentPos = new Vector2(0,0);
+    private Vector2 prevPos = new Vector2(0, 0);
     private Vector3 buildPos;
+    private float xOffset = 0, zOffset = 0;
+    private Vector2 buildArea;
+
     private Point.PointContent pointFillType;
     private bool canBuild=true;
-
     private bool preview = false;
     [HideInInspector]
     public bool dragBuild = false;
     private bool matSet = false;
+
+
     private GameObject construct;
     private GameObject previewConstruct;
     public enum ConstructType { Building, Path, Wall}
+    private ConstructType currentType;
 
     private void Start()
     {
@@ -58,21 +64,38 @@ public class ConstructionManager : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             Physics.Raycast(ray, out hit, 50000.0f, groundLayer);
-            currentPoint = new Vector2(Mathf.RoundToInt(hit.point.x/gridSize), Mathf.RoundToInt(hit.point.z/gridSize))*gridSize;
-            Vector2 hitChunkPos = new Vector2(Mathf.FloorToInt(currentPoint.x / worldManager.chunkSize), Mathf.FloorToInt(currentPoint.y / worldManager.chunkSize)) * worldManager.chunkSize;
+            currentPos = new Vector2((Mathf.RoundToInt((hit.point.x - xOffset)/gridSize) * gridSize)+xOffset, (Mathf.RoundToInt((hit.point.z-zOffset)/gridSize) * gridSize)+zOffset);
+            Vector2 hitChunkPos = new Vector2(Mathf.FloorToInt(currentPos.x / worldManager.chunkSize), Mathf.FloorToInt(currentPos.y / worldManager.chunkSize)) * worldManager.chunkSize;
 
 
-            if (currentPoint != prevPoint)
+            if (currentPos != prevPos)
             {
-                canBuild = currentChunk.GetPoint(currentPoint).buildable;
-                //Debug.Log(canBuild +" at: " + currentPoint);
+                buildPos = new Vector3(currentPos.x, currentChunk.GetPoint(currentPos).buildHeight, currentPos.y);
 
-                buildPos = new Vector3(currentPoint.x, currentChunk.GetPoint(currentPoint).buildHeight, currentPoint.y);
                 previewConstruct.transform.position = buildPos;
 
+                canBuild = true;
+                for (int x = 0; x < buildArea.x; x++)
+                {
+                    for (int y = 0; y < buildArea.y; y++)
+                    {
+                        Vector3 pointPos = new Vector3(buildPos.x - (xOffset * (buildArea.x - 1)) + (gridSize * x), buildPos.y, buildPos.z - (zOffset * (buildArea.y - 1)) + (gridSize * y));
+                        //Debug.Log(currentChunk.GetPoint(new Vector2(pointPos.x, pointPos.z)).buildable);
+                        if(!currentChunk.GetPoint(new Vector2(pointPos.x, pointPos.z)).buildable)
+                        {
+                            
+                            canBuild = false;
+                        }
+                    }
+                }
+
+                //Debug.Log("can build: " + canBuild);
                 if (dragBuild && canBuild)
                 {
-                   PlaceContruct();
+                    if (currentType == ConstructType.Path || currentType == ConstructType.Wall)
+                    {
+                       PlaceContruct();
+                    }
                 }
 
                 if (new Vector2(currentChunk.transform.position.x, currentChunk.transform.position.z) != hitChunkPos)
@@ -80,13 +103,16 @@ public class ConstructionManager : MonoBehaviour
                     currentChunk = worldManager.GetChunk(hit.transform.position);
                 }
 
-                prevPoint = currentPoint;
+                prevPos = currentPos;
             }
         }
     }
 
     public void PreviewPlacement( ConstructType strucType, ScriptableObject structData)
     {
+        xOffset = 0;
+        zOffset = 0;
+        buildArea = new Vector2(1, 1);
         if (strucType == ConstructType.Path)
         {
             PathData newPathData = ScriptableObject.CreateInstance(typeof(PathData)) as PathData;
@@ -112,6 +138,11 @@ public class ConstructionManager : MonoBehaviour
             }
             else { Debug.LogError("structData is not a BuildingData"); }
 
+            if (newBuildingData.TileSizeX % 2 == 0) { xOffset = gridSize / 2; }
+            if (newBuildingData.TileSizeZ % 2 == 0) { zOffset = gridSize / 2; }
+
+            buildArea = new Vector2(newBuildingData.TileSizeX, newBuildingData.TileSizeZ);
+
             construct = new GameObject(structData.name);
             construct.AddComponent<Building>().buildingData = newBuildingData;
             construct.SetActive(false);
@@ -125,6 +156,7 @@ public class ConstructionManager : MonoBehaviour
         previewConstruct.SetActive(true);
         SetPreviewMat(previewConstruct);
 
+        currentType = strucType;
         preview = true;
     }
 
@@ -137,7 +169,6 @@ public class ConstructionManager : MonoBehaviour
 
     public void PlaceContruct()
     {
-        //canBuild = currentChunk.GetPoint(currentPoint).buildable;
         if (canBuild)
         {
             //Debug.Log("build: " + construct.name);
@@ -146,8 +177,21 @@ public class ConstructionManager : MonoBehaviour
             newConstruct.transform.position = buildPos;
             newConstruct.SetActive(true);
 
+            for (int x = 0; x < buildArea.x; x++)
+            {
+                for (int y = 0; y < buildArea.y; y++)
+                {
+                    //Debug.Log(x + "," + y);
+                    Vector3 pointPos = new Vector3(buildPos.x - (xOffset * (buildArea.x-1)) + (gridSize * x), buildPos.y, buildPos.z - (zOffset * (buildArea.y-1)) + (gridSize * y));
+                    //Debug.DrawLine(temp, new Vector3(pointPos.x, pointPos.y + 6, pointPos.z), Color.red, 60);
+                    currentChunk.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), pointFillType);
+                    //cityManager.AddConstruct(new Vector3(buildPos.x-(xOffset*(buildArea.x-1)) + (gridSize*x), buildPos.y, buildPos.z-(zOffset*(buildArea.y-1)) + (gridSize*y)), newConstruct);
+                }
+            }
+
             cityManager.AddConstruct(buildPos,newConstruct);
-            currentChunk.SetGridPointContent(new Vector2(buildPos.x,buildPos.z), pointFillType);
+            //Debug.DrawLine(buildPos, new Vector3(buildPos.x, buildPos.y + 5, buildPos.z),Color.blue,60);
+            //
         }
     }
 
