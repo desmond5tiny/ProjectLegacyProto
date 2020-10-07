@@ -18,6 +18,13 @@ public class CityManager : MonoBehaviour
 
     public Dictionary<Vector3, GameObject> cityDict = new Dictionary<Vector3, GameObject>();
 
+    public Dictionary<string, int> stockPile = new Dictionary<string, int>();
+
+    private void Start()
+    {
+        
+    }
+
     public void AddConstruct(Vector3 pos, GameObject newConstruct)
     {
         cityDict.Add(pos, newConstruct);

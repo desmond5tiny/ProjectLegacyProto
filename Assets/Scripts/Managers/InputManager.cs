@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class InputManager : MonoBehaviour
@@ -23,10 +24,11 @@ public class InputManager : MonoBehaviour
     private ConstructionManager constructManager;
     [HideInInspector]
     public bool buildMode;
-    public ScriptableObject dirtPath;
 
     private UnitManager unitManager;
     private bool dragSelect;
+
+    //public Action OnLeftMouseClick;
 
     void Start()
     {
@@ -77,7 +79,7 @@ public class InputManager : MonoBehaviour
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
-                Physics.Raycast(ray, out hit, 5000.0f, groundLayer);
+                Physics.Raycast(ray, out hit, 5000.0f);
 
                 unitManager.MoveUnits(hit.point);
             }
@@ -88,6 +90,8 @@ public class InputManager : MonoBehaviour
             }
         }
 
+
+
         if (Input.GetKeyDown(KeyCode.U)) //temp spawn units
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -96,6 +100,9 @@ public class InputManager : MonoBehaviour
             unitManager.SpawnUnit(hit.point);
         }
     }
+
+
+
 
     /*private void OnGUI()
     {

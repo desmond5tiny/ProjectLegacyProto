@@ -18,6 +18,7 @@ public class BuildButton : MonoBehaviour
     }
     public void SendConstruct()
     {
+        buildUI.ResetConstructManager();
         if (!isLocked)
         {
             buildUI.SendToConstructM(construcType, constructData);

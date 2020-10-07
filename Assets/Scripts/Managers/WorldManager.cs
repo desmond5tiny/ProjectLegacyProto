@@ -58,7 +58,8 @@ public class WorldManager : MonoBehaviour
         foreach (GameObject tree in trees)
         {
             //Debug.Log("found tree at: " + trees[i].transform.position.x +","+ trees[i].transform.position.z);
-            sceneChunk.SetGridPointContent(new Vector2(trees[i].transform.position.x,trees[i].transform.position.z), Point.PointContent.Tree);
+            sceneChunk.SetGridPointContent(new Vector2(trees[i].transform.position.x, trees[i].transform.position.z), Point.PointContent.Tree);
+            sceneChunk.GetPoint(new Vector2(trees[i].transform.position.x, trees[i].transform.position.z)).buildable = false; ;
             i++;
         }
     }

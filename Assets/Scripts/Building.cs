@@ -12,6 +12,8 @@ public class Building : MonoBehaviour
     [HideInInspector]
     public int currentHealth;
 
+    List<Item> storageList;
+
     void Start()
     {
         buildingFloor = Instantiate(buildingData.buildingFloor, transform);
@@ -20,10 +22,41 @@ public class Building : MonoBehaviour
             buildingMain = Instantiate(buildingData.buildingMain, transform);
         }
         currentHealth = buildingData.maxHealth;
+
+        storageList = new List<Item>();
     }
 
-    void Update()
+    
+    public bool StoreItem(Item newItem)
     {
-        
+        if (storageList.Count<buildingData.storage)
+        {
+
+            return true;
+        }
+        else { return false; }
+    }
+
+    public Item GetItem(string itemName, int amount)
+    {
+        Item returnItem = null;
+        for (int i = 0; i < storageList.Count; i++)
+        {
+            if (storageList[i].name == itemName)
+            {
+                returnItem = storageList[i];
+            }
+        }
+        return returnItem;
+    }
+
+    public void RemoveItem(Item item)
+    {
+
+    }
+
+    public void SetInhabitant(Unit newHabitant)
+    {
+        //add unit as living here
     }
 }

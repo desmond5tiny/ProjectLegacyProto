@@ -29,8 +29,9 @@ public class Item : MonoBehaviour
 
     }
 
-    void Update()
+    private void OnDrawGizmos()
     {
-        
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y, transform.position.z),0.5f);
     }
 }

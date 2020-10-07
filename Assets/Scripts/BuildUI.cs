@@ -36,4 +36,10 @@ public class BuildUI : MonoBehaviour
         }
     }
 
+    public void ResetConstructManager()
+    {
+        constructionManager.StopPreview();
+        inputManager.buildMode = false;
+    }
+
 }
