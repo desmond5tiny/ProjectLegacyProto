@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -20,12 +21,22 @@ public class UnitManager : MonoBehaviour
 
     [SerializeField]
     private GameObject unitBase;
+    public Transform UnitSpawnPoint;
 
+    private InputManager inputManager;
     private Dictionary<int, GameObject> unitDict;
 
+    private void OnEnable()
+    {
+        InputManager.OnRightMouseUp += MoveUnits;
+        InputManager.OnKeyT += TaskUnits;
+    }
     void Start()
     {
+        inputManager = InputManager.Instance;
         unitDict = new Dictionary<int, GameObject>();
+
+        StartSpawn(UnitSpawnPoint.position,4);
     }
 
     void Update()
@@ -61,16 +72,57 @@ public class UnitManager : MonoBehaviour
         AddUnit(newUnit);
     }
 
-    public void MoveUnits(Vector3 target)
+    public void StartSpawn(Vector3 spawnPoint, int amount)
     {
-        int i = 0;
-        foreach (KeyValuePair<int,GameObject> pair in GlobalSelection.Instance.selectionDictionary.selectedDict)
+        for (int i = 0; i < amount; i++)
         {
-
-            GameObject unit = GlobalSelection.Instance.selectionDictionary.selectedDict.ElementAt(i).Value;
-            Unit unitMove = unit.GetComponent<Unit>();
-            unitMove.move(target);
-            i++;
+            Vector2 randomPoint = UnityEngine.Random.insideUnitCircle * 2;
+            SpawnUnit(new Vector3(spawnPoint.x+ randomPoint.x, spawnPoint.y, spawnPoint.z + randomPoint.y));
         }
+    }
+
+    public void MoveUnits()
+    {
+        var hitResult = inputManager.RaycastGround();
+        if (hitResult != null && GlobalSelection.Instance.selectionDictionary.selectedDict != null)
+        {
+            Vector3 target = hitResult.Value;
+            int i = 0;
+            foreach (KeyValuePair<int,GameObject> pair in GlobalSelection.Instance.selectionDictionary.selectedDict)
+            {
+                GameObject unit = GlobalSelection.Instance.selectionDictionary.selectedDict.ElementAt(i).Value;
+                Unit unitMove = unit.GetComponent<Unit>();
+
+                unitMove.MoveTo(target, 0.5f);
+                i++;
+            }
+        }
+    }
+
+    public void TaskUnits()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 5000.0f))
+        {
+            if (hit.transform.parent != null && hit.transform.parent.gameObject.GetComponent<Interactable>())
+            {
+                GameObject ParentObject = hit.transform.parent.gameObject;
+                //Debug.Log(ParentObject.GetComponent<Interactable>().interactionRadius);
+                int i = 0;
+                foreach (KeyValuePair<int, GameObject> pair in GlobalSelection.Instance.selectionDictionary.selectedDict)
+                {
+                    GameObject unit = GlobalSelection.Instance.selectionDictionary.selectedDict.ElementAt(i).Value;
+                    unit.GetComponent<Unit>().AddTask(ParentObject);
+                    i++;
+                }
+            }
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(new Vector3(UnitSpawnPoint.position.x, UnitSpawnPoint.position.y+0.6f, UnitSpawnPoint.position.z), 0.5f);
     }
 }

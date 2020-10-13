@@ -12,43 +12,41 @@ public class Building : MonoBehaviour
     [HideInInspector]
     public int currentHealth;
 
-    List<Item> storageList;
 
-    void Start()
+    Inventory storage;
+
+    private void Awake()
     {
+        storage = new Inventory(buildingData.storage);
+
         buildingFloor = Instantiate(buildingData.buildingFloor, transform);
-        if (buildingData.buildingMain!=null)
+        if (buildingData.buildingMain != null)
         {
             buildingMain = Instantiate(buildingData.buildingMain, transform);
         }
-        currentHealth = buildingData.maxHealth;
+    }
 
-        storageList = new List<Item>();
+    void Start()
+    {
+        currentHealth = buildingData.maxHealth;
     }
 
     
-    public bool StoreItem(Item newItem)
+    public int StoreItem(ItemData item, int amount)
     {
-        if (storageList.Count<buildingData.storage)
+        int surplus;
+        if (!storage.AddItem(item, amount, out surplus))
         {
-
-            return true;
+            return surplus;
         }
-        else { return false; }
+        else { return 0; }
     }
 
-    public Item GetItem(string itemName, int amount)
+    /*public Item GetItem(string itemName, int amount)
     {
-        Item returnItem = null;
-        for (int i = 0; i < storageList.Count; i++)
-        {
-            if (storageList[i].name == itemName)
-            {
-                returnItem = storageList[i];
-            }
-        }
+        
         return returnItem;
-    }
+    }*/
 
     public void RemoveItem(Item item)
     {

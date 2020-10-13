@@ -29,17 +29,19 @@ public class BuildUI : MonoBehaviour
 
     public void SendToConstructM(ConstructionManager.ConstructType constructType, ScriptableObject constructData)
     {
-        if (!inputManager.buildMode)
+        if (inputManager.GetInputMode() != InputManager.InputMode.BuildMode)
         {
-            inputManager.buildMode = true;
-            constructionManager.PreviewPlacement(constructType,constructData);
+            //inputManager.buildMode = true;
+            inputManager.SetInputMode(InputManager.InputMode.BuildMode);
+            constructionManager.SetConstruct(constructType,constructData);
         }
     }
 
     public void ResetConstructManager()
     {
         constructionManager.StopPreview();
-        inputManager.buildMode = false;
+        //inputManager.buildMode = false;
+        inputManager.SetInputMode(InputManager.InputMode.SelectMode);
     }
 
 }

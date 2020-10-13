@@ -18,23 +18,33 @@ public class InputManager : MonoBehaviour
     #endregion
 
     public LayerMask groundLayer;
-    private Vector3 mouseDownClickPos;
-    private Vector3 mouseUpClickPos;
+    private Vector3 mouseLeftDownPos, mouseLeftUpPos;
+    private Vector3 mouseRightDownPos, mouseRightUpPos;
+    public Camera mainCam;
 
-    private ConstructionManager constructManager;
     [HideInInspector]
     public bool buildMode;
 
     private UnitManager unitManager;
-    private bool dragSelect;
 
-    //public Action OnLeftMouseClick;
+    public ItemData wood;
+    public enum InputMode { SelectMode, BuildMode, UnitSelected, BuildingSelected, GroupSelected}
+    [HideInInspector]
+    private InputMode inputMode;
+    public enum DragMode { NoDrag, LeftDrag, RightDrag}
+    [HideInInspector]
+    private DragMode dragMode;
+
+    public static Action<InputMode> OnLeftMouseClick;
+    public static Action OnRightMouseClick;
+    public static Action<DragMode> OnLeftMouseDrag;
+    public static Action OnRightMouseHold;
+    public static Action OnLeftMouseUp, OnRightMouseUp;
+    public static Action OnKeyT, OnKeyN;
 
     void Start()
     {
-        constructManager = ConstructionManager.Instance;
         unitManager = UnitManager.Instance;
-        dragSelect = false;
         buildMode = false;
     }
 
@@ -42,66 +52,134 @@ public class InputManager : MonoBehaviour
     {
         if (EventSystem.current.IsPointerOverGameObject()) { return; }
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            mouseDownClickPos = Input.mousePosition;
-            if (buildMode)
-            {
-                constructManager.PlaceContruct();
-            }
-        }
-
-        if (Input.GetMouseButton(0)) 
-        {
-            if (!dragSelect && (mouseDownClickPos - Input.mousePosition).magnitude > 20)
-            {
-                dragSelect = true;
-                if (buildMode) { constructManager.dragBuild = true; }
-            }
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            mouseUpClickPos = Input.mousePosition;
-
-            if (!buildMode)
-            {
-                GlobalSelection.Instance.MakeSelection(dragSelect, mouseDownClickPos, mouseUpClickPos);
-            }
-
-            dragSelect = false;
-            constructManager.dragBuild = false;
-        }
+        CheckClickDown();
+        CheckClickUp();
+        CheckMouseDrag();
+        CheckKeyDown();
 
         if (Input.GetMouseButtonUp(1))
         {
-            if (!buildMode && GlobalSelection.Instance.selectionDictionary.selectedDict != null)
+            /*if (!buildMode && GlobalSelection.Instance.selectionDictionary.selectedDict != null)
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
                 Physics.Raycast(ray, out hit, 5000.0f);
 
-                unitManager.MoveUnits(hit.point);
-            }
-            if (buildMode)
-            {
-                constructManager.StopPreview();
-                buildMode = false;
-            }
+                Interactable hitComponent = hit.transform.parent.GetComponent<Interactable>();
+                if (hitComponent != null)
+                {
+                    Debug.Log(hitComponent);
+                    unitManager.TaskUnits(hit.transform.parent.gameObject);
+                }
+            }*/
         }
 
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            Physics.Raycast(ray, out hit, 5000.0f, groundLayer);
 
+            GameObject woodLogs = new GameObject(wood.name);
+            woodLogs.AddComponent<Item>().SetItemData(wood);
+            woodLogs.transform.position = hit.point;
+        }
 
         if (Input.GetKeyDown(KeyCode.U)) //temp spawn units
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             Physics.Raycast(ray, out hit, 5000.0f,groundLayer);
             unitManager.SpawnUnit(hit.point);
         }
     }
 
+    private void CheckKeyDown()
+    {
+        if (Input.GetKeyDown(KeyCode.T)) { OnKeyT?.Invoke(); }
 
+        if (Input.GetKeyDown(KeyCode.N)) { OnKeyN?.Invoke(); }
+    }
+
+    private void CheckClickDown()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            mouseLeftDownPos = Input.mousePosition;
+            var pos = RaycastGround();
+            if (pos != null) { OnLeftMouseClick?.Invoke(inputMode); }
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            mouseRightDownPos = Input.mousePosition;
+            var pos = RaycastAll();
+            if (pos != null) { OnRightMouseClick?.Invoke(); }
+        }
+    }
+
+    private void CheckClickUp()
+    {
+        if (Input.GetMouseButtonUp(0))
+        {
+            mouseLeftUpPos = Input.mousePosition;
+
+            OnLeftMouseUp?.Invoke();
+
+            dragMode = DragMode.NoDrag;
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            mouseRightUpPos = Input.mousePosition;
+
+            OnRightMouseUp?.Invoke();
+
+            dragMode = DragMode.NoDrag;
+            inputMode = InputMode.SelectMode;
+        }
+    }
+    private void CheckMouseDrag()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            if (dragMode != DragMode.LeftDrag && (mouseLeftDownPos - Input.mousePosition).magnitude > 20)
+            {
+                dragMode = DragMode.LeftDrag;
+                OnLeftMouseDrag?.Invoke(dragMode);
+            }
+        }
+    }
+
+    public DragMode GetDragMode() { return dragMode; }
+    
+    public InputMode GetInputMode() { return inputMode; }
+
+    public void SetInputMode(InputMode mode) { inputMode = mode; }
+    
+    public Vector3 GetMouseLDownPos() { return mouseLeftDownPos; }
+
+    public Vector3 GetMouseLUpPos() { return mouseLeftUpPos; }
+
+    public  Vector3? RaycastGround()
+    {
+        RaycastHit hit;
+        Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+        if(Physics.Raycast(ray, out hit, 5000.0f, groundLayer))
+        {
+            Vector3 hitPoint = hit.point;
+            return hitPoint;
+        }
+        return null;
+    }
+    
+    public Vector3 RaycastAll()
+    {
+        RaycastHit hit;
+        Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+        Physics.Raycast(ray, out hit, 5000.0f, groundLayer);
+
+        Vector3 hitPoint = hit.point;
+        return hitPoint;
+    }
 
 
     /*private void OnGUI()

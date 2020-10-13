@@ -20,6 +20,9 @@ public class CityManager : MonoBehaviour
 
     public Dictionary<string, int> stockPile = new Dictionary<string, int>();
 
+    //temp
+    public GameObject Camp;
+
     private void Start()
     {
         
@@ -31,5 +34,6 @@ public class CityManager : MonoBehaviour
         //Debug.Log("add path at: " + pos);
     }
 
+    
 
 }

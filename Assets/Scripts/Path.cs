@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UIElements;
 
 [SelectionBase]
@@ -27,6 +28,9 @@ public class Path : MonoBehaviour
 
     void Start()
     {
+        gameObject.AddComponent<NavMeshModifier>().overrideArea = true;
+        gameObject.GetComponent<NavMeshModifier>().area = 3;
+
         childSingle = Instantiate(pathData.single,transform);
         children.Add(childSingle);
         childDeadend = Instantiate(pathData.deadend, transform);

@@ -16,6 +16,7 @@ MonoBehaviour:
   maxHealth: 30
   capacity: 1
   storage: 2
+  storagePriority: 2
   buildBase: 0
   produceItems: 0
   TileSizeX: 2

@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [SelectionBase]
-public class Item : MonoBehaviour
+public class Item : Interactable
 {
-    [SerializeField]
-    private ItemData itemData;
+    public ItemData itemData;
 
     [HideInInspector]
     public int currentStackSize=1;
@@ -17,6 +16,7 @@ public class Item : MonoBehaviour
 
     void Start()
     {
+        name = itemData.name;
         basePrefab = Instantiate(itemData.basePrefab, transform);
 
         if (itemData.maxStackSize > 1)
@@ -31,7 +31,25 @@ public class Item : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
+        Gizmos.color = Color.blue;
         Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y, transform.position.z),0.5f);
+    }
+
+    public void SetItemData(ItemData data)
+    {
+        if (itemData == null)
+        {
+            itemData = data;
+        }
+    }
+
+    public void Inspect()
+    {
+
+    }
+
+    public void IUnitInteract()
+    {
+
     }
 }

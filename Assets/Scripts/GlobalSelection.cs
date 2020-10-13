@@ -14,11 +14,13 @@ public class GlobalSelection : MonoBehaviour
         else { Debug.LogError("more then once instance of GlobalSelection found!"); }
     }
     #endregion
-    
+
+    private InputManager inputManager;
+
     public LayerMask groundLayer;
     [HideInInspector]
     public SelectionDictionary selectionDictionary;
-    RaycastHit hit;
+    private RaycastHit hit;
 
     //collider vars
     MeshCollider selectionBox;
@@ -27,14 +29,25 @@ public class GlobalSelection : MonoBehaviour
     Vector2[] corners; //corners of the 2d selection
     Vector3[] verts; //vertices of the meshcollider
 
+    private void OnEnable()
+    {
+        InputManager.OnLeftMouseUp += MakeSelection;
+    }
+
     void Start()
     {
+        inputManager = InputManager.Instance;
         selectionDictionary = GetComponent<SelectionDictionary>();
     }
 
-    public void MakeSelection(bool marque, Vector3 mouseDownClickPos, Vector3 mouseUpClickPos)
+    public void MakeSelection( )
     {
-        if (!marque) //single select
+        if(inputManager.GetInputMode() == InputManager.InputMode.BuildMode) { return; }
+
+        Vector3 mouseDownClickPos = inputManager.GetMouseLDownPos();
+        Vector3 mouseUpClickPos = inputManager.GetMouseLUpPos();
+
+        if (inputManager.GetDragMode() != InputManager.DragMode.LeftDrag) //single select
         {
             Ray ray = Camera.main.ScreenPointToRay(mouseDownClickPos);
             bool isHit = Physics.Raycast(ray, out hit, 50000.0f);
@@ -45,12 +58,15 @@ public class GlobalSelection : MonoBehaviour
                 if (Input.GetKey(KeyCode.LeftShift)) // add to selection
                 {
                     selectionDictionary.addSelected(hit.transform.gameObject);
+                    if (selectionDictionary.selectedDict.Count > 1) { inputManager.SetInputMode(InputManager.InputMode.GroupSelected); }
+                    else { inputManager.SetInputMode(InputManager.InputMode.UnitSelected); }
                     //Debug.Log("add single selection");
                 }
                 else // exclusive selected
                 {
                     selectionDictionary.deselectAll();
                     selectionDictionary.addSelected(hit.transform.gameObject);
+                    inputManager.SetInputMode(InputManager.InputMode.UnitSelected);
                     //Debug.Log("excl single select");
                 }
             }
@@ -68,6 +84,7 @@ public class GlobalSelection : MonoBehaviour
                 else
                 {
                     selectionDictionary.deselectAll();
+                    inputManager.SetInputMode(InputManager.InputMode.SelectMode);
                     //Debug.Log("deselect all");
                 }
             }
@@ -102,9 +119,13 @@ public class GlobalSelection : MonoBehaviour
             if (!Input.GetKey(KeyCode.LeftShift))
             {
                 selectionDictionary.deselectAll();
+                inputManager.SetInputMode(InputManager.InputMode.SelectMode);
             }
 
             Destroy(selectionBox, 0.02f);
+            
+            if (selectionDictionary.selectedDict.Count > 1) { inputManager.SetInputMode(InputManager.InputMode.GroupSelected); }
+            else { inputManager.SetInputMode(InputManager.InputMode.UnitSelected); }
         }
     }
 
@@ -179,6 +200,9 @@ public class GlobalSelection : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        selectionDictionary.addSelected(other.gameObject);
+        if (other.CompareTag("Unit"))
+        {
+            selectionDictionary.addSelected(other.gameObject);
+        }
     }
 }

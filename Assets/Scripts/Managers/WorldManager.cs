@@ -28,7 +28,7 @@ public class WorldManager : MonoBehaviour
     {
         world = new World();
         AddChunk();
-        AddNature();
+        StartCoroutine("AddTrees");
     }
 
     void Update()
@@ -51,9 +51,9 @@ public class WorldManager : MonoBehaviour
         return world.GetChunk(key);
     }
 
-    void AddNature()//temp method
+    IEnumerator AddTrees()//temp method
     {
-        GameObject[] trees = GameObject.FindGameObjectsWithTag("Tree");;
+        GameObject[] trees = GameObject.FindGameObjectsWithTag("Tree"); ;
         int i = 0;
         foreach (GameObject tree in trees)
         {
@@ -62,5 +62,9 @@ public class WorldManager : MonoBehaviour
             sceneChunk.GetPoint(new Vector2(trees[i].transform.position.x, trees[i].transform.position.z)).buildable = false; ;
             i++;
         }
+        yield return null ;
+        sceneChunk.NavMeshUpdate();
+        StopCoroutine("AddTrees");
     }
+
 }
