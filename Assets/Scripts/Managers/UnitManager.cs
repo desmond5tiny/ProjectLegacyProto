@@ -8,6 +8,7 @@ public class UnitManager : MonoBehaviour
 {
     #region Singleton
     public static UnitManager Instance { get; private set; }
+    public int unitsToSpawn;
 
     private void Awake()
     {
@@ -36,7 +37,7 @@ public class UnitManager : MonoBehaviour
         inputManager = InputManager.Instance;
         unitDict = new Dictionary<int, GameObject>();
 
-        StartSpawn(UnitSpawnPoint.position,4);
+        StartSpawn(UnitSpawnPoint.position, unitsToSpawn);
     }
 
     void Update()
@@ -87,13 +88,14 @@ public class UnitManager : MonoBehaviour
         if (hitResult != null && GlobalSelection.Instance.selectionDictionary.selectedDict != null)
         {
             Vector3 target = hitResult.Value;
+            //Debug.Log("clickTarget: " + target);
             int i = 0;
             foreach (KeyValuePair<int,GameObject> pair in GlobalSelection.Instance.selectionDictionary.selectedDict)
             {
                 GameObject unit = GlobalSelection.Instance.selectionDictionary.selectedDict.ElementAt(i).Value;
                 Unit unitMove = unit.GetComponent<Unit>();
 
-                unitMove.MoveTo(target, 0.5f);
+                unitMove.MoveTo(target, 0.4f);
                 i++;
             }
         }
@@ -105,15 +107,15 @@ public class UnitManager : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 5000.0f))
         {
-            if (hit.transform.parent != null && hit.transform.parent.gameObject.GetComponent<Interactable>())
+            if (hit.transform.parent != null && hit.transform.parent.gameObject.GetComponent<ResourceObject>())
             {
                 GameObject ParentObject = hit.transform.parent.gameObject;
-                //Debug.Log(ParentObject.GetComponent<Interactable>().interactionRadius);
+                //Debug.Log(ParentObject.name);
                 int i = 0;
                 foreach (KeyValuePair<int, GameObject> pair in GlobalSelection.Instance.selectionDictionary.selectedDict)
                 {
                     GameObject unit = GlobalSelection.Instance.selectionDictionary.selectedDict.ElementAt(i).Value;
-                    unit.GetComponent<Unit>().AddTask(ParentObject);
+                    unit.GetComponent<Unit>().SetResourceTarget(ParentObject.GetComponent<ResourceObject>());
                     i++;
                 }
             }

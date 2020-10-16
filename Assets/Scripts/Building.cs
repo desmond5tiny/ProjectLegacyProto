@@ -35,8 +35,9 @@ public class Building : MonoBehaviour
     public int StoreItem(ItemData item, int amount)
     {
         int surplus;
-        if (!storage.AddItem(item, amount, out surplus))
+        if (storage.CanAdd(item))
         {
+            storage.AddItem(item, amount, out surplus);
             return surplus;
         }
         else { return 0; }

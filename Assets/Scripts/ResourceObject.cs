@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [SelectionBase]
-public class Tree : Interactable, ITakeDamage, IResource
+public class ResourceObject : Interactable, ITakeDamage
 {
     [SerializeField]
     private TreeData resourceData;
@@ -16,13 +16,13 @@ public class Tree : Interactable, ITakeDamage, IResource
     public int currentResourceAmount;
 
     private float damagePerDrop;
-    private bool empty = false;
+    private bool isEmpty = false;
 
     private void Awake()
     {
         resourceBase = Instantiate(resourceData.treeBase, transform);
         resourceTop = Instantiate(resourceData.treeTop, transform);
-        InputManager.OnKeyN += KillTree;
+        InputManager.OnKeyN += KillRescource;
 
         damagePerDrop = resourceData.maxHealth / resourceData.maxWoodAmount;
     }
@@ -43,23 +43,23 @@ public class Tree : Interactable, ITakeDamage, IResource
         {
             currentHealth = 0;
             FellTree();
-            empty = true;
+            isEmpty = true;
             if (currentResourceAmount > 0) { DropResource(currentResourceAmount); }
             Destroy(this, 5);
         }
-
-
     }
+
     public void FellTree()
     {
         resourceTop.SetActive(false);
         EndTask?.Invoke(this.gameObject);
         Debug.Log("Tree Chopped Down");
     }
+
     public bool GetRescource(float damage, out int woodDrop) //change to out a list of drop items
     {
         woodDrop = 0;
-        if (!empty)
+        if (!isEmpty)
         {
             if(Mathf.CeilToInt((currentHealth - damage) / damagePerDrop) < currentResourceAmount)
             {
@@ -119,7 +119,7 @@ public class Tree : Interactable, ITakeDamage, IResource
         return resourceAmount;
     }
 
-    public ItemData GetResourceData() // change to return a list of resource itemData's
+    public ItemData GetResourceItemData() // change to return a list of resource itemData's
     {
         return resourceData.woodLogsData;
     }
@@ -133,7 +133,7 @@ public class Tree : Interactable, ITakeDamage, IResource
         Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 4f, transform.position.z), new Vector3(0.8f,8,0.8f));
     }
 
-    public void KillTree()
+    public void KillRescource()
     {
         TakeDamage(currentHealth);
     }

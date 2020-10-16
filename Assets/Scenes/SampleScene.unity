@@ -449,6 +449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83b058b9331beff4bb146ec64d198945, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unitsToSpawn: 1
   unitBase: {fileID: 3830261503961021683, guid: d9ff5bdd2486c08449d796f7c6926ebf,
     type: 3}
   UnitSpawnPoint: {fileID: 965785625}
@@ -1902,6 +1903,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 23800000, guid: ebc9d819391dfe3448c00b950d45ee87,
         type: 2}
+    - target: {fileID: 4401572028678145678, guid: 2ade83eec5651f246ac401ee1d082cf5,
+        type: 3}
+      propertyPath: m_LayerMask.m_Bits
+      value: 3383
+      objectReference: {fileID: 0}
     - target: {fileID: 7309067276709807772, guid: 2ade83eec5651f246ac401ee1d082cf5,
         type: 3}
       propertyPath: gridSize
@@ -1986,7 +1992,7 @@ PrefabInstance:
     - target: {fileID: 6622457691772068343, guid: 10cbfa7a406d4654682d5f5fccd2eebd,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 27.5
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 6622457691772068343, guid: 10cbfa7a406d4654682d5f5fccd2eebd,
         type: 3}

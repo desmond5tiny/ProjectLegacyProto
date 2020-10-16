@@ -13,7 +13,7 @@ public class Inventory
         isFull = false;
     }
 
-    public bool AddItem(ItemData item, int amount, out int rest)
+    public void AddItem(ItemData item, int amount, out int rest)
     {
         rest = 0;
         for (int i = 0; i < container.Count; i++)
@@ -48,7 +48,6 @@ public class Inventory
             }
         }
         rest = amount;
-        return CanAdd(item);
     }
 
     /*public bool GetItem(itemData _item, int _amount)
@@ -60,7 +59,7 @@ public class Inventory
 
         }
     }*/
-    public bool CanAdd(ItemData item)
+    public bool CanAdd(ItemData item) //return true if the item can be added to inv
     {
         if (container.Count < maxSize) { return true; }
 

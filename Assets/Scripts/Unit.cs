@@ -4,99 +4,74 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-[SelectionBase]
-[RequireComponent(typeof(NavMeshAgent))]
+[SelectionBase][RequireComponent(typeof(NavMeshAgent))]
 public class Unit : MonoBehaviour
 {
     public int inventorySize = 0;
     public Inventory inventory;
-
     public float dPS;
-    public float chopSpeed;
-    private float totalDamage = 0;
-    public enum UnitState { Idle, ExecutingTask, MovingToTarget, Storing}
-    UnitState unitState;
+    private float gatherSkill = 4; //temp use speed with modifier skill "Gather"
 
-    Dictionary<GameObject,string > taskDict = new Dictionary<GameObject, string>();
+    private StateMachine stateMachine;
+    public IState currentState;
 
-    private Vector3 destination;
-    Action DoTask;
     private NavMeshAgent agent;
-    private GameObject taskTarget;
-    Interactable targetIMethod;
+    [HideInInspector]
+    public ResourceObject resourceTarget = null;
+    private ItemData resourceItem;
 
-    string currentTask;
+    [HideInInspector]
+    public Vector3 clickTarget = Vector3.zero;
+    private float stopDistance = 0;
+    [HideInInspector]
+    public bool clickMove = false;
 
-    int resourceReturn=0;
-
-
-    void Start()
+    
+    private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
-        unitState = UnitState.Idle;
         inventory = new Inventory(inventorySize);
-    }
+        stateMachine = new StateMachine();
 
-    void Update()
-    {
-        switch(unitState)
-        {
-            case UnitState.Idle:
-                if (currentTask == null && taskDict.Count > 0)
-                {
-                    SetTask();
-                    MoveTo(taskTarget.transform.position, taskTarget.GetComponent<Interactable>().interactionRadius +4.0f);
-                }
-                    break;
-            case UnitState.MovingToTarget:
-                if (agent.remainingDistance <= agent.stoppingDistance)
-                {
-                    if (currentTask != null) { unitState = UnitState.ExecutingTask; }
-                    else { unitState = UnitState.Idle; }
-                }
-                break;
-            case UnitState.ExecutingTask:
-                if (currentTask!= null)
-                {
-                    DoTask.Invoke();
-                }
-                break;
-            case UnitState.Storing:
-
-                break;
-        }
-    }
+        //states
+        IdleState idleState = new IdleState(this);
+        MoveToPointState moveToPoint = new MoveToPointState(this, agent);
+        MoveToResourceState toResource = new MoveToResourceState(this, agent);
+        HarvestResourceState harvestResource = new HarvestResourceState(this);
+        FindStorageState findStorage = new FindStorageState(this);
+        FindResourceState findResource = new FindResourceState(this);
 
 
-    public void AddTask(GameObject newTarget)
-    {
-        taskDict.Add(newTarget, newTarget.GetComponent<Interactable>().UnitInteract());
-    }
+        stateMachine.SetState(idleState);
 
-    public void SetTask()
-    {
-        if (currentTask == null)
-        {
-            currentTask = taskDict.ElementAt(0).Value;
-            taskTarget = taskDict.ElementAt(0).Key;
-            targetIMethod = taskTarget.GetComponent<Interactable>();
-        }
+        //transitions
+        AddNewTransition(idleState, toResource, HasRTarget());
+        AddNewTransition(toResource, harvestResource, ReachedResource());
+        AddNewTransition(harvestResource, findResource, ResourceIsEmpty());
+        AddNewTransition(harvestResource, findStorage, InventoryFull());
 
-        if(currentTask == "ChopTree") 
-        { 
-            DoTask += ChopTree; 
+        stateMachine.AddAnyTransition(moveToPoint, () => clickMove == true);
+        AddNewTransition(moveToPoint, idleState, ReachedPoint());
 
-            //change to set next resource target, only stop when canceled
-            targetIMethod.EndTask += StopTask; 
-        }
-    }
+        void AddNewTransition(IState fromState, IState toState, Func<bool> condition) => stateMachine.AddTransition(fromState, toState, condition);
+
+        //condition functions
+        Func<bool> HasRTarget() => () => resourceTarget != null;
+        Func<bool> ReachedPoint() => () => Vector3.Distance(transform.position, clickTarget) < stopDistance;
+        Func<bool> ReachedResource() => () => resourceTarget != null && Vector3.Distance(transform.position, resourceTarget.transform.position) < stopDistance;
+        Func<bool> ResourceIsEmpty() => () => resourceTarget == null && !inventory.CanAdd(resourceItem);
+        Func<bool> InventoryFull() => () => !inventory.CanAdd(resourceItem);
+    } 
+
+
+    void Update() => stateMachine.Tick();
 
     public void Build()
     {
-        Debug.Log("Buil");
+        Debug.Log("Build");
     }
 
-    public void ChopTree()
+    /*public void ChopTree()
     {
         float doDamage = 0;
         int resourceGet;
@@ -106,68 +81,80 @@ public class Unit : MonoBehaviour
 
         if (doDamage >= 1 && inventory.CanAdd(resourceData))
         {
-            if(taskTarget.GetComponent<IResource>().GetRescource(doDamage, out resourceGet))
+            if(taskTarget.GetComponent<IResource>().GetRescource(doDamage, out resourceGet)) //do damage to target
             {
-                if(!inventory.AddItem(resourceData, resourceGet, out surplus))
+                if(!inventory.AddItem(resourceData, resourceGet, out surplus))//attempt to store item in inv
                 {
                     Debug.Log("inventory full");
                     DropResource(resourceData, surplus);
                     //store cargo
                 }
 
-                /*Debug.Log("surplusWood: " + surplusWood);
+                Debug.Log("surplusWood: " + surplusWood);
                 for (int i = 0; i < inventory.container.Count; i++)
                 {
                     Debug.Log("Inv "+i+": "+inventory.container[i].amount);
-                }*/
+                }
             }
-            else //if inv not full
+            else // target is empty //if inv not full
             {
                 Debug.Log("Change Tree Target");
                 //change target
             }
         }
+    }*/
+
+
+    public void MoveTo(Vector3 _destination, float _stopDistance)
+    {
+        clickTarget = _destination;
+        stopDistance = _stopDistance;
+        clickMove = true;
     }
 
-
-    public void MoveTo(Vector3 destination, float stopDis)
+    public void SetResourceTarget(ResourceObject _target)
     {
-        agent.stoppingDistance = stopDis;
-        agent.SetDestination(destination);
-        unitState = UnitState.MovingToTarget;
+        resourceTarget = _target;
+        resourceItem = resourceTarget.GetResourceItemData();
+        stopDistance = resourceTarget.interactionRadius;
     }
 
-    public void StopTask(GameObject key)
+    public void TakeResource()
     {
-        Debug.Log("stoptask");
-        taskDict.Remove(key);
+        int takeResult, surplus;
 
-        currentTask = null;
-        targetIMethod.EndTask = null;
-        taskTarget = null;
-        DoTask = null;
-        totalDamage = 0;
-        agent.ResetPath();
-        unitState = UnitState.Idle;
-    }
-
-    public void DropResource(ItemData item, int amount)
-    {
-        GameObject newResourceItem = new GameObject(item.name);
-        newResourceItem.AddComponent<Item>().SetItemData(item);
-        for (int i = 0; i < Mathf.FloorToInt(amount /item.maxStackSize)+1; i++)
+        if(inventory.CanAdd(resourceItem)) //redundant?
         {
-            if (amount > item.maxStackSize)
+            if (resourceTarget.GetRescource(gatherSkill * (dPS / 10), out takeResult)) //if target has resources; do damage to target and out itemsget
             {
-                newResourceItem.GetComponent<Item>().currentStackSize = item.maxStackSize;
-                Instantiate(newResourceItem);
-                amount -= item.maxStackSize;
+                inventory.AddItem(resourceItem, takeResult, out surplus);
+                if (surplus > 0) { DropResource(resourceItem, surplus); }
             }
-            else if(amount > 0)
+            else //target is empty
             {
-                newResourceItem.GetComponent<Item>().currentStackSize = amount;
+                Debug.Log("find new target");
+                resourceTarget = null;
+            }
+        }
+    }
+
+    public void DropResource(ItemData _item, int _amount)
+    {
+        GameObject newResourceItem = new GameObject(_item.name);
+        newResourceItem.AddComponent<Item>().SetItemData(_item);
+        for (int i = 0; i < Mathf.FloorToInt(_amount /_item.maxStackSize)+1; i++)
+        {
+            if (_amount > _item.maxStackSize)
+            {
+                newResourceItem.GetComponent<Item>().currentStackSize = _item.maxStackSize;
                 Instantiate(newResourceItem);
-                amount = 0;
+                _amount -= _item.maxStackSize;
+            }
+            else if(_amount > 0)
+            {
+                newResourceItem.GetComponent<Item>().currentStackSize = _amount;
+                Instantiate(newResourceItem);
+                _amount = 0;
             }
         }
     }
