@@ -21,11 +21,12 @@ public class MoveToPointState : IState
     {
         agent.SetDestination(unit.clickTarget);
         unit.clickMove = false;
+        unit.moving = true;
     }
 
     public void OnExit()
     {
-        
+        unit.moving = false;
     }
 
 

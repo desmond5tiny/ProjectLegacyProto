@@ -32,28 +32,25 @@ public class ResourceObject : Interactable, ITakeDamage
         currentHealth = resourceData.maxHealth;
         currentResourceAmount = resourceData.maxWoodAmount;
         interactionRadius = resourceData.stopRadius;
-        task = "ChopTree";
     }
 
     public void TakeDamage(float dam)
     {
-        Debug.Log("TakeDamage: " + dam);
         currentHealth -= dam;
         if (currentHealth <=0)
         {
-            currentHealth = 0;
-            FellTree();
             isEmpty = true;
+            currentHealth = 0;
+            Collapse();
             if (currentResourceAmount > 0) { DropResource(currentResourceAmount); }
             Destroy(this, 5);
         }
     }
 
-    public void FellTree()
+    public void Collapse()
     {
         resourceTop.SetActive(false);
-        EndTask?.Invoke(this.gameObject);
-        Debug.Log("Tree Chopped Down");
+        Debug.Log("Resource Empty");
     }
 
     public bool GetRescource(float damage, out int woodDrop) //change to out a list of drop items
@@ -91,32 +88,6 @@ public class ResourceObject : Interactable, ITakeDamage
             woodenLogs.GetComponent<Item>().currentStackSize = currentResourceAmount;
             currentResourceAmount = 0;
         }
-    }
-
-    int resource(float dam)
-    {
-        if (currentResourceAmount <= 0) { return 0; }
-        int resourceAmount = 0;
-        if (dam >= resourceData.maxHealth / resourceData.maxWoodAmount)
-        {
-            int woodGet = Mathf.FloorToInt(dam / (resourceData.maxHealth / resourceData.maxWoodAmount));
-            Debug.Log("woodget: " + woodGet);
-            if (currentHealth - ((resourceData.maxHealth / resourceData.maxWoodAmount) * woodGet) >= 0)
-            {
-                resourceAmount = woodGet;
-                currentResourceAmount -= woodGet;
-                Debug.Log("curWood: " + currentResourceAmount);
-                TakeDamage(resourceData.maxHealth / resourceData.maxWoodAmount * woodGet);
-            }
-            else
-            {
-                resourceAmount = currentResourceAmount;
-                currentResourceAmount = 0;
-                TakeDamage(dam);
-            }
-        }
-        Debug.Log("return wood amount: " + resourceAmount);
-        return resourceAmount;
     }
 
     public ItemData GetResourceItemData() // change to return a list of resource itemData's

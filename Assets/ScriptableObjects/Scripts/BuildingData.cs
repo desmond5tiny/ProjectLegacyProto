@@ -6,7 +6,7 @@ public class BuildingData : ScriptableObject
     public new string name;
     public int maxHealth;
     public int capacity;
-    public int storage;
+    public int maxStorage;
     public int storagePriority;
     public bool buildBase;
     [Space]

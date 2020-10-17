@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Log Camp
   maxHealth: 100
   capacity: 0
-  storage: 20
+  maxStorage: 10
   storagePriority: 1
   buildBase: 0
   produceItems: 1

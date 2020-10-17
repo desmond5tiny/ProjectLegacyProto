@@ -3,6 +3,7 @@
 public class FindStorageState : IState
 {
     private Unit unit;
+    private ItemData item;
 
     public FindStorageState(Unit _unit)
     {
@@ -10,7 +11,11 @@ public class FindStorageState : IState
     }
     public void OnEnter()
     {
-        Debug.Log("search storage");
+        if (CityManager.Instance.GetStorageBuilding(unit.GetStoreItem())!=null)
+        {
+            unit.storeTarget = CityManager.Instance.GetStorageBuilding(unit.GetStoreItem());
+        }
+        else { Debug.Log("Find Tile in cityLimits to place item on"); }
     }
 
     public void OnExit()

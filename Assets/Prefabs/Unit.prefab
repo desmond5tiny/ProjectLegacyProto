@@ -92,6 +92,7 @@ GameObject:
   - component: {fileID: 6020066848915328136}
   - component: {fileID: 8160714776872741400}
   - component: {fileID: 2545758427555156323}
+  - component: {fileID: 1268620645380246050}
   m_Layer: 9
   m_Name: Unit
   m_TagString: Unit
@@ -180,6 +181,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventorySize: 2
   dPS: 20
+  resourceSearchColl: {fileID: 1268620645380246050}
   resourceTarget: {fileID: 0}
   clickTarget: {x: 0, y: 0, z: 0}
   clickMove: 0
+--- !u!135 &1268620645380246050
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3830261503961021683}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Radius: 20
+  m_Center: {x: 0, y: 1, z: 0}

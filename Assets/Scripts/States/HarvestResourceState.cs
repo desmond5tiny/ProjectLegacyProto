@@ -30,7 +30,7 @@ public class HarvestResourceState : IState
 
     public void OnExit()
     {
-        unit.resourceTarget = null;
+        //unit.resourceTarget = null;
     }
 
 }

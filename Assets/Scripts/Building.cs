@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,13 +12,14 @@ public class Building : MonoBehaviour
     private GameObject buildingMain;
     [HideInInspector]
     public int currentHealth;
+    public Inventory storage;
 
-
-    Inventory storage;
+    public static Action<ItemData,int> ItemStored;
+    public static Action ItemTaken;
 
     private void Awake()
     {
-        storage = new Inventory(buildingData.storage);
+        storage = new Inventory(buildingData.maxStorage);
 
         buildingFloor = Instantiate(buildingData.buildingFloor, transform);
         if (buildingData.buildingMain != null)
@@ -31,21 +33,32 @@ public class Building : MonoBehaviour
         currentHealth = buildingData.maxHealth;
     }
 
-    
-    public int StoreItem(ItemData item, int amount)
+    public void SetInhabitant(Unit newHabitant)
     {
-        int surplus;
+        //add unit as living here
+    }
+    
+    public int GetStorageSpaceLeft()
+    {
+        return (buildingData.maxStorage - storage.container.Count);
+    }
+
+    public bool StoreItem(ItemData item, int amount, out int result)
+    {
+        result = 0;
         if (storage.CanAdd(item))
         {
-            storage.AddItem(item, amount, out surplus);
-            return surplus;
+            result = storage.AddItem(item, amount);
+            ItemStored?.Invoke(item, amount - result);
+            Debug.Log("Add "+ item + ": " + (amount-result));
+            return true;
         }
-        else { return 0; }
+        else { return false; }
     }
 
     /*public Item GetItem(string itemName, int amount)
     {
-        
+        ItemTaken?.Invoke();
         return returnItem;
     }*/
 
@@ -54,8 +67,4 @@ public class Building : MonoBehaviour
 
     }
 
-    public void SetInhabitant(Unit newHabitant)
-    {
-        //add unit as living here
-    }
 }

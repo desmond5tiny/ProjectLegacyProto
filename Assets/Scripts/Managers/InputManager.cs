@@ -57,23 +57,6 @@ public class InputManager : MonoBehaviour
         CheckMouseDrag();
         CheckKeyDown();
 
-        if (Input.GetMouseButtonUp(1))
-        {
-            /*if (!buildMode && GlobalSelection.Instance.selectionDictionary.selectedDict != null)
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-                Physics.Raycast(ray, out hit, 5000.0f);
-
-                Interactable hitComponent = hit.transform.parent.GetComponent<Interactable>();
-                if (hitComponent != null)
-                {
-                    Debug.Log(hitComponent);
-                    unitManager.TaskUnits(hit.transform.parent.gameObject);
-                }
-            }*/
-        }
-
         if (Input.GetKeyDown(KeyCode.P))
         {
             Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);

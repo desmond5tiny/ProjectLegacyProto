@@ -4,29 +4,36 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-[SelectionBase][RequireComponent(typeof(NavMeshAgent))]
+[SelectionBase] [RequireComponent(typeof(NavMeshAgent))]
 public class Unit : MonoBehaviour
 {
     public int inventorySize = 0;
     public Inventory inventory;
     public float dPS;
-    private float gatherSkill = 4; //temp use speed with modifier skill "Gather"
+    public Collider resourceSearchColl;
+    //temp / change
+    private readonly float gatherSkill = 4; //temp use speed with modifier skill "Gather"
 
     private StateMachine stateMachine;
-    public IState currentState;
+    public enum unitTask { None, Gather, Build}
+    unitTask currentTask;
 
     private NavMeshAgent agent;
     [HideInInspector]
-    public ResourceObject resourceTarget = null;
+    public ResourceObject resourceTarget;
     private ItemData resourceItem;
+    [HideInInspector]
+    public Building storeTarget;
+    private ItemData storeItem;
 
     [HideInInspector]
     public Vector3 clickTarget = Vector3.zero;
     private float stopDistance = 0;
     [HideInInspector]
     public bool clickMove = false;
+    public bool moving = false;
 
-    
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -40,6 +47,8 @@ public class Unit : MonoBehaviour
         HarvestResourceState harvestResource = new HarvestResourceState(this);
         FindStorageState findStorage = new FindStorageState(this);
         FindResourceState findResource = new FindResourceState(this);
+        MoveToStorageState toStorage = new MoveToStorageState(this, agent);
+        StoreItemsState storeItems = new StoreItemsState(this);
 
 
         stateMachine.SetState(idleState);
@@ -49,19 +58,29 @@ public class Unit : MonoBehaviour
         AddNewTransition(toResource, harvestResource, ReachedResource());
         AddNewTransition(harvestResource, findResource, ResourceIsEmpty());
         AddNewTransition(harvestResource, findStorage, InventoryFull());
+        AddNewTransition(findStorage, toStorage, HasStoreTarget());
+        AddNewTransition(toStorage, storeItems, ReachedStorage());
+        AddNewTransition(storeItems, findStorage, cantStore());
+        AddNewTransition(storeItems, toResource, GatherAndTarget());
+        AddNewTransition(storeItems, findResource, GatherAndNoTarget());
 
-        stateMachine.AddAnyTransition(moveToPoint, () => clickMove == true);
+        stateMachine.AddAnyTransition(moveToPoint, () => clickMove);
         AddNewTransition(moveToPoint, idleState, ReachedPoint());
 
         void AddNewTransition(IState fromState, IState toState, Func<bool> condition) => stateMachine.AddTransition(fromState, toState, condition);
 
         //condition functions
         Func<bool> HasRTarget() => () => resourceTarget != null;
+        Func<bool> HasStoreTarget() => () => storeTarget != null;
         Func<bool> ReachedPoint() => () => Vector3.Distance(transform.position, clickTarget) < stopDistance;
         Func<bool> ReachedResource() => () => resourceTarget != null && Vector3.Distance(transform.position, resourceTarget.transform.position) < stopDistance;
         Func<bool> ResourceIsEmpty() => () => resourceTarget == null && !inventory.CanAdd(resourceItem);
         Func<bool> InventoryFull() => () => !inventory.CanAdd(resourceItem);
-    } 
+        Func<bool> ReachedStorage() => () => Vector3.Distance(transform.position, storeTarget.transform.position) < 1f;
+        Func<bool> cantStore() => () => storeTarget == null && inventory.container.Count > 0;
+        Func<bool> GatherAndTarget() => () => inventory.container.Count == 0 && resourceTarget != null;
+        Func<bool> GatherAndNoTarget() => () => inventory.container.Count == 0 && resourceTarget == null && currentTask == unitTask.Gather;
+    }
 
 
     void Update() => stateMachine.Tick();
@@ -71,49 +90,22 @@ public class Unit : MonoBehaviour
         Debug.Log("Build");
     }
 
-    /*public void ChopTree()
-    {
-        float doDamage = 0;
-        int resourceGet;
-        int surplus=0;
-        ItemData resourceData = taskTarget.GetComponent<IResource>().GetResourceData();
-        if (Input.GetKeyDown(KeyCode.K)) { doDamage = 5; }
-
-        if (doDamage >= 1 && inventory.CanAdd(resourceData))
-        {
-            if(taskTarget.GetComponent<IResource>().GetRescource(doDamage, out resourceGet)) //do damage to target
-            {
-                if(!inventory.AddItem(resourceData, resourceGet, out surplus))//attempt to store item in inv
-                {
-                    Debug.Log("inventory full");
-                    DropResource(resourceData, surplus);
-                    //store cargo
-                }
-
-                Debug.Log("surplusWood: " + surplusWood);
-                for (int i = 0; i < inventory.container.Count; i++)
-                {
-                    Debug.Log("Inv "+i+": "+inventory.container[i].amount);
-                }
-            }
-            else // target is empty //if inv not full
-            {
-                Debug.Log("Change Tree Target");
-                //change target
-            }
-        }
-    }*/
-
-
     public void MoveTo(Vector3 _destination, float _stopDistance)
     {
-        clickTarget = _destination;
-        stopDistance = _stopDistance;
-        clickMove = true;
+        if (!moving)
+        {
+            currentTask = unitTask.None;
+            clickTarget = _destination;
+            stopDistance = _stopDistance;
+            clickMove = true;
+        }
     }
+
+    public ItemData GetStoreItem() { return storeItem; }
 
     public void SetResourceTarget(ResourceObject _target)
     {
+        currentTask = unitTask.Gather;
         resourceTarget = _target;
         resourceItem = resourceTarget.GetResourceItemData();
         stopDistance = resourceTarget.interactionRadius;
@@ -127,7 +119,8 @@ public class Unit : MonoBehaviour
         {
             if (resourceTarget.GetRescource(gatherSkill * (dPS / 10), out takeResult)) //if target has resources; do damage to target and out itemsget
             {
-                inventory.AddItem(resourceItem, takeResult, out surplus);
+                surplus = inventory.AddItem(resourceItem, takeResult);
+                storeItem = resourceItem;
                 if (surplus > 0) { DropResource(resourceItem, surplus); }
             }
             else //target is empty
@@ -138,7 +131,24 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void DropResource(ItemData _item, int _amount)
+    public void StoreResource()
+    {
+        if (inventory.container.Count > 0)
+        {
+            int surplus;
+            if (storeTarget.StoreItem(inventory.container[0].item, inventory.container[0].amount, out surplus))
+            {
+                inventory.RemoveItem(inventory.container[0].item, inventory.container[0].amount - surplus);
+            }
+            else
+            {
+                storeItem = inventory.container[0].item;
+                storeTarget = null;
+            }
+        }
+    }
+
+    public void DropResource(ItemData _item, int _amount) //refactor
     {
         GameObject newResourceItem = new GameObject(_item.name);
         newResourceItem.AddComponent<Item>().SetItemData(_item);

@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Inventory
 {
     public List<InventorySlot> container = new List<InventorySlot>();
-    private int maxSize;
+    private readonly int maxSize;
     private bool isFull;
 
     public Inventory(int _maxSize)
@@ -13,9 +14,9 @@ public class Inventory
         isFull = false;
     }
 
-    public void AddItem(ItemData item, int amount, out int rest)
+    public int AddItem(ItemData item, int amount)
     {
-        rest = 0;
+        int surplus = 0;
         for (int i = 0; i < container.Count; i++)
         {
             if (container[i].item == item && container[i].amount < item.maxStackSize) //if it contains item and itemStack isn't full
@@ -29,9 +30,9 @@ public class Inventory
                 else { amount = 0; }
             }
         }
-        rest = amount;
+        surplus = amount;
         
-        for (int i = 0; i < Mathf.FloorToInt(rest/item.maxStackSize)+1; i++)
+        for (int i = 0; i < Mathf.FloorToInt(surplus/item.maxStackSize)+1; i++)
         {
             if (amount > 0 && container.Count < maxSize)
             {
@@ -47,18 +48,10 @@ public class Inventory
                 }
             }
         }
-        rest = amount;
+        surplus = amount;
+        return surplus;
     }
 
-    /*public bool GetItem(itemData _item, int _amount)
-    {
-        bool hasItems = false;
-        int hasAmount;
-        if (true)
-        {
-
-        }
-    }*/
     public bool CanAdd(ItemData item) //return true if the item can be added to inv
     {
         if (container.Count < maxSize) { return true; }
@@ -70,6 +63,26 @@ public class Inventory
         return false;
     }
 
+    public bool RemoveItem(ItemData _item, int _amount)
+    {
+        if(_amount > _item.maxStackSize) { Debug.LogError("Amount Exceeds MaxStackSize"); return false; }
+
+        bool hasAmount = false;
+        for (int i = 0; i < container.Count; i++)
+        {
+            if (container[i].item == _item)
+            {
+                if (container[i].amount >= _amount)
+                {
+                    container[i].RemoveAmount(_amount);
+                    if (container[i].amount <= 0) { container.RemoveAt(i); }
+                    hasAmount = true;
+                }
+            }
+        }
+        return hasAmount;
+    }
+    
     public ItemData RemoveFirstStack(out int amount)
     {
         amount = container[0].amount;
@@ -99,6 +112,10 @@ public class Inventory
         }
     }
 
+    public void DropAllItems()
+    {
+        //empty inventory
+    }
 }
 
 public class InventorySlot

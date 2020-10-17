@@ -15,8 +15,8 @@ MonoBehaviour:
   name: Leaf House
   maxHealth: 30
   capacity: 1
-  storage: 2
-  storagePriority: 2
+  maxStorage: 0
+  storagePriority: 3
   buildBase: 0
   produceItems: 0
   TileSizeX: 2
