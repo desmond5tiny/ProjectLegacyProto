@@ -5,7 +5,7 @@ using UnityEngine;
 public class ResourceObject : Interactable, ITakeDamage
 {
     [SerializeField]
-    private TreeData resourceData;
+    private ResourceObjectData resourceData;
     private GameObject resourceBase;
     private GameObject resourceTop;
 
@@ -20,18 +20,23 @@ public class ResourceObject : Interactable, ITakeDamage
 
     private void Awake()
     {
-        resourceBase = Instantiate(resourceData.treeBase, transform);
-        resourceTop = Instantiate(resourceData.treeTop, transform);
+        resourceBase = Instantiate(resourceData.prefabBase, transform);
+        resourceBase.layer = 11;
+        resourceTop = Instantiate(resourceData.prefabTop, transform);
+        resourceTop.layer = 11;
         InputManager.OnKeyN += KillRescource;
 
-        damagePerDrop = resourceData.maxHealth / resourceData.maxWoodAmount;
+        damagePerDrop = resourceData.maxHealth / resourceData.maxItemAmount;
+
+        interactionRadius = resourceData.interactRadius;
+        interactionTransform = transform;
     }
 
     void Start()
     {
         currentHealth = resourceData.maxHealth;
-        currentResourceAmount = resourceData.maxWoodAmount;
-        interactionRadius = resourceData.stopRadius;
+        currentResourceAmount = resourceData.maxItemAmount;
+        interactionRadius = resourceData.interactRadius;
     }
 
     public void TakeDamage(float dam)
@@ -50,7 +55,7 @@ public class ResourceObject : Interactable, ITakeDamage
     public void Collapse()
     {
         resourceTop.SetActive(false);
-        Debug.Log("Resource Empty");
+        //Debug.Log("Resource Empty");
     }
 
     public bool GetRescource(float damage, out int woodDrop) //change to out a list of drop items
@@ -71,19 +76,19 @@ public class ResourceObject : Interactable, ITakeDamage
 
     public void DropResource(int amount)
     {
-        int fullStacks = Mathf.FloorToInt(currentResourceAmount / resourceData.woodLogsData.maxStackSize);
+        int fullStacks = Mathf.FloorToInt(currentResourceAmount / resourceData.resourceItemData.maxStackSize);
         for (int i = 0; i < fullStacks; i++)
         {
-            GameObject woodenLogs = new GameObject(resourceData.woodLogsData.name);
-            woodenLogs.AddComponent<Item>().SetItemData(resourceData.woodLogsData);
+            GameObject woodenLogs = new GameObject(resourceData.resourceItemData.name);
+            woodenLogs.AddComponent<Item>().SetItemData(resourceData.resourceItemData);
             woodenLogs.transform.position = transform.position;
-            woodenLogs.GetComponent<Item>().currentStackSize = resourceData.woodLogsData.maxStackSize;
-            currentResourceAmount -= resourceData.woodLogsData.maxStackSize;
+            woodenLogs.GetComponent<Item>().currentStackSize = resourceData.resourceItemData.maxStackSize;
+            currentResourceAmount -= resourceData.resourceItemData.maxStackSize;
         }
         if (currentResourceAmount>0)
         {
-            GameObject woodenLogs = new GameObject(resourceData.woodLogsData.name);
-            woodenLogs.AddComponent<Item>().SetItemData(resourceData.woodLogsData);
+            GameObject woodenLogs = new GameObject(resourceData.resourceItemData.name);
+            woodenLogs.AddComponent<Item>().SetItemData(resourceData.resourceItemData);
             woodenLogs.transform.position = transform.position;
             woodenLogs.GetComponent<Item>().currentStackSize = currentResourceAmount;
             currentResourceAmount = 0;
@@ -92,7 +97,7 @@ public class ResourceObject : Interactable, ITakeDamage
 
     public ItemData GetResourceItemData() // change to return a list of resource itemData's
     {
-        return resourceData.woodLogsData;
+        return resourceData.resourceItemData;
     }
 
     public override void Inspect() => Debug.Log("Inspect " + resourceData.name);

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [SelectionBase]
-public class Building : MonoBehaviour
+public class Building : Interactable
 {
     public BuildingData buildingData;
 
@@ -22,10 +22,15 @@ public class Building : MonoBehaviour
         storage = new Inventory(buildingData.maxStorage);
 
         buildingFloor = Instantiate(buildingData.buildingFloor, transform);
+        buildingFloor.layer = 10;
         if (buildingData.buildingMain != null)
         {
             buildingMain = Instantiate(buildingData.buildingMain, transform);
+            buildingMain.layer = 10;
         }
+
+        interactionRadius = buildingData.interactionRadius;
+        if (interactionTransform != null) { interactionTransform = transform; }
     }
 
     void Start()
@@ -66,5 +71,7 @@ public class Building : MonoBehaviour
     {
 
     }
+
+
 
 }

@@ -15,11 +15,13 @@ MonoBehaviour:
   name: Leaf Shelter
   maxHealth: 10
   capacity: 1
-  storage: 0
+  maxStorage: 0
+  storagePriority: 0
   buildBase: 0
   produceItems: 0
   TileSizeX: 2
   TileSizeZ: 1
+  interactionRadius: 2.4
   buildingFloor: {fileID: 5325636299033438254, guid: 967217c29651a0346b5aa59533bce95f,
     type: 3}
   buildingMain: {fileID: 1126391869438470450, guid: 34ff4c6bd1324af4794fec038a3f0948,

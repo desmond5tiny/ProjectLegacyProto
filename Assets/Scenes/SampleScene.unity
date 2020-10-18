@@ -481,6 +481,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   previewMat: {fileID: 2100000, guid: be7129294d9f9cc4e967a613d5cdb9c6, type: 2}
   mainCam: {fileID: 963194227}
+  buildFence: {fileID: 8878503351490979556, guid: 661a1bb49f5c7da45bb19f4cdb31043a,
+    type: 3}
 --- !u!114 &346175166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -493,6 +495,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca5c7df349a6fd84fa66a3b53bfdbf1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  storeableBuildings: []
   Camp: {fileID: 1712395638}
 --- !u!1 &547605886
 GameObject:
@@ -841,6 +844,55 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 725166670}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &927755441
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 927755443}
+  - component: {fileID: 927755442}
+  m_Layer: 11
+  m_Name: PineTree (5)
+  m_TagString: Tree
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &927755442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 927755441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf48caea27265b04c85b3d2f28faa661, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionRadius: 3
+  interactionTransform: {fileID: 927755443}
+  task: 
+  resourceData: {fileID: 11400000, guid: 89fd0212a7140094aa583e649e493303, type: 2}
+  currentHealth: 0
+  currentResourceAmount: 0
+--- !u!4 &927755443
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 927755441}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 42.5, y: 0, z: 27.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 16
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1187,7 +1239,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1053856789}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 37.5, y: 0, z: 35}
+  m_LocalPosition: {x: 42.5, y: 0, z: 22.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1204,9 +1256,9 @@ GameObject:
   - component: {fileID: 1181396895}
   - component: {fileID: 1181396894}
   - component: {fileID: 1181396896}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: WoodenLogs
-  m_TagString: Untagged
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1600,7 +1652,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1712395640}
   - component: {fileID: 1712395639}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Camp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1619,6 +1671,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92e67ef5ec3ed2a48bc87cb9c6b9279e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactionRadius: 0
+  interactionTransform: {fileID: 1712395640}
+  task: Task
   buildingData: {fileID: 11400000, guid: eb61fad3c82b1ae4e9a7c729d987dab9, type: 2}
   currentHealth: 0
 --- !u!4 &1712395640
@@ -1742,6 +1797,59 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1927369078}
   m_CullTransparentMesh: 0
+--- !u!1 &1961226774
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1961226776}
+  - component: {fileID: 1961226775}
+  m_Layer: 0
+  m_Name: BuildFence
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1961226775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1961226774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4af0f1ad19da4e24ea78cef5160eab8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionRadius: 0
+  interactionTransform: {fileID: 1961226776}
+  task: Task
+  prefab1TileS: {fileID: 1316697245162059168, guid: 094229430d7fea94887bf50cdb053a1d,
+    type: 3}
+  prefab1TileL: {fileID: 1316697245162059168, guid: 094229430d7fea94887bf50cdb053a1d,
+    type: 3}
+  prefab2Tile: {fileID: 1316697245162059168, guid: 094229430d7fea94887bf50cdb053a1d,
+    type: 3}
+  currentHealth: 0
+--- !u!4 &1961226776
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1961226774}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &850940992439478517
 PrefabInstance:
   m_ObjectHideFlags: 0

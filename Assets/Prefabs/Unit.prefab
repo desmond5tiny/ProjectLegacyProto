@@ -156,7 +156,7 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.6
   m_Speed: 16
-  m_Acceleration: 24
+  m_Acceleration: 32
   avoidancePriority: 50
   m_AngularSpeed: 220
   m_StoppingDistance: 0.2
@@ -183,8 +183,11 @@ MonoBehaviour:
   dPS: 20
   resourceSearchColl: {fileID: 1268620645380246050}
   resourceTarget: {fileID: 0}
+  prevResourcePos: {x: 0, y: 0, z: 0}
+  storeTarget: {fileID: 0}
   clickTarget: {x: 0, y: 0, z: 0}
   clickMove: 0
+  moving: 0
 --- !u!135 &1268620645380246050
 SphereCollider:
   m_ObjectHideFlags: 0

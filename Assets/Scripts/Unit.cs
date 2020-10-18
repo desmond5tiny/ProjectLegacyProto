@@ -15,13 +15,16 @@ public class Unit : MonoBehaviour
     private readonly float gatherSkill = 4; //temp use speed with modifier skill "Gather"
 
     private StateMachine stateMachine;
-    public enum unitTask { None, Gather, Build}
+    public enum unitTask { None, Move, Gather, Build}
     unitTask currentTask;
 
     private NavMeshAgent agent;
     [HideInInspector]
     public ResourceObject resourceTarget;
+    [HideInInspector]
+    public Vector3 prevResourcePos;
     private ItemData resourceItem;
+    List<ResourceObject> nearbyRescources = new List<ResourceObject>();
     [HideInInspector]
     public Building storeTarget;
     private ItemData storeItem;
@@ -46,7 +49,7 @@ public class Unit : MonoBehaviour
         MoveToResourceState toResource = new MoveToResourceState(this, agent);
         HarvestResourceState harvestResource = new HarvestResourceState(this);
         FindStorageState findStorage = new FindStorageState(this);
-        FindResourceState findResource = new FindResourceState(this);
+        FindResourceState findResource = new FindResourceState(this, agent);
         MoveToStorageState toStorage = new MoveToStorageState(this, agent);
         StoreItemsState storeItems = new StoreItemsState(this);
 
@@ -56,14 +59,18 @@ public class Unit : MonoBehaviour
         //transitions
         AddNewTransition(idleState, toResource, HasRTarget());
         AddNewTransition(toResource, harvestResource, ReachedResource());
-        AddNewTransition(harvestResource, findResource, ResourceIsEmpty());
         AddNewTransition(harvestResource, findStorage, InventoryFull());
+        AddNewTransition(harvestResource, findResource, ResourceIsEmpty());
         AddNewTransition(findStorage, toStorage, HasStoreTarget());
         AddNewTransition(toStorage, storeItems, ReachedStorage());
         AddNewTransition(storeItems, findStorage, cantStore());
         AddNewTransition(storeItems, toResource, GatherAndTarget());
         AddNewTransition(storeItems, findResource, GatherAndNoTarget());
+        AddNewTransition(findResource, toResource, HasRTarget());
+        AddNewTransition(findResource, idleState, NoResourceNearbyEmpty());
+        AddNewTransition(findResource, findStorage, NoResourceNearbyNotEmpty());
 
+        stateMachine.AddAnyTransition(idleState, () => currentTask == unitTask.None);
         stateMachine.AddAnyTransition(moveToPoint, () => clickMove);
         AddNewTransition(moveToPoint, idleState, ReachedPoint());
 
@@ -74,12 +81,14 @@ public class Unit : MonoBehaviour
         Func<bool> HasStoreTarget() => () => storeTarget != null;
         Func<bool> ReachedPoint() => () => Vector3.Distance(transform.position, clickTarget) < stopDistance;
         Func<bool> ReachedResource() => () => resourceTarget != null && Vector3.Distance(transform.position, resourceTarget.transform.position) < stopDistance;
-        Func<bool> ResourceIsEmpty() => () => resourceTarget == null && !inventory.CanAdd(resourceItem);
+        Func<bool> ResourceIsEmpty() => () => resourceTarget == null;
         Func<bool> InventoryFull() => () => !inventory.CanAdd(resourceItem);
         Func<bool> ReachedStorage() => () => Vector3.Distance(transform.position, storeTarget.transform.position) < 1f;
         Func<bool> cantStore() => () => storeTarget == null && inventory.container.Count > 0;
         Func<bool> GatherAndTarget() => () => inventory.container.Count == 0 && resourceTarget != null;
         Func<bool> GatherAndNoTarget() => () => inventory.container.Count == 0 && resourceTarget == null && currentTask == unitTask.Gather;
+        Func<bool> NoResourceNearbyEmpty() => () => inventory.container.Count == 0 && resourceTarget == null && nearbyRescources.Count == 0;
+        Func<bool> NoResourceNearbyNotEmpty() => () => inventory.container.Count > 0 && resourceTarget == null;
     }
 
 
@@ -94,7 +103,7 @@ public class Unit : MonoBehaviour
     {
         if (!moving)
         {
-            currentTask = unitTask.None;
+            currentTask = unitTask.Move;
             clickTarget = _destination;
             stopDistance = _stopDistance;
             clickMove = true;
@@ -109,6 +118,29 @@ public class Unit : MonoBehaviour
         resourceTarget = _target;
         resourceItem = resourceTarget.GetResourceItemData();
         stopDistance = resourceTarget.interactionRadius;
+    }
+
+    public List<ResourceObject> GetNearbyResources()
+    {
+        nearbyRescources.Clear();
+        Collider[] colls = Physics.OverlapSphere(transform.position, 20f, 1 << 11);
+
+        foreach (var col in colls)
+        {
+            if (col.GetComponentInParent<ResourceObject>())
+            {
+                if (col.GetComponentInParent<ResourceObject>().GetResourceItemData() == resourceItem 
+                    && col.GetComponentInParent<ResourceObject>().currentResourceAmount>0)
+                {
+                    nearbyRescources.Add(col.GetComponentInParent<ResourceObject>());
+                }
+            }
+        }
+        if (nearbyRescources.Count == 0)
+        {
+            //currentTask = unitTask.None;
+        }
+        return nearbyRescources;
     }
 
     public void TakeResource()
@@ -126,6 +158,7 @@ public class Unit : MonoBehaviour
             else //target is empty
             {
                 Debug.Log("find new target");
+                prevResourcePos = resourceTarget.transform.position;
                 resourceTarget = null;
             }
         }

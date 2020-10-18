@@ -3,7 +3,14 @@ guid: 4af0f1ad19da4e24ea78cef5160eab8a
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - interactionTransform: {instanceID: 0}
+  - prefab1TileS: {fileID: 1316697245162059168, guid: 094229430d7fea94887bf50cdb053a1d,
+      type: 3}
+  - prefab1TileL: {fileID: 1316697245162059168, guid: 094229430d7fea94887bf50cdb053a1d,
+      type: 3}
+  - prefab2Tile: {fileID: 1316697245162059168, guid: 094229430d7fea94887bf50cdb053a1d,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

@@ -13,8 +13,11 @@ public class BuildingData : ScriptableObject
     public bool produceItems;
 
     [Space]
+    [Header("Techical")]
     public int TileSizeX;
     public int TileSizeZ;
+
+    public float interactionRadius;
 
     [Header("Path Prefabs")]
     public GameObject buildingFloor;

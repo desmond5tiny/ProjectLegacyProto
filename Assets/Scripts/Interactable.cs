@@ -3,8 +3,10 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
+    [HideInInspector]
     public float interactionRadius;
     public Transform interactionTransform;
+
     public string task =  "Task";
     public Action<GameObject> EndTask;
 
@@ -20,11 +22,12 @@ public class Interactable : MonoBehaviour
         return task;
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
-        if (interactionTransform == null) interactionTransform = transform;
-
         Gizmos.color = Color.yellow;
+        if (interactionTransform != null && interactionTransform != transform) { Gizmos.DrawSphere(interactionTransform.position, 0.2f); }
+        else { interactionTransform = transform; }
+
         Gizmos.DrawWireSphere(interactionTransform.position, interactionRadius);
     }
 }

@@ -18,12 +18,15 @@ public class Item : Interactable
     {
         name = itemData.name;
         basePrefab = Instantiate(itemData.basePrefab, transform);
+        basePrefab.layer = 12;
 
         if (itemData.maxStackSize > 1)
         {
             stackMPrefab = Instantiate(itemData.stackMPrefab, transform);
+            stackMPrefab.layer = 12;
             stackMPrefab.SetActive(false);
             stackLPrefab = Instantiate(itemData.StackLPrefab, transform);
+            stackLPrefab.layer = 12;
             stackLPrefab.SetActive(false);
         }
 

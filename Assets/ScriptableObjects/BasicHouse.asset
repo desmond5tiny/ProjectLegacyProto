@@ -21,6 +21,7 @@ MonoBehaviour:
   produceItems: 0
   TileSizeX: 2
   TileSizeZ: 2
+  interactionRadius: 2.2
   buildingFloor: {fileID: 8770092694600563341, guid: c6030619cd8ec154c85dd6c1a5431b73,
     type: 3}
   buildingMain: {fileID: 9211898351666150771, guid: 97e47cbb211672a4883448fa801fea0c,

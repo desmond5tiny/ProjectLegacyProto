@@ -15,12 +15,13 @@ MonoBehaviour:
   name: Wooden House
   maxHealth: 80
   capacity: 2
-  storage: 4
+  maxStorage: 0
   storagePriority: 2
   buildBase: 0
   produceItems: 0
   TileSizeX: 2
   TileSizeZ: 2
+  interactionRadius: 3
   buildingFloor: {fileID: 4359222841867317410, guid: 0ecf52598774e944492f8212e938175c,
     type: 3}
   buildingMain: {fileID: 6647360711464744088, guid: cfb9d529245df1b40a0ce0867bf0769d,
