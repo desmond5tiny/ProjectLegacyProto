@@ -27,13 +27,13 @@ public class BuildUI : MonoBehaviour
         cityManager = CityManager.Instance;
     }
 
-    public void SendToConstructM(ConstructionManager.ConstructType constructType, ScriptableObject constructData)
+    public void SendToConstructM(ConstructionManager.ConstructType constructType, GameObject constructPrefab)
     {
         if (inputManager.GetInputMode() != InputManager.InputMode.BuildMode)
         {
             //inputManager.buildMode = true;
             inputManager.SetInputMode(InputManager.InputMode.BuildMode);
-            constructionManager.SetConstruct(constructType,constructData);
+            constructionManager.SetConstruct(constructType,constructPrefab);
         }
     }
 

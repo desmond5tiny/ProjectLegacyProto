@@ -21,16 +21,8 @@ public class Building : Interactable
     {
         storage = new Inventory(buildingData.maxStorage);
 
-        buildingFloor = Instantiate(buildingData.buildingFloor, transform);
-        buildingFloor.layer = 10;
-        if (buildingData.buildingMain != null)
-        {
-            buildingMain = Instantiate(buildingData.buildingMain, transform);
-            buildingMain.layer = 10;
-        }
-
         interactionRadius = buildingData.interactionRadius;
-        if (interactionTransform != null) { interactionTransform = transform; }
+        if (interactionTransform == null) { interactionTransform = transform; }
     }
 
     void Start()
@@ -72,16 +64,12 @@ public class Building : Interactable
 
     }*/
 
-    public void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
-        if (interactionRadius == 0) { interactionRadius = buildingData.interactionRadius; }
         if (interactionTransform == null) { interactionTransform = transform; }
-
-
+        if (interactionRadius != buildingData.interactionRadius) { interactionRadius = buildingData.interactionRadius; }
         Gizmos.color = Color.yellow;
-        if (interactionTransform != null && interactionTransform != transform) { Gizmos.DrawSphere(interactionTransform.position, 0.2f); }
-        else { interactionTransform = transform; }
-
+        if (interactionTransform != transform) { Gizmos.DrawSphere(interactionTransform.position, 0.2f); }
         Gizmos.DrawWireSphere(interactionTransform.position, interactionRadius);
     }
 

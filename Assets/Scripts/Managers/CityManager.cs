@@ -38,11 +38,13 @@ public class CityManager : MonoBehaviour
     public void AddConstruct(Vector3 pos, GameObject newConstruct)
     {
         cityDict.Add(pos, newConstruct);
-
-        if (newConstruct.GetComponent<Building>().buildingData.storagePriority > 0)
+        if (newConstruct.CompareTag("Building"))
         {
-            storeableBuildings.Add(newConstruct.GetComponent<Building>());
-            storeableBuildings.Sort(SortByStorePriority);
+            if (newConstruct.GetComponent<Building>().buildingData.storagePriority > 0)
+            {
+                storeableBuildings.Add(newConstruct.GetComponent<Building>());
+                storeableBuildings.Sort(SortByStorePriority);
+            }
         }
         //Debug.Log("add path at: " + pos);
     }

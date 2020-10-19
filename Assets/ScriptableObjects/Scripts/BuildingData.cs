@@ -3,12 +3,14 @@
 [CreateAssetMenu(fileName = "New Builing", menuName = "Building")]
 public class BuildingData : ScriptableObject
 {
+    [Header("Stats")]
     public new string name;
     public int maxHealth;
     public int capacity;
     public int maxStorage;
     public int storagePriority;
     public bool buildBase;
+
     [Space]
     public bool produceItems;
 
@@ -18,8 +20,4 @@ public class BuildingData : ScriptableObject
     public int TileSizeZ;
 
     public float interactionRadius;
-
-    [Header("Path Prefabs")]
-    public GameObject buildingFloor;
-    public GameObject buildingMain;
 }

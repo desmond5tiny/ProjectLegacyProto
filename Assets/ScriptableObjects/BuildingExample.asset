@@ -22,5 +22,3 @@ MonoBehaviour:
   TileSizeX: 2
   TileSizeZ: 2
   interactionRadius: 1.5
-  buildingFloor: {fileID: 0}
-  buildingMain: {fileID: 0}

@@ -5,7 +5,7 @@ using UnityEngine;
 public class BuildButton : MonoBehaviour
 {
 
-    public ScriptableObject constructData;
+    public GameObject constructPrefab;
     public ConstructionManager.ConstructType construcType;
 
     public bool isLocked=false;
@@ -21,7 +21,7 @@ public class BuildButton : MonoBehaviour
         buildUI.ResetConstructManager();
         if (!isLocked)
         {
-            buildUI.SendToConstructM(construcType, constructData);
+            buildUI.SendToConstructM(construcType, constructPrefab);
         }
     }
 

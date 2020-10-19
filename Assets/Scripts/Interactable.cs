@@ -4,7 +4,7 @@ using UnityEngine;
 public class Interactable : MonoBehaviour
 {
     [HideInInspector]
-    public float interactionRadius;
+    public float interactionRadius = 0;
     public Transform interactionTransform;
 
     public string task =  "Task";

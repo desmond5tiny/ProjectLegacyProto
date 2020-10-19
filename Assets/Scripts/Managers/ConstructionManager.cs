@@ -123,7 +123,7 @@ public class ConstructionManager : MonoBehaviour
         }
     }
 
-    public void SetConstruct( ConstructType strucType, ScriptableObject structData)
+    public void SetConstruct( ConstructType strucType, GameObject constructPrefab)
     {
         xOffset = 0;
         zOffset = 0;
@@ -132,34 +132,26 @@ public class ConstructionManager : MonoBehaviour
         {
             PathData newPathData = ScriptableObject.CreateInstance(typeof(PathData)) as PathData;
             
-            if (structData is PathData)
+            if (constructPrefab.GetComponent<Path>())
             {
-                newPathData = structData as PathData;
+                newPathData = constructPrefab.GetComponent<Path>().pathData;
             }
             else { Debug.LogError("structData is not a PathData"); }
             
-            construct = new GameObject(structData.name);
+            construct = new GameObject(constructPrefab.name);
             construct.AddComponent<Path>().pathData = newPathData;
             construct.SetActive(false);
             pointFillType = Point.PointContent.Path;
         }
         if (strucType == ConstructType.Building)
         {
-            BuildingData newBuildingData = ScriptableObject.CreateInstance(typeof(BuildingData)) as BuildingData;
-
-            if (structData is BuildingData)
-            {
-                newBuildingData = structData as BuildingData;
-            }
-            else { Debug.LogError("structData is not a BuildingData"); }
+            BuildingData newBuildingData = constructPrefab.GetComponent<Building>().buildingData;
 
             if (newBuildingData.TileSizeX % 2 == 0) { xOffset = gridSize / 2; }
             if (newBuildingData.TileSizeZ % 2 == 0) { zOffset = gridSize / 2; }
+            buildArea = new Vector2(newBuildingData.TileSizeX, newBuildingData.TileSizeZ); //used for checking if the area is empty 
 
-            buildArea = new Vector2(newBuildingData.TileSizeX, newBuildingData.TileSizeZ);
-
-            construct = new GameObject(structData.name);
-            construct.AddComponent<Building>().buildingData = newBuildingData;
+            construct = Instantiate(constructPrefab);
             construct.SetActive(false);
             pointFillType = Point.PointContent.Building;
         }
@@ -199,8 +191,9 @@ public class ConstructionManager : MonoBehaviour
             {
                 for (int y = 0; y < buildArea.y; y++)
                 {
-                    Vector3 pointPos = new Vector3(buildPos.x - (xOffset * (buildArea.x-1)) + (gridSize * x), buildPos.y, buildPos.z - (zOffset * (buildArea.y-1)) + (gridSize * y));
-                    //Debug.DrawLine(temp, new Vector3(pointPos.x, pointPos.y + 6, pointPos.z), Color.red, 60);
+                    Vector3 pointPos = new Vector3(buildPos.x - ((Mathf.FloorToInt((buildArea.x - 1) / 2)*gridSize) + xOffset) + (gridSize * x), buildPos.y,
+                                                    buildPos.z - ((Mathf.FloorToInt((buildArea.y - 1) / 2)*gridSize) + zOffset) + (gridSize * y));
+                    //Debug.DrawLine(new Vector3(pointPos.x, pointPos.y, pointPos.z), new Vector3(pointPos.x, pointPos.y + 6, pointPos.z), Color.red, 60);
                     currentChunk.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), pointFillType);
                     //cityManager.AddConstruct(new Vector3(buildPos.x-(xOffset*(buildArea.x-1)) + (gridSize*x), buildPos.y, buildPos.z-(zOffset*(buildArea.y-1)) + (gridSize*y)), newConstruct);
                 }
