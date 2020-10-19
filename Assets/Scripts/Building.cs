@@ -67,11 +67,22 @@ public class Building : Interactable
         return returnItem;
     }*/
 
-    public void RemoveItem(Item item)
+    /*public void RemoveItem(Item item)
     {
 
+    }*/
+
+    public void OnDrawGizmos()
+    {
+        if (interactionRadius == 0) { interactionRadius = buildingData.interactionRadius; }
+        if (interactionTransform == null) { interactionTransform = transform; }
+
+
+        Gizmos.color = Color.yellow;
+        if (interactionTransform != null && interactionTransform != transform) { Gizmos.DrawSphere(interactionTransform.position, 0.2f); }
+        else { interactionTransform = transform; }
+
+        Gizmos.DrawWireSphere(interactionTransform.position, interactionRadius);
     }
-
-
 
 }

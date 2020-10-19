@@ -5,9 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Unit
-  - Tree
   - Building
   - Item
+  - Tree
   layers:
   - Default
   - TransparentFX

@@ -46,7 +46,7 @@ public class Item : Interactable
         }
     }
 
-    public void Inspect()
+    public override void Inspect()
     {
 
     }

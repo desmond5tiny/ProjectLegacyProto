@@ -40,11 +40,6 @@ public class UnitManager : MonoBehaviour
         StartSpawn(UnitSpawnPoint.position, unitsToSpawn);
     }
 
-    void Update()
-    {
-        
-    }
-
     public void AddUnit(GameObject newUnit)
     {
         int id = newUnit.GetInstanceID();

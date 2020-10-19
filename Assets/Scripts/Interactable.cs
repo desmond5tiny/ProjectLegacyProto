@@ -9,6 +9,7 @@ public class Interactable : MonoBehaviour
 
     public string task =  "Task";
     public Action<GameObject> EndTask;
+    
 
     public virtual void Inspect()
     {
@@ -20,14 +21,5 @@ public class Interactable : MonoBehaviour
     {
         //Debug.Log("Interact with: " + transform.name);
         return task;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        if (interactionTransform != null && interactionTransform != transform) { Gizmos.DrawSphere(interactionTransform.position, 0.2f); }
-        else { interactionTransform = transform; }
-
-        Gizmos.DrawWireSphere(interactionTransform.position, interactionRadius);
     }
 }

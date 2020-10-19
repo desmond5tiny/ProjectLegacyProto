@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 [SelectionBase]
@@ -29,14 +30,13 @@ public class ResourceObject : Interactable, ITakeDamage
         damagePerDrop = resourceData.maxHealth / resourceData.maxItemAmount;
 
         interactionRadius = resourceData.interactRadius;
-        interactionTransform = transform;
+        if (interactionTransform == null) { interactionTransform = transform; }
     }
 
     void Start()
     {
         currentHealth = resourceData.maxHealth;
         currentResourceAmount = resourceData.maxItemAmount;
-        interactionRadius = resourceData.interactRadius;
     }
 
     public void TakeDamage(float dam)
@@ -103,10 +103,21 @@ public class ResourceObject : Interactable, ITakeDamage
     public override void Inspect() => Debug.Log("Inspect " + resourceData.name);
 
 
-    private void OnDrawGizmos()
+    void OnDrawGizmos()
     {
+        if (interactionRadius == 0) { interactionRadius = resourceData.interactRadius; }
+        if (interactionTransform == null) { interactionTransform = transform; }
+
         Gizmos.color = Color.green;
         Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 4f, transform.position.z), new Vector3(0.8f,8,0.8f));
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        if (interactionTransform != transform) { Gizmos.DrawSphere(interactionTransform.position, 0.2f); }
+
+        Gizmos.DrawWireSphere(interactionTransform.position, interactionRadius);
     }
 
     public void KillRescource()
