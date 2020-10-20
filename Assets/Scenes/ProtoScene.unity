@@ -849,8 +849,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   previewMat: {fileID: 2100000, guid: be7129294d9f9cc4e967a613d5cdb9c6, type: 2}
   mainCam: {fileID: 1536361340}
-  buildFence: {fileID: 1316697245162059168, guid: 094229430d7fea94887bf50cdb053a1d,
-    type: 3}
 --- !u!114 &719558901
 MonoBehaviour:
   m_ObjectHideFlags: 0

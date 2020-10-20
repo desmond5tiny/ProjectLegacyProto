@@ -661,11 +661,17 @@
     <Reference Include="Unity.CollabProxy.Editor">
       <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Postprocessing.Editor">
+      <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.Postprocessing.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
       <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Postprocessing.Runtime">
+      <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.ShaderGraph.Editor">
       <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.ShaderGraph.Editor.dll</HintPath>
@@ -678,12 +684,6 @@
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Postprocessing.Editor">
-      <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.Postprocessing.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Postprocessing.Runtime">
-      <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

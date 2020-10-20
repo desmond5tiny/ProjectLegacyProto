@@ -21,8 +21,6 @@ public class ConstructionManager : MonoBehaviour
     private Material previewMat;
     [SerializeField]
     private Camera mainCam;
-    [SerializeField]
-    private GameObject buildFence;
 
     private WorldManager worldManager;
     private InputManager inputManager;

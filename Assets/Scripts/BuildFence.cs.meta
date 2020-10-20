@@ -5,11 +5,11 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - interactionTransform: {instanceID: 0}
-  - prefab1TileS: {fileID: 1316697245162059168, guid: 094229430d7fea94887bf50cdb053a1d,
+  - meshCorner: {fileID: 919132149155446097, guid: 6d45423e08100994fab99ef5892a75ec,
       type: 3}
-  - prefab1TileL: {fileID: 1316697245162059168, guid: 094229430d7fea94887bf50cdb053a1d,
+  - meshRope: {fileID: 919132149155446097, guid: 119a8b084026ccf48b9b58adf7351817,
       type: 3}
-  - prefab2Tile: {fileID: 1316697245162059168, guid: 094229430d7fea94887bf50cdb053a1d,
+  - meshGround: {fileID: 919132149155446097, guid: ee6b2aa2e3e13f7469a599a8beb10be7,
       type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
