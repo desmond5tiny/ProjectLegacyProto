@@ -31,6 +31,13 @@ public class UnitManager : MonoBehaviour
     {
         InputManager.OnRightMouseUp += MoveUnits;
         InputManager.OnKeyT += TaskUnits;
+        InputManager.OnKeyB += UnitsBuild;
+    }
+    private void OnDisable()
+    {
+        InputManager.OnRightMouseUp -= MoveUnits;
+        InputManager.OnKeyT -= TaskUnits;
+        InputManager.OnKeyB -= TaskUnits;
     }
     void Start()
     {
@@ -100,7 +107,7 @@ public class UnitManager : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 5000.0f))
+        if (Physics.Raycast(ray, out hit, 5000.0f, 1<<11))
         {
             if (hit.transform.parent != null && hit.transform.parent.gameObject.GetComponent<ResourceObject>())
             {
@@ -111,6 +118,26 @@ public class UnitManager : MonoBehaviour
                 {
                     GameObject unit = GlobalSelection.Instance.selectionDictionary.selectedDict.ElementAt(i).Value;
                     unit.GetComponent<Unit>().SetResourceTarget(ParentObject.GetComponent<ResourceObject>());
+                    i++;
+                }
+            }
+        }
+    }
+
+    public void UnitsBuild()
+    {
+        //Debug.Log("Task Build");
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 5000.0f, 1<<10))
+        {
+            if (hit.transform.GetComponent<BuildFence>())
+            {
+                int i = 0;
+                foreach (KeyValuePair<int, GameObject> pair in GlobalSelection.Instance.selectionDictionary.selectedDict)
+                {
+                    GameObject unit = GlobalSelection.Instance.selectionDictionary.selectedDict.ElementAt(i).Value;
+                    unit.GetComponent<Unit>().SetBuildTarget(hit.transform.GetComponent<BuildFence>());
                     i++;
                 }
             }

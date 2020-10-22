@@ -22,6 +22,10 @@ public class ConstructionManager : MonoBehaviour
     [SerializeField]
     private Camera mainCam;
 
+    public GameObject buildFenceCorner;
+    public GameObject buildFenceRope;
+    public GameObject buildFenceGround;
+
     private WorldManager worldManager;
     private InputManager inputManager;
     private CityManager cityManager;
@@ -44,6 +48,7 @@ public class ConstructionManager : MonoBehaviour
 
     private GameObject construct;
     private GameObject previewConstruct;
+
     public enum ConstructType { Building, Path, Wall}
     private ConstructType currentType;
 
@@ -170,7 +175,7 @@ public class ConstructionManager : MonoBehaviour
         if (preview)
         {
             Destroy(previewConstruct);
-            Destroy(construct);
+            //Destroy(construct);
             preview = false;
         }
     }
@@ -180,9 +185,11 @@ public class ConstructionManager : MonoBehaviour
         //Debug.Log(canBuild + " ," + mode);
         if (canBuild && mode == InputManager.InputMode.BuildMode)
         {
-            GameObject newConstruct = Instantiate(construct);
-            newConstruct.name = construct.name;
+            GameObject newConstruct = new GameObject(name="buildFence");
+            //newConstruct.name = construct.name;
             newConstruct.transform.position = buildPos;
+            newConstruct.AddComponent<BuildFence>().SetMeshes(buildFenceCorner,buildFenceRope,buildFenceGround);
+            newConstruct.GetComponent<BuildFence>().Initialize(buildArea,gridSize,construct, currentChunk);
             newConstruct.SetActive(true);
 
             for (int x = 0; x < buildArea.x; x++)
@@ -192,12 +199,12 @@ public class ConstructionManager : MonoBehaviour
                     Vector3 pointPos = new Vector3(buildPos.x - ((Mathf.FloorToInt((buildArea.x - 1) / 2)*gridSize) + xOffset) + (gridSize * x), buildPos.y,
                                                     buildPos.z - ((Mathf.FloorToInt((buildArea.y - 1) / 2)*gridSize) + zOffset) + (gridSize * y));
                     //Debug.DrawLine(new Vector3(pointPos.x, pointPos.y, pointPos.z), new Vector3(pointPos.x, pointPos.y + 6, pointPos.z), Color.red, 60);
-                    currentChunk.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), pointFillType);
+                    //currentChunk.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), pointFillType);
                     //cityManager.AddConstruct(new Vector3(buildPos.x-(xOffset*(buildArea.x-1)) + (gridSize*x), buildPos.y, buildPos.z-(zOffset*(buildArea.y-1)) + (gridSize*y)), newConstruct);
                 }
             }
 
-            cityManager.AddConstruct(buildPos,newConstruct);
+            //cityManager.AddConstruct(buildPos,newConstruct);
             //Debug.DrawLine(buildPos, new Vector3(buildPos.x, buildPos.y + 5, buildPos.z),Color.blue,60);
         }
     }

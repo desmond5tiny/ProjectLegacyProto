@@ -13,7 +13,7 @@
     }
     public void OnEnter()
     {
-        unit.resourceTarget = null;
+        //unit.resourceTarget = null;
     }
 
     public void OnExit()

@@ -24,6 +24,7 @@ GameObject:
   m_Component:
   - component: {fileID: 311282999745590414}
   - component: {fileID: 2818528174445442823}
+  - component: {fileID: 5163322939267121251}
   m_Layer: 10
   m_Name: LogCamp
   m_TagString: Building
@@ -58,11 +59,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92e67ef5ec3ed2a48bc87cb9c6b9279e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactionRadius: 3
+  interactionRadius: 4
   interactionTransform: {fileID: 311282999745590414}
   task: Task
   buildingData: {fileID: 11400000, guid: eb61fad3c82b1ae4e9a7c729d987dab9, type: 2}
   currentHealth: 0
+--- !u!114 &5163322939267121251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8555757724238392867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1001 &1710893175470429178
 PrefabInstance:
   m_ObjectHideFlags: 0

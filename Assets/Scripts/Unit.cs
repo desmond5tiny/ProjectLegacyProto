@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,8 +12,11 @@ public class Unit : MonoBehaviour
     public Inventory inventory;
     public float dPS;
     public Collider resourceSearchColl;
-    //temp / change
-    private readonly float gatherSkill = 4; //temp use speed with modifier skill "Gather"
+
+    //temp //temp get from unit stats
+    private readonly float attSpeed = 5;
+    private readonly float skillGather = 4;
+    private readonly float skillBuild = 2;
 
     private StateMachine stateMachine;
     public enum unitTask { None, Move, Gather, Build}
@@ -25,9 +29,13 @@ public class Unit : MonoBehaviour
     public Vector3 prevResourcePos;
     private ItemData resourceItem;
     List<ResourceObject> nearbyRescources = new List<ResourceObject>();
+
     [HideInInspector]
     public Building storeTarget;
     private ItemData storeItem;
+
+    [HideInInspector]
+    public BuildFence buildTarget;
 
     [HideInInspector]
     public Vector3 clickTarget = Vector3.zero;
@@ -35,7 +43,6 @@ public class Unit : MonoBehaviour
     [HideInInspector]
     public bool clickMove = false;
     public bool moving = false;
-
 
     private void Awake()
     {
@@ -47,17 +54,19 @@ public class Unit : MonoBehaviour
         IdleState idleState = new IdleState(this);
         MoveToPointState moveToPoint = new MoveToPointState(this, agent);
         MoveToResourceState toResource = new MoveToResourceState(this, agent);
+        MoveToBuildsite moveToBuild = new MoveToBuildsite(this, agent);
         HarvestResourceState harvestResource = new HarvestResourceState(this);
         FindStorageState findStorage = new FindStorageState(this);
         FindResourceState findResource = new FindResourceState(this, agent);
         MoveToStorageState toStorage = new MoveToStorageState(this, agent);
         StoreItemsState storeItems = new StoreItemsState(this);
-
+        BuildState buildState = new BuildState(this, skillBuild);
 
         stateMachine.SetState(idleState);
 
         //transitions
         AddNewTransition(idleState, toResource, HasRTarget());
+        AddNewTransition(idleState, moveToBuild, HasBuildTarget());
         AddNewTransition(toResource, harvestResource, ReachedResource());
         AddNewTransition(harvestResource, findStorage, InventoryFull());
         AddNewTransition(harvestResource, findResource, ResourceIsEmpty());
@@ -69,6 +78,8 @@ public class Unit : MonoBehaviour
         AddNewTransition(findResource, toResource, HasRTarget());
         AddNewTransition(findResource, idleState, NoResourceNearbyEmpty());
         AddNewTransition(findResource, findStorage, NoResourceNearbyNotEmpty());
+        AddNewTransition(moveToBuild, buildState, ReachedBuildsite());
+        AddNewTransition(buildState, idleState, () => buildTarget == null);
 
         stateMachine.AddAnyTransition(idleState, () => currentTask == unitTask.None);
         stateMachine.AddAnyTransition(moveToPoint, () => clickMove);
@@ -79,8 +90,10 @@ public class Unit : MonoBehaviour
         //condition functions
         Func<bool> HasRTarget() => () => resourceTarget != null;
         Func<bool> HasStoreTarget() => () => storeTarget != null;
+        Func<bool> HasBuildTarget() => () => buildTarget != null;
         Func<bool> ReachedPoint() => () => Vector3.Distance(transform.position, clickTarget) < stopDistance;
         Func<bool> ReachedResource() => () => resourceTarget != null && Vector3.Distance(transform.position, resourceTarget.transform.position) < stopDistance;
+        Func<bool> ReachedBuildsite() => () => buildTarget != null && Vector3.Distance(transform.position, buildTarget.transform.position) < stopDistance;
         Func<bool> ResourceIsEmpty() => () => resourceTarget == null;
         Func<bool> InventoryFull() => () => !inventory.CanAdd(resourceItem);
         Func<bool> ReachedStorage() => () => Vector3.Distance(transform.position, storeTarget.transform.position) < 1f;
@@ -94,11 +107,6 @@ public class Unit : MonoBehaviour
 
     void Update() => stateMachine.Tick();
 
-    public void Build()
-    {
-        Debug.Log("Build");
-    }
-
     public void MoveTo(Vector3 _destination, float _stopDistance)
     {
         if (!moving)
@@ -106,8 +114,23 @@ public class Unit : MonoBehaviour
             currentTask = unitTask.Move;
             clickTarget = _destination;
             stopDistance = _stopDistance;
+            resourceTarget = null;
+            buildTarget = null;
             clickMove = true;
         }
+    }
+
+    public void SetBuildTarget(BuildFence _target)
+    {
+        currentTask = unitTask.Build;
+        buildTarget = _target;
+        stopDistance = _target.interactionRadius;
+    }
+
+    public void Build()
+    {
+        //Debug.Log("Build");
+        buildTarget.AddHealth(((skillBuild / 2) + (attSpeed / 4)) * 2);
     }
 
     public ItemData GetStoreItem() { return storeItem; }
@@ -149,7 +172,7 @@ public class Unit : MonoBehaviour
 
         if(inventory.CanAdd(resourceItem)) //redundant?
         {
-            if (resourceTarget.GetRescource(gatherSkill * (dPS / 10), out takeResult)) //if target has resources; do damage to target and out itemsget
+            if (resourceTarget.GetRescource(skillGather * (dPS / 10), out takeResult)) //if target has resources; do damage to target and out itemsget
             {
                 surplus = inventory.AddItem(resourceItem, takeResult);
                 storeItem = resourceItem;

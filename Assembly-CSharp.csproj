@@ -67,15 +67,9 @@
     <Compile Include="Assets\ScriptableObjects\Scripts\ItemData.cs" />
     <Compile Include="Assets\ScriptableObjects\Scripts\PathData.cs" />
     <Compile Include="Assets\ScriptableObjects\Scripts\ResourceObjectData.cs" />
-    <Compile Include="Assets\Scripts\BuildButton.cs" />
-    <Compile Include="Assets\Scripts\BuildFence.cs" />
-    <Compile Include="Assets\Scripts\BuildUI.cs" />
-    <Compile Include="Assets\Scripts\Building.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Chunk.cs" />
-    <Compile Include="Assets\Scripts\GlobalSelection.cs" />
     <Compile Include="Assets\Scripts\IResource.cs" />
-    <Compile Include="Assets\Scripts\IState.cs" />
     <Compile Include="Assets\Scripts\ITakeDamage.cs" />
     <Compile Include="Assets\Scripts\Interactable.cs" />
     <Compile Include="Assets\Scripts\Inventory.cs" />
@@ -86,21 +80,31 @@
     <Compile Include="Assets\Scripts\Managers\UIManager.cs" />
     <Compile Include="Assets\Scripts\Managers\UnitManager.cs" />
     <Compile Include="Assets\Scripts\Managers\WorldManager.cs" />
-    <Compile Include="Assets\Scripts\Path.cs" />
     <Compile Include="Assets\Scripts\Point.cs" />
     <Compile Include="Assets\Scripts\ResourceObject.cs" />
-    <Compile Include="Assets\Scripts\SelectionDictionary.cs" />
     <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
     <Compile Include="Assets\Scripts\StateMachine.cs" />
+    <Compile Include="Assets\Scripts\States\BuildState.cs" />
     <Compile Include="Assets\Scripts\States\FindResourceState.cs" />
     <Compile Include="Assets\Scripts\States\FindStorageState.cs" />
     <Compile Include="Assets\Scripts\States\HarvestResourceState.cs" />
+    <Compile Include="Assets\Scripts\States\IState.cs" />
     <Compile Include="Assets\Scripts\States\IdleState.cs" />
+    <Compile Include="Assets\Scripts\States\MoveToBuildsite.cs" />
     <Compile Include="Assets\Scripts\States\MoveToPointState.cs" />
     <Compile Include="Assets\Scripts\States\MoveToResourceState.cs" />
     <Compile Include="Assets\Scripts\States\MoveToStorageState.cs" />
     <Compile Include="Assets\Scripts\States\StoreItemsState.cs" />
+    <Compile Include="Assets\Scripts\Structures\BuildFence.cs" />
+    <Compile Include="Assets\Scripts\Structures\Building.cs" />
+    <Compile Include="Assets\Scripts\Structures\IStructure.cs" />
+    <Compile Include="Assets\Scripts\Structures\Path.cs" />
+    <Compile Include="Assets\Scripts\UI\BuildButton.cs" />
+    <Compile Include="Assets\Scripts\UI\BuildUI.cs" />
+    <Compile Include="Assets\Scripts\UI\GlobalSelection.cs" />
+    <Compile Include="Assets\Scripts\UI\SelectionDictionary.cs" />
     <Compile Include="Assets\Scripts\Unit.cs" />
+    <Compile Include="Assets\Scripts\UnitStats.cs" />
     <Compile Include="Assets\Scripts\World.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
@@ -742,6 +746,9 @@
     </Reference>
     <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
       <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+      <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Postprocessing.Runtime">
       <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>

@@ -3,11 +3,11 @@
 public class HarvestResourceState : IState
 {
     private Unit unit;
-    private float harvestSpeed =1;
+    private float harvestSpeed =1; //set to _harvestSpeed
 
     private float nextHarvest;
 
-    public HarvestResourceState(Unit _unit)
+    public HarvestResourceState(Unit _unit) //add _harvestSpeed based on unit skills&attributes
     {
         unit = _unit;
     }
@@ -17,8 +17,8 @@ public class HarvestResourceState : IState
         {
             if(nextHarvest <= (Time.time + harvestSpeed))
             {
-                nextHarvest += harvestSpeed;
                 unit.TakeResource();
+                nextHarvest += harvestSpeed;
             }
         }
     }
@@ -29,8 +29,6 @@ public class HarvestResourceState : IState
     }
 
     public void OnExit()
-    {
-        //unit.resourceTarget = null;
-    }
+    {    }
 
 }

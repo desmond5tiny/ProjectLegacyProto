@@ -40,7 +40,7 @@ public class InputManager : MonoBehaviour
     public static Action<DragMode> OnLeftMouseDrag;
     public static Action OnRightMouseHold;
     public static Action OnLeftMouseUp, OnRightMouseUp;
-    public static Action OnKeyT, OnKeyN;
+    public static Action OnKeyT, OnKeyN, OnKeyB;
 
     void Start()
     {
@@ -80,8 +80,8 @@ public class InputManager : MonoBehaviour
     private void CheckKeyDown()
     {
         if (Input.GetKeyDown(KeyCode.T)) { OnKeyT?.Invoke(); }
-
         if (Input.GetKeyDown(KeyCode.N)) { OnKeyN?.Invoke(); }
+        if (Input.GetKeyDown(KeyCode.B)) { OnKeyB?.Invoke(); }
     }
 
     private void CheckClickDown()
