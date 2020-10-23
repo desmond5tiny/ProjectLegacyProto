@@ -64,7 +64,7 @@ public class ConstructionManager : MonoBehaviour
         inputManager = InputManager.Instance;
         cityManager = CityManager.Instance;
         groundLayer = inputManager.groundLayer;
-        gridSize = worldManager.gridSize;
+        gridSize = WorldManager.gridSize;
         currentChunk = worldManager.sceneChunk;
     }
 
@@ -175,7 +175,6 @@ public class ConstructionManager : MonoBehaviour
         if (preview)
         {
             Destroy(previewConstruct);
-            //Destroy(construct);
             preview = false;
         }
     }
@@ -191,21 +190,6 @@ public class ConstructionManager : MonoBehaviour
             newConstruct.AddComponent<BuildFence>().SetMeshes(buildFenceCorner,buildFenceRope,buildFenceGround);
             newConstruct.GetComponent<BuildFence>().Initialize(buildArea,gridSize,construct, currentChunk);
             newConstruct.SetActive(true);
-
-            for (int x = 0; x < buildArea.x; x++)
-            {
-                for (int y = 0; y < buildArea.y; y++)
-                {
-                    Vector3 pointPos = new Vector3(buildPos.x - ((Mathf.FloorToInt((buildArea.x - 1) / 2)*gridSize) + xOffset) + (gridSize * x), buildPos.y,
-                                                    buildPos.z - ((Mathf.FloorToInt((buildArea.y - 1) / 2)*gridSize) + zOffset) + (gridSize * y));
-                    //Debug.DrawLine(new Vector3(pointPos.x, pointPos.y, pointPos.z), new Vector3(pointPos.x, pointPos.y + 6, pointPos.z), Color.red, 60);
-                    //currentChunk.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), pointFillType);
-                    //cityManager.AddConstruct(new Vector3(buildPos.x-(xOffset*(buildArea.x-1)) + (gridSize*x), buildPos.y, buildPos.z-(zOffset*(buildArea.y-1)) + (gridSize*y)), newConstruct);
-                }
-            }
-
-            //cityManager.AddConstruct(buildPos,newConstruct);
-            //Debug.DrawLine(buildPos, new Vector3(buildPos.x, buildPos.y + 5, buildPos.z),Color.blue,60);
         }
     }
 

@@ -13,7 +13,8 @@ public class FindStorageState : IState
     {
         if (CityManager.Instance.GetStorageBuilding(unit.GetStoreItem())!=null)
         {
-            unit.storeTarget = CityManager.Instance.GetStorageBuilding(unit.GetStoreItem());
+            unit.SetStoreTarget(CityManager.Instance.GetStorageBuilding(unit.GetStoreItem()));
+            
         }
         else { Debug.Log("Find Tile in cityLimits to place item on"); }
     }

@@ -96,7 +96,7 @@ public class Unit : MonoBehaviour
         Func<bool> ReachedBuildsite() => () => buildTarget != null && Vector3.Distance(transform.position, buildTarget.transform.position) < stopDistance;
         Func<bool> ResourceIsEmpty() => () => resourceTarget == null;
         Func<bool> InventoryFull() => () => !inventory.CanAdd(resourceItem);
-        Func<bool> ReachedStorage() => () => Vector3.Distance(transform.position, storeTarget.transform.position) < 1f;
+        Func<bool> ReachedStorage() => () => Vector3.Distance(transform.position, storeTarget.transform.position) < stopDistance;
         Func<bool> cantStore() => () => storeTarget == null && inventory.container.Count > 0;
         Func<bool> GatherAndTarget() => () => inventory.container.Count == 0 && resourceTarget != null;
         Func<bool> GatherAndNoTarget() => () => inventory.container.Count == 0 && resourceTarget == null && currentTask == unitTask.Gather;
@@ -185,6 +185,12 @@ public class Unit : MonoBehaviour
                 resourceTarget = null;
             }
         }
+    }
+
+    public void SetStoreTarget(Building _target)
+    {
+        storeTarget = _target;
+        stopDistance = _target.interactionRadius;
     }
 
     public void StoreResource()

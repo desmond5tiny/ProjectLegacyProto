@@ -2,7 +2,7 @@
 
 public class CameraController : MonoBehaviour
 {
-
+    public Camera mainCam;
     public float panSpeed = 20f;
     public float scrollSpeed = 20f;
     public float panBorderThickness = 10;
@@ -11,10 +11,6 @@ public class CameraController : MonoBehaviour
 
     public Vector2 moveLimit;
     public bool mousePan;
-    void Start()
-    {
-        
-    }
 
     void Update()
     {
@@ -37,15 +33,15 @@ public class CameraController : MonoBehaviour
             pos.x -= panSpeed * Time.deltaTime;
         }
 
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
-
-        pos.y -= scroll * scrollSpeed * 100f* Time.deltaTime;
-
-        pos.y = Mathf.Clamp(pos.y, zoomMin, zoomMax);
         //limit pan area of camera
         //pos.x = Mathf.Clamp(pos.x, -moveLimit.x, moveLimit.x);
         //pos.z = Mathf.Clamp(pos.z, -moveLimit.y, moveLimit.y);
 
         transform.position = pos;
+        float posY = mainCam.transform.localPosition.y;
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        posY -= scroll * scrollSpeed * 100f* Time.deltaTime;
+        posY = Mathf.Clamp(posY, zoomMin, zoomMax);
+        mainCam.transform.localPosition = new Vector3(mainCam.transform.localPosition.x,posY, mainCam.transform.localPosition.z);
     }
 }

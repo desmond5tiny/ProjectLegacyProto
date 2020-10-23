@@ -9,7 +9,6 @@ public class Chunk : MonoBehaviour
 {
     private NavMeshSurface surface;
     private Point[,] pointArray = new Point[20,20];
-    public float gridSize;
 
     void Start()
     {
@@ -18,27 +17,22 @@ public class Chunk : MonoBehaviour
 
     public void SetGridPointContent(Vector2 pos, Point.PointContent newContent)
     {
-
-        int posX = Mathf.FloorToInt((pos.x - transform.position.x) / gridSize);
-        int posY = Mathf.FloorToInt((pos.y - transform.position.z) / gridSize); ;
+        int posX = Mathf.FloorToInt((pos.x - transform.position.x) / WorldManager.gridSize);
+        int posY = Mathf.FloorToInt((pos.y - transform.position.z) / WorldManager.gridSize);
 
         pointArray[posX,posY].contains = newContent;
 
-        if (newContent == Point.PointContent.Path)
-        {
-            pointArray[posX, posY].buildable = false;
-        }
-        if (newContent == Point.PointContent.Building)
-        {
-            pointArray[posX, posY].buildable = false;
-        }
+        if (newContent == Point.PointContent.Path) { pointArray[posX, posY].buildable = false; }
+        if (newContent == Point.PointContent.Building) { pointArray[posX, posY].buildable = false; }
+        if (newContent == Point.PointContent.Tree) { pointArray[posX, posY].buildable = false; }
+        if (newContent == Point.PointContent.Empty) { pointArray[posX, posY].buildable = true; }
 
         //Debug.Log("added: "+pointArray[posX, posY].contains + " at: " + posX + "," + posY);
     }
     public Point GetPoint(Vector2 pos)
     {
-        int posX = Mathf.FloorToInt((pos.x - transform.position.x) / gridSize);
-        int posY = Mathf.FloorToInt((pos.y - transform.position.z) / gridSize);
+        int posX = Mathf.FloorToInt((pos.x - transform.position.x) / WorldManager.gridSize);
+        int posY = Mathf.FloorToInt((pos.y - transform.position.z) / WorldManager.gridSize);
         return pointArray[posX, posY];
     }
 

@@ -28,6 +28,7 @@ public class Path : MonoBehaviour , IStructure
 
     void Start()
     {
+        //AddToGrid();
         gameObject.AddComponent<NavMeshModifier>().overrideArea = true;
         gameObject.GetComponent<NavMeshModifier>().area = 3;
 
@@ -253,5 +254,17 @@ public class Path : MonoBehaviour , IStructure
     public float GetMaxHealth()
     {
         return pathData.MaxHealth;
+    }
+
+    public void AddToGrid()
+    {
+        Chunk chunk = WorldManager.Instance.GetChunk(transform.position);
+        chunk.SetGridPointContent(new Vector2(transform.position.x, transform.position.z), Point.PointContent.Path);
+        CityManager.Instance.AddConstruct(transform.position, gameObject);
+    }
+
+    public void RemoveFromGrid()
+    {
+        throw new System.NotImplementedException();
     }
 }

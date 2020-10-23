@@ -20,13 +20,13 @@ public class Building : Interactable, IStructure
     private void Awake()
     {
         storage = new Inventory(buildingData.maxStorage);
-
         interactionRadius = buildingData.interactionRadius;
         if (interactionTransform == null) { interactionTransform = transform; }
     }
 
     void Start()
     {
+        //AddToGrid();
         currentHealth = buildingData.maxHealth;
     }
 
@@ -76,5 +76,31 @@ public class Building : Interactable, IStructure
     public float GetMaxHealth()
     {
         return buildingData.maxHealth;
+    }
+
+    public void AddToGrid()
+    {
+        Vector3 pos = transform.position;
+        float gridSize = WorldManager.gridSize;
+        Chunk chunk = WorldManager.Instance.GetChunk(transform.position);
+
+        float offsetX = ((buildingData.TileSizeX + 1) % 2) * (gridSize / 2);
+        float offsetZ = ((buildingData.TileSizeZ + 1) % 2) * (gridSize / 2);
+
+        for (int i = 0; i < buildingData.TileSizeX; i++)
+        {
+            for (int j = 0; j < buildingData.TileSizeZ; j++)
+            {
+                Vector3 pointPos = new Vector3(pos.x - ((Mathf.FloorToInt((buildingData.TileSizeX - 1) / 2) * gridSize) + offsetX) + (gridSize * i), pos.y,
+                                                pos.z - ((Mathf.FloorToInt((buildingData.TileSizeZ - 1) / 2) * gridSize) + offsetZ) + (gridSize * j));
+                chunk.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), Point.PointContent.Building);
+            }
+        }
+        CityManager.Instance.AddConstruct(transform.position, gameObject);
+    }
+
+    public void RemoveFromGrid()
+    {
+        throw new NotImplementedException();
     }
 }

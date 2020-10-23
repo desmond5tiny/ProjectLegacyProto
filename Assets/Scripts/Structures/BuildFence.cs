@@ -6,7 +6,6 @@ using UnityEngine.AI;
 [SelectionBase]
 public class BuildFence : Interactable , ITakeDamage, IStructure
 {
-
     private GameObject meshCorner;
     private GameObject meshRope;
     private GameObject meshGround;
@@ -15,6 +14,7 @@ public class BuildFence : Interactable , ITakeDamage, IStructure
     public float currentHealth;
     private float maxHealth=2;
     private List<GameObject> children = new List<GameObject>();
+    private Vector2 size;
 
     [SerializeField]
     GameObject construct;
@@ -35,32 +35,33 @@ public class BuildFence : Interactable , ITakeDamage, IStructure
 
     public void Initialize(Vector2 _area, float _gridSize, GameObject _construct, Chunk _chunk)
     {
+        size = _area;
+        AddToGrid();
         transform.gameObject.layer = 10;
         construct = _construct;
-        interactionRadius = ((_area.x + _area.y) / 2 * 1.5f) + 1.5f;
-        IStructure structure = _construct.GetComponent<IStructure>();
+        interactionRadius = ((size.x + size.y) / 2 * 1.5f) + 1.5f;
+
+        IStructure structure = _construct.GetComponent<IStructure>(); //get maxhealth of the building and set it as the goal to reach
         maxHealth = structure.GetMaxHealth();
 
-        Debug.Log("Buildfence maxHealth: " + maxHealth);
-
-        SetSize(_area, _gridSize);
-        transform.gameObject.AddComponent<BoxCollider>().size = new Vector3(_area.x * _gridSize, 1.5f, _area.y * _gridSize);
+        SetSize(_gridSize);
+        transform.gameObject.AddComponent<BoxCollider>().size = new Vector3(size.x * _gridSize, 1.5f, size.y * _gridSize);
         transform.gameObject.GetComponent<BoxCollider>().center = new Vector3(0, 0.75f, 0);
         transform.gameObject.AddComponent<NavMeshModifier>().overrideArea = true;
         transform.gameObject.GetComponent<NavMeshModifier>().area = 1;
 
-        _chunk.NavMeshUpdate();
-        //add to chunkgrid && update navmesh
+        //add to chunkgrid
+        WorldManager.Instance.GetChunk(transform.position).NavMeshUpdate();
     }
 
-    public void SetSize(Vector2 _area, float _gridSize)
+    public void SetSize( float _gridSize)
     {
-        if(_area.x < 1 || _area.y < 1) { Debug.LogError("No Such Size!"); return; }
-        int xPoints = Mathf.RoundToInt(_area.x +1);
-        int yPoints = Mathf.RoundToInt(_area.y + 1);
+        if(size.x < 1 || size.y < 1) { Debug.LogError("No Such Size!"); return; }
+        int xPoints = Mathf.RoundToInt(size.x +1);
+        int yPoints = Mathf.RoundToInt(size.y + 1);
 
-        float startX = transform.position.x - ((_area.x / 2) * _gridSize);
-        float startZ = transform.position.z - ((_area.y / 2) * _gridSize);
+        float startX = transform.position.x - ((size.x / 2) * _gridSize);
+        float startZ = transform.position.z - ((size.y / 2) * _gridSize);
 
         for (int i = 0; i < xPoints; i++)
         {
@@ -99,25 +100,25 @@ public class BuildFence : Interactable , ITakeDamage, IStructure
         }
 
         GameObject ground = Instantiate(meshGround, transform);
-        ground.transform.localScale = new Vector3(_area.x, _area.y, 1);
+        ground.transform.localScale = new Vector3(size.x, size.y, 1);
         children.Add(ground);
     }
 
     public void AddHealth(float _addHealth)
     {
         currentHealth += _addHealth;
-        Debug.Log("Buildfence health: " + currentHealth);
+        //Debug.Log("Buildfence health: " + currentHealth);
         if (currentHealth >= maxHealth) { ConstructionCompleet(); }
     }
 
     private void ConstructionCompleet()
     {
+        RemoveFromGrid();
         //play constructio complete anim/effect
         construct.SetActive(true);
         construct.transform.position = transform.position;
-
-        //add to citydata and chunkgrid
-
+        IStructure structure = construct.GetComponent<IStructure>();
+        structure.AddToGrid();
         Destroy(gameObject);
     }
 
@@ -141,5 +142,46 @@ public class BuildFence : Interactable , ITakeDamage, IStructure
     public float GetMaxHealth()
     {
         return maxHealth;
+    }
+
+    public void AddToGrid()
+    {
+        Vector3 pos = transform.position;
+        float gridSize = WorldManager.gridSize;
+        Chunk chunk = WorldManager.Instance.GetChunk(transform.position);
+
+        float offsetX = ((size.x + 1) % 2) * (gridSize / 2);
+        float offsetZ = ((size.y + 1) % 2) * (gridSize / 2);
+
+        for (int i = 0; i < size.x; i++)
+        {
+            for (int j = 0; j < size.y; j++)
+            {
+                Vector3 pointPos = new Vector3(pos.x - ((Mathf.FloorToInt((size.x - 1) / 2) * gridSize) + offsetX) + (gridSize * i), pos.y,
+                                                pos.z - ((Mathf.FloorToInt((size.y - 1) / 2) * gridSize) + offsetZ) + (gridSize * j));
+                chunk.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), Point.PointContent.Building);
+            }
+        }
+        //add to list of buildsites
+    }
+
+    public void RemoveFromGrid()
+    {
+        Vector3 pos = transform.position;
+        float gridSize = WorldManager.gridSize;
+        Chunk chunk = WorldManager.Instance.GetChunk(transform.position);
+
+        float offsetX = ((size.x + 1) % 2) * (gridSize / 2);
+        float offsetZ = ((size.y + 1) % 2) * (gridSize / 2);
+
+        for (int i = 0; i < size.x; i++)
+        {
+            for (int j = 0; j < size.y; j++)
+            {
+                Vector3 pointPos = new Vector3(pos.x - ((Mathf.FloorToInt((size.x - 1) / 2) * gridSize) + offsetX) + (gridSize * i), pos.y,
+                                                pos.z - ((Mathf.FloorToInt((size.y - 1) / 2) * gridSize) + offsetZ) + (gridSize * j));
+                chunk.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), Point.PointContent.Empty);
+            }
+        }
     }
 }

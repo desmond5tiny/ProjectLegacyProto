@@ -102,6 +102,7 @@
     <Compile Include="Assets\Scripts\UI\BuildButton.cs" />
     <Compile Include="Assets\Scripts\UI\BuildUI.cs" />
     <Compile Include="Assets\Scripts\UI\GlobalSelection.cs" />
+    <Compile Include="Assets\Scripts\UI\InfoBar.cs" />
     <Compile Include="Assets\Scripts\UI\SelectionDictionary.cs" />
     <Compile Include="Assets\Scripts\Unit.cs" />
     <Compile Include="Assets\Scripts\UnitStats.cs" />

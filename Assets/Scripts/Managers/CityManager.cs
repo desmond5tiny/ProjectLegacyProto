@@ -31,9 +31,7 @@ public class CityManager : MonoBehaviour
         Building.ItemTaken += SortStorageBuildings;
     }
     private void Start()
-    {
-        AddConstruct(Camp.transform.position, Camp); // temp
-    }
+    {    }
 
     public void AddConstruct(Vector3 pos, GameObject newConstruct)
     {
@@ -94,6 +92,11 @@ public class CityManager : MonoBehaviour
         }
         else
             return 0;
+    }
+
+    public void AddStockpile()
+    {
+
     }
 
 }

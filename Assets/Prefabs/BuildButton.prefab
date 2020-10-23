@@ -27,7 +27,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2079539124821011896}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -68,7 +68,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -7067036143994776509, guid: 40ae927ceb93e3148aec5886d15edce8,
+  m_Sprite: {fileID: 7077026066659479347, guid: b289f71cb5c9902469e47d594ec0083c,
     type: 3}
   m_Type: 1
   m_PreserveAspect: 0
@@ -99,7 +99,7 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.7726415, g: 0.9114962, b: 0.936, a: 1}
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.667329, g: 0.8462987, b: 0.92300004, a: 1}
     m_PressedColor: {r: 1, g: 0.7849434, b: 0.39, a: 1}
     m_SelectedColor: {r: 1, g: 0.88986665, b: 0.587, a: 1}
@@ -145,7 +145,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca83c799286adee43b07ff9e11e71c7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  constructPrefab: {fileID: 0}
+  constructPrefab: {fileID: 8555757724238392867, guid: b4e0ec6913d369d49aa7c7a1df65b8af,
+    type: 3}
   construcType: 0
   isLocked: 0
 --- !u!1 &3489555165123373857
@@ -286,7 +287,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "new \n"
+  m_text: Log Camp
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
   m_sharedMaterial: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
@@ -295,8 +296,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4283397553
-  m_fontColor: {r: 0.695, g: 0.45799342, b: 0.310665, a: 1}
+    rgba: 4286428651
+  m_fontColor: {r: 0.922, g: 0.70808935, b: 0.48958197, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
