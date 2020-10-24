@@ -18,8 +18,7 @@ public class CityManager : MonoBehaviour
     #endregion
 
     public Dictionary<Vector3, GameObject> cityDict = new Dictionary<Vector3, GameObject>();
-
-    public Dictionary<string, int> stockPile = new Dictionary<string, int>();
+    public Stockpile stockpile;
 
     public List<Building> storeableBuildings = new List<Building>();
 
@@ -31,11 +30,15 @@ public class CityManager : MonoBehaviour
         Building.ItemTaken += SortStorageBuildings;
     }
     private void Start()
-    {    }
+    {
+        if (stockpile == null) { stockpile = GetComponent<Stockpile>(); } //overly cautious 
+        AddConstruct(Camp.transform.position, Camp);
+    }
 
     public void AddConstruct(Vector3 pos, GameObject newConstruct)
     {
         cityDict.Add(pos, newConstruct);
+        //Instance.GetChunk(newConstruct.transform.position).NavMeshUpdate();
         if (newConstruct.CompareTag("Building"))
         {
             if (newConstruct.GetComponent<Building>().buildingData.storagePriority > 0)
@@ -47,7 +50,7 @@ public class CityManager : MonoBehaviour
         //Debug.Log("add path at: " + pos);
     }
 
-    public void SortStorageBuildings() => storeableBuildings.Sort(SortBySpaceLeft);
+    public void SortStorageBuildings(ItemData _item, int _amount) => storeableBuildings.Sort(SortBySpaceLeft);
 
     public Building GetStorageBuilding(ItemData _storeItem)
     {
@@ -94,9 +97,8 @@ public class CityManager : MonoBehaviour
             return 0;
     }
 
-    public void AddStockpile()
+    public int GetStockpileItem(ItemData _item)
     {
-
+        return stockpile.GetItemAmount(_item);
     }
-
 }

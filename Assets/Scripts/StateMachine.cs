@@ -28,7 +28,7 @@ public class StateMachine
     public void SetState(IState state)
     {
         if(state == currentState) { return; }
-        Debug.Log("Set State to:" + state);
+        //Debug.Log("Set State to:" + state);
 
         currentState?.OnExit();
         currentState = state;

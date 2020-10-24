@@ -33,7 +33,7 @@ public class BuildUI : MonoBehaviour
         {
             //inputManager.buildMode = true;
             inputManager.SetInputMode(InputManager.InputMode.BuildMode);
-            constructionManager.SetConstruct(constructType,constructPrefab);
+            constructionManager.SetConstructPrefab(constructType,constructPrefab);
         }
     }
 

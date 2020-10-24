@@ -28,7 +28,6 @@ public class ConstructionManager : MonoBehaviour
 
     private WorldManager worldManager;
     private InputManager inputManager;
-    private CityManager cityManager;
     private Chunk currentChunk;
     private LayerMask groundLayer;
     private float gridSize = 2.5f;
@@ -45,7 +44,7 @@ public class ConstructionManager : MonoBehaviour
     [HideInInspector]
     private bool matSet = false;
 
-
+    private GameObject constructPrefab;
     private GameObject construct;
     private GameObject previewConstruct;
 
@@ -62,7 +61,6 @@ public class ConstructionManager : MonoBehaviour
     {
         worldManager = WorldManager.Instance;
         inputManager = InputManager.Instance;
-        cityManager = CityManager.Instance;
         groundLayer = inputManager.groundLayer;
         gridSize = WorldManager.gridSize;
         currentChunk = worldManager.sceneChunk;
@@ -126,27 +124,43 @@ public class ConstructionManager : MonoBehaviour
         }
     }
 
-    public void SetConstruct( ConstructType strucType, GameObject constructPrefab)
+    public void SetConstructPrefab( ConstructType _strucType, GameObject _constructPrefab)
+    {
+        constructPrefab = _constructPrefab;
+        currentType = _strucType;
+
+        SpawnConstruct();
+
+        matSet = false;
+        previewConstruct = Instantiate(construct);
+        previewConstruct.name = "PreviewObject";
+        previewConstruct.SetActive(true);
+        SetPreviewMat(previewConstruct);
+
+        preview = true;
+    }
+
+    private void SpawnConstruct()
     {
         xOffset = 0;
         zOffset = 0;
         buildArea = new Vector2(1, 1);
-        if (strucType == ConstructType.Path)
+        if (currentType == ConstructType.Path)
         {
             PathData newPathData = ScriptableObject.CreateInstance(typeof(PathData)) as PathData;
-            
+
             if (constructPrefab.GetComponent<Path>())
             {
                 newPathData = constructPrefab.GetComponent<Path>().pathData;
             }
             else { Debug.LogError("structData is not a PathData"); }
-            
+
             construct = new GameObject(constructPrefab.name);
             construct.AddComponent<Path>().pathData = newPathData;
             construct.SetActive(false);
             pointFillType = Point.PointContent.Path;
         }
-        if (strucType == ConstructType.Building)
+        if (currentType == ConstructType.Building)
         {
             BuildingData newBuildingData = constructPrefab.GetComponent<Building>().buildingData;
 
@@ -159,15 +173,6 @@ public class ConstructionManager : MonoBehaviour
             pointFillType = Point.PointContent.Building;
         }
 
-        matSet = false;
-
-        previewConstruct = Instantiate(construct);
-        previewConstruct.name = "PreviewObject";
-        previewConstruct.SetActive(true);
-        SetPreviewMat(previewConstruct);
-
-        currentType = strucType;
-        preview = true;
     }
 
     public void StopPreview()
@@ -190,6 +195,7 @@ public class ConstructionManager : MonoBehaviour
             newConstruct.AddComponent<BuildFence>().SetMeshes(buildFenceCorner,buildFenceRope,buildFenceGround);
             newConstruct.GetComponent<BuildFence>().Initialize(buildArea,gridSize,construct, currentChunk);
             newConstruct.SetActive(true);
+            SpawnConstruct();
         }
     }
 

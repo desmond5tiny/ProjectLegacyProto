@@ -129,13 +129,13 @@ TextureImporter:
       name: UI_InventorySlot_v1_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 128
-        height: 128
+        x: 3
+        y: 2
+        width: 123
+        height: 123
       alignment: 0
       pivot: {x: 0, y: 0}
-      border: {x: 22, y: 22, z: 22, w: 22}
+      border: {x: 18, y: 18, z: 18, w: 18}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -149,7 +149,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 5d4650b95ab25af4693791aefe8e8a90
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 

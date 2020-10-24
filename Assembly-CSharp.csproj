@@ -95,6 +95,7 @@
     <Compile Include="Assets\Scripts\States\MoveToResourceState.cs" />
     <Compile Include="Assets\Scripts\States\MoveToStorageState.cs" />
     <Compile Include="Assets\Scripts\States\StoreItemsState.cs" />
+    <Compile Include="Assets\Scripts\Stockpile.cs" />
     <Compile Include="Assets\Scripts\Structures\BuildFence.cs" />
     <Compile Include="Assets\Scripts\Structures\Building.cs" />
     <Compile Include="Assets\Scripts\Structures\IStructure.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="Assets\Scripts\UI\GlobalSelection.cs" />
     <Compile Include="Assets\Scripts\UI\InfoBar.cs" />
     <Compile Include="Assets\Scripts\UI\SelectionDictionary.cs" />
+    <Compile Include="Assets\Scripts\UIHoverTest.cs" />
     <Compile Include="Assets\Scripts\Unit.cs" />
     <Compile Include="Assets\Scripts\UnitStats.cs" />
     <Compile Include="Assets\Scripts\World.cs" />

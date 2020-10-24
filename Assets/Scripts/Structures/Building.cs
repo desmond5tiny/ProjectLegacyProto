@@ -15,7 +15,7 @@ public class Building : Interactable, IStructure
     public Inventory storage;
 
     public static Action<ItemData,int> ItemStored;
-    public static Action ItemTaken;
+    public static Action<ItemData, int> ItemTaken;
 
     private void Awake()
     {
@@ -40,14 +40,14 @@ public class Building : Interactable, IStructure
         return (buildingData.maxStorage - storage.container.Count);
     }
 
-    public bool StoreItem(ItemData item, int amount, out int result)
+    public bool StoreItem(ItemData _item, int _amount, out int _result)
     {
-        result = 0;
-        if (storage.CanAdd(item))
+        _result = 0;
+        if (storage.CanAdd(_item))
         {
-            result = storage.AddItem(item, amount);
-            ItemStored?.Invoke(item, amount - result);
-            Debug.Log("Add "+ item + ": " + (amount-result));
+            _result = storage.AddItem(_item, _amount);
+            ItemStored?.Invoke(_item, _amount - _result);
+            Debug.Log("Add "+ _item + ": " + (_amount-_result));
             return true;
         }
         else { return false; }
@@ -59,10 +59,10 @@ public class Building : Interactable, IStructure
         return returnItem;
     }*/
 
-    /*public void RemoveItem(Item item)
+    public void RemoveItem(Item _item, int _amout)
     {
-
-    }*/
+        //if(storage.)
+    }
 
     private void OnDrawGizmosSelected()
     {

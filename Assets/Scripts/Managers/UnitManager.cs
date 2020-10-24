@@ -23,6 +23,7 @@ public class UnitManager : MonoBehaviour
     [SerializeField]
     private GameObject unitBase;
     public Transform UnitSpawnPoint;
+    public static Action<int> PopulationChanged;
 
     private InputManager inputManager;
     private Dictionary<int, GameObject> unitDict;
@@ -53,14 +54,17 @@ public class UnitManager : MonoBehaviour
         if (!(unitDict.ContainsKey(id)))
         {
             unitDict.Add(id, newUnit);
-            //increase population
+            PopulationChanged?.Invoke(unitDict.Count);
         }
     }
 
     public void RemoveUnit(int id)
     {
-        unitDict.Remove(id);
-        //decrease population
+        if(unitDict.ContainsKey(id))
+        {
+            unitDict.Remove(id);
+            PopulationChanged?.Invoke(unitDict.Count);
+        }
     }
 
     public GameObject GetUnit(int id)

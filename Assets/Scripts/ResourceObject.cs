@@ -21,23 +21,24 @@ public class ResourceObject : Interactable, ITakeDamage
 
     private void Awake()
     {
+        currentHealth = resourceData.maxHealth;
+        currentResourceAmount = resourceData.maxItemAmount;
+
         resourceBase = Instantiate(resourceData.prefabBase, transform);
         resourceBase.layer = 11;
         resourceTop = Instantiate(resourceData.prefabTop, transform);
         resourceTop.layer = 11;
-        InputManager.OnKeyN += KillRescource;
 
         damagePerDrop = resourceData.maxHealth / resourceData.maxItemAmount;
 
         interactionRadius = resourceData.interactRadius;
         if (interactionTransform == null) { interactionTransform = transform; }
-    }
 
-    void Start()
-    {
-        currentHealth = resourceData.maxHealth;
-        currentResourceAmount = resourceData.maxItemAmount;
+        //gameObject.AddComponent<UIHoverTest>().myString = "Tree";
+        //gameObject.GetComponent
     }
+    private void OnEnable() => InputManager.OnKeyN += KillRescource;
+    private void OnDisable() => InputManager.OnKeyN -= KillRescource;
 
     public void TakeDamage(float dam)
     {
@@ -66,6 +67,7 @@ public class ResourceObject : Interactable, ITakeDamage
             if(Mathf.CeilToInt((currentHealth - damage) / damagePerDrop) < currentResourceAmount)
             {
                 woodDrop = (currentResourceAmount - Mathf.CeilToInt((currentHealth - damage) / damagePerDrop));
+                if(woodDrop>currentResourceAmount) { woodDrop = currentResourceAmount; }
                 currentResourceAmount -= woodDrop;
             }
             TakeDamage(damage);

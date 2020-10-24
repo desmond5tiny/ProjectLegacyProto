@@ -12,6 +12,7 @@ public class Interactable : MonoBehaviour
     public Action<GameObject> EndTask;
     
 
+
     public virtual void Inspect()
     {
         //override this method
