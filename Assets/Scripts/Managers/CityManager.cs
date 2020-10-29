@@ -32,22 +32,28 @@ public class CityManager : MonoBehaviour
     private void Start()
     {
         if (stockpile == null) { stockpile = GetComponent<Stockpile>(); } //overly cautious 
-        AddConstruct(Camp.transform.position, Camp);
+        //AddConstruct(Camp.transform.position, Camp);
     }
 
-    public void AddConstruct(Vector3 pos, GameObject newConstruct)
+    public void AddConstruct(Vector3 _pos, GameObject _newConstruct)
     {
-        cityDict.Add(pos, newConstruct);
-        //Instance.GetChunk(newConstruct.transform.position).NavMeshUpdate();
-        if (newConstruct.CompareTag("Building"))
+        cityDict.Add(_pos, _newConstruct);
+        WorldManager.Instance.GetChunk(_newConstruct.transform.position).NavMeshUpdate();
+
+        if (_newConstruct.CompareTag("Building"))
         {
-            if (newConstruct.GetComponent<Building>().buildingData.storagePriority > 0)
+            if (_newConstruct.GetComponent<Building>().buildingData.storagePriority > 0)
             {
-                storeableBuildings.Add(newConstruct.GetComponent<Building>());
+                storeableBuildings.Add(_newConstruct.GetComponent<Building>());
                 storeableBuildings.Sort(SortByStorePriority);
             }
         }
-        //Debug.Log("add path at: " + pos);
+    }
+
+    public void RemoveConstruct(Vector3 _key)
+    {
+        if(cityDict.ContainsKey(_key)) { cityDict.Remove(_key); }
+        else { Debug.LogError("Construct not found in City!"); }
     }
 
     public void SortStorageBuildings(ItemData _item, int _amount) => storeableBuildings.Sort(SortBySpaceLeft);

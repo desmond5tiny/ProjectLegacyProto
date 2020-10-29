@@ -124,7 +124,7 @@ public class InputManager : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            if (dragMode != DragMode.LeftDrag && (mouseLeftDownPos - Input.mousePosition).magnitude > 20)
+            if (dragMode != DragMode.LeftDrag && (mouseLeftDownPos - Input.mousePosition).magnitude > 15)
             {
                 dragMode = DragMode.LeftDrag;
                 OnLeftMouseDrag?.Invoke(dragMode);

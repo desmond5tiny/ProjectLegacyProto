@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BuildUI : MonoBehaviour
@@ -27,14 +28,30 @@ public class BuildUI : MonoBehaviour
         cityManager = CityManager.Instance;
     }
 
-    public void SendToConstructM(ConstructionManager.ConstructType constructType, GameObject constructPrefab)
+    public void SendToConstructM(ConstructionManager.ConstructType _constructType, GameObject _constructPrefab, Dictionary<ItemData, int> _buildCost)
     {
         if (inputManager.GetInputMode() != InputManager.InputMode.BuildMode)
         {
-            //inputManager.buildMode = true;
-            inputManager.SetInputMode(InputManager.InputMode.BuildMode);
-            constructionManager.SetConstructPrefab(constructType,constructPrefab);
+            if (checkAvailableResources(_buildCost))
+            {
+                //inputManager.buildMode = true;
+                inputManager.SetInputMode(InputManager.InputMode.BuildMode);
+                constructionManager.SetConstructPrefab(_constructType, _constructPrefab);
+            }
         }
+    }
+
+    public bool checkAvailableResources(Dictionary<ItemData,int> _resources)
+    {
+        for (int i = 0; i < _resources.Count; i++)
+        {
+            if(cityManager.GetStockpileItem(_resources.ElementAt(i).Key) < _resources.ElementAt(i).Value)
+            {
+                return false;
+            }
+            
+        }
+        return true;
     }
 
     public void ResetConstructManager()

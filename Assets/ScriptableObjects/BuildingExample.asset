@@ -18,7 +18,9 @@ MonoBehaviour:
   maxStorage: 2
   storagePriority: 5
   buildBase: 0
-  produceItems: 0
   TileSizeX: 2
   TileSizeZ: 2
   interactionRadius: 1.5
+  ShowProduction: 1
+  produce: 1
+  item: 0

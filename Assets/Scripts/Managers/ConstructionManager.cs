@@ -38,14 +38,12 @@ public class ConstructionManager : MonoBehaviour
     private float xOffset = 0, zOffset = 0;
     private Vector2 buildArea;
 
-    private Point.PointContent pointFillType;
     private bool canBuild=true;
     private bool preview = false;
     [HideInInspector]
     private bool matSet = false;
 
     private GameObject constructPrefab;
-    private GameObject construct;
     private GameObject previewConstruct;
 
     public enum ConstructType { Building, Path, Wall}
@@ -53,7 +51,7 @@ public class ConstructionManager : MonoBehaviour
 
     private void OnEnable()
     {
-        InputManager.OnLeftMouseClick += PlaceContruct;
+        InputManager.OnLeftMouseClick += PlaceBuildSite;
         InputManager.OnRightMouseUp += StopPreview;
     }
 
@@ -92,7 +90,6 @@ public class ConstructionManager : MonoBehaviour
                     for (int y = 0; y < buildArea.y; y++)
                     {
                         Vector3 pointPos = new Vector3(buildPos.x - (xOffset * (buildArea.x - 1)) + (gridSize * x), buildPos.y, buildPos.z - (zOffset * (buildArea.y - 1)) + (gridSize * y));
-                        //Debug.Log(currentChunk.GetPoint(new Vector2(pointPos.x, pointPos.z)).buildable);
                         if(!currentChunk.GetPoint(new Vector2(pointPos.x, pointPos.z)).buildable)
                         {
                             canBuild = false;
@@ -119,7 +116,7 @@ public class ConstructionManager : MonoBehaviour
         {
             if (currentType == ConstructType.Path || currentType == ConstructType.Wall)
             {
-                PlaceContruct(InputManager.InputMode.BuildMode);
+                PlaceBuildSite(InputManager.InputMode.BuildMode);
             }
         }
     }
@@ -129,37 +126,10 @@ public class ConstructionManager : MonoBehaviour
         constructPrefab = _constructPrefab;
         currentType = _strucType;
 
-        SpawnConstruct();
-
-        matSet = false;
-        previewConstruct = Instantiate(construct);
-        previewConstruct.name = "PreviewObject";
-        previewConstruct.SetActive(true);
-        SetPreviewMat(previewConstruct);
-
-        preview = true;
-    }
-
-    private void SpawnConstruct()
-    {
         xOffset = 0;
         zOffset = 0;
         buildArea = new Vector2(1, 1);
-        if (currentType == ConstructType.Path)
-        {
-            PathData newPathData = ScriptableObject.CreateInstance(typeof(PathData)) as PathData;
 
-            if (constructPrefab.GetComponent<Path>())
-            {
-                newPathData = constructPrefab.GetComponent<Path>().pathData;
-            }
-            else { Debug.LogError("structData is not a PathData"); }
-
-            construct = new GameObject(constructPrefab.name);
-            construct.AddComponent<Path>().pathData = newPathData;
-            construct.SetActive(false);
-            pointFillType = Point.PointContent.Path;
-        }
         if (currentType == ConstructType.Building)
         {
             BuildingData newBuildingData = constructPrefab.GetComponent<Building>().buildingData;
@@ -167,12 +137,15 @@ public class ConstructionManager : MonoBehaviour
             if (newBuildingData.TileSizeX % 2 == 0) { xOffset = gridSize / 2; }
             if (newBuildingData.TileSizeZ % 2 == 0) { zOffset = gridSize / 2; }
             buildArea = new Vector2(newBuildingData.TileSizeX, newBuildingData.TileSizeZ); //used for checking if the area is empty 
-
-            construct = Instantiate(constructPrefab);
-            construct.SetActive(false);
-            pointFillType = Point.PointContent.Building;
         }
 
+        matSet = false;
+        previewConstruct = Instantiate(constructPrefab);
+        previewConstruct.name = "PreviewObject";
+        previewConstruct.SetActive(true);
+        SetPreviewMat(previewConstruct);
+
+        preview = true;
     }
 
     public void StopPreview()
@@ -184,18 +157,15 @@ public class ConstructionManager : MonoBehaviour
         }
     }
 
-    public void PlaceContruct(InputManager.InputMode mode)
+    public void PlaceBuildSite(InputManager.InputMode mode)
     {
-        //Debug.Log(canBuild + " ," + mode);
         if (canBuild && mode == InputManager.InputMode.BuildMode)
         {
-            GameObject newConstruct = new GameObject(name="buildFence");
-            //newConstruct.name = construct.name;
-            newConstruct.transform.position = buildPos;
-            newConstruct.AddComponent<BuildFence>().SetMeshes(buildFenceCorner,buildFenceRope,buildFenceGround);
-            newConstruct.GetComponent<BuildFence>().Initialize(buildArea,gridSize,construct, currentChunk);
-            newConstruct.SetActive(true);
-            SpawnConstruct();
+            GameObject buildSite = new GameObject(name="buildSite");
+            buildSite.transform.position = buildPos;
+            buildSite.AddComponent<BuildFence>().SetMeshes( buildFenceCorner, buildFenceRope, buildFenceGround );
+            buildSite.GetComponent<BuildFence>().Initialize( buildArea, gridSize, constructPrefab, currentChunk, currentType);
+            buildSite.SetActive(true);
         }
     }
 

@@ -17,17 +17,20 @@ public class Building : Interactable, IStructure
     public static Action<ItemData,int> ItemStored;
     public static Action<ItemData, int> ItemTaken;
 
+    private Dictionary<ItemData, int> buildCost = new Dictionary<ItemData, int>();
+
     private void Awake()
     {
         storage = new Inventory(buildingData.maxStorage);
         interactionRadius = buildingData.interactionRadius;
         if (interactionTransform == null) { interactionTransform = transform; }
+        
     }
 
     void Start()
     {
-        //AddToGrid();
         currentHealth = buildingData.maxHealth;
+        AddToGrid();
     }
 
     public void SetInhabitant(Unit newHabitant)
@@ -80,6 +83,18 @@ public class Building : Interactable, IStructure
 
     public void AddToGrid()
     {
+        SetGridPoints(Point.PointContent.Building);
+        CityManager.Instance.AddConstruct(transform.position, gameObject);
+    }
+
+    public void RemoveFromGrid()
+    {
+        SetGridPoints(Point.PointContent.Empty);
+        CityManager.Instance.RemoveConstruct(transform.position);
+    }
+
+    private void SetGridPoints(Point.PointContent _fill)
+    {
         Vector3 pos = transform.position;
         float gridSize = WorldManager.gridSize;
         Chunk chunk = WorldManager.Instance.GetChunk(transform.position);
@@ -93,14 +108,18 @@ public class Building : Interactable, IStructure
             {
                 Vector3 pointPos = new Vector3(pos.x - ((Mathf.FloorToInt((buildingData.TileSizeX - 1) / 2) * gridSize) + offsetX) + (gridSize * i), pos.y,
                                                 pos.z - ((Mathf.FloorToInt((buildingData.TileSizeZ - 1) / 2) * gridSize) + offsetZ) + (gridSize * j));
-                chunk.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), Point.PointContent.Building);
+                chunk.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), _fill);
             }
         }
-        CityManager.Instance.AddConstruct(transform.position, gameObject);
     }
 
-    public void RemoveFromGrid()
+    public Dictionary<ItemData, int> GetBuildDict()
     {
-        throw new NotImplementedException();
+        buildCost.Clear();
+        for (int i = 0; i < buildingData.buildItemList.Count; i++)
+        {
+            buildCost.Add(buildingData.buildItemList[i], buildingData.buildItemAmountList[i]);
+        }
+        return buildCost;
     }
 }

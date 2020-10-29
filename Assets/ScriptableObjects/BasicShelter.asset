@@ -18,11 +18,15 @@ MonoBehaviour:
   maxStorage: 0
   storagePriority: 0
   buildBase: 0
-  produceItems: 0
   TileSizeX: 2
   TileSizeZ: 1
   interactionRadius: 2.4
-  buildingFloor: {fileID: 5325636299033438254, guid: 967217c29651a0346b5aa59533bce95f,
-    type: 3}
-  buildingMain: {fileID: 1126391869438470450, guid: 34ff4c6bd1324af4794fec038a3f0948,
-    type: 3}
+  ShowProduction: 1
+  produce: 0
+  product: {fileID: 0}
+  produceItems: []
+  showBuildList: 1
+  buildItem: {fileID: 0}
+  buildItemList:
+  - {fileID: 11400000, guid: a49adc1c9b40acc4b9ef1b6319b4cfd1, type: 2}
+  buildItemAmountList: 05000000

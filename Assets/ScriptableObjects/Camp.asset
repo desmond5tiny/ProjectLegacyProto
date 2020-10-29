@@ -18,7 +18,15 @@ MonoBehaviour:
   maxStorage: 20
   storagePriority: 1
   buildBase: 0
-  produceItems: 1
   TileSizeX: 3
   TileSizeZ: 3
   interactionRadius: 4
+  ShowProduction: 0
+  produce: 1
+  product: {fileID: 0}
+  possibleItems:
+  - {fileID: 0}
+  - {fileID: 0}
+  showBuildList: 1
+  buildItem: {fileID: 11400000, guid: bb0085b0b2f2a5f4c95bb9d3c36a701d, type: 2}
+  buildItemAmount: 6

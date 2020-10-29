@@ -6,19 +6,8 @@ using UnityEngine;
 
 public class UnitManager : MonoBehaviour
 {
-    #region Singleton
     public static UnitManager Instance { get; private set; }
     public int unitsToSpawn;
-
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else { Debug.LogError("more then once instance of UnitManager found!"); }
-    }
-    #endregion
 
     [SerializeField]
     private GameObject unitBase;
@@ -27,6 +16,13 @@ public class UnitManager : MonoBehaviour
 
     private InputManager inputManager;
     private Dictionary<int, GameObject> unitDict;
+
+    private void Awake()
+    {
+        if (Instance == null){ Instance = this; }
+        else { Debug.LogError("more then once instance of UnitManager found!"); }
+
+    }
 
     private void OnEnable()
     {
@@ -44,16 +40,15 @@ public class UnitManager : MonoBehaviour
     {
         inputManager = InputManager.Instance;
         unitDict = new Dictionary<int, GameObject>();
-
         StartSpawn(UnitSpawnPoint.position, unitsToSpawn);
     }
 
-    public void AddUnit(GameObject newUnit)
+    public void AddUnit(GameObject _newUnit)
     {
-        int id = newUnit.GetInstanceID();
+        int id = _newUnit.GetInstanceID();
         if (!(unitDict.ContainsKey(id)))
         {
-            unitDict.Add(id, newUnit);
+            unitDict.Add(id, _newUnit);
             PopulationChanged?.Invoke(unitDict.Count);
         }
     }
@@ -72,10 +67,10 @@ public class UnitManager : MonoBehaviour
         return unitDict[id];
     }
 
-    public void SpawnUnit(Vector3 target)
+    public void SpawnUnit(Vector3 _target)
     {
         GameObject newUnit = Instantiate(unitBase);
-        newUnit.transform.position = target;
+        newUnit.transform.position = _target;
         AddUnit(newUnit);
     }
 
@@ -84,7 +79,7 @@ public class UnitManager : MonoBehaviour
         for (int i = 0; i < amount; i++)
         {
             Vector2 randomPoint = UnityEngine.Random.insideUnitCircle * 2;
-            SpawnUnit(new Vector3(spawnPoint.x+ randomPoint.x, spawnPoint.y, spawnPoint.z + randomPoint.y));
+            SpawnUnit(new Vector3(spawnPoint.x + randomPoint.x, spawnPoint.y, spawnPoint.z + randomPoint.y));
         }
     }
 

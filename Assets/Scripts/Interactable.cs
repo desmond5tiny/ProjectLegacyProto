@@ -1,7 +1,5 @@
 ﻿using System;
 using UnityEngine;
-
-
 public class Interactable : MonoBehaviour
 {
     [HideInInspector]
@@ -11,8 +9,6 @@ public class Interactable : MonoBehaviour
     public string task =  "Task";
     public Action<GameObject> EndTask;
     
-
-
     public virtual void Inspect()
     {
         //override this method

@@ -7,12 +7,13 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshSurface))]
 public class Chunk : MonoBehaviour
 {
+    [SerializeField]
     private NavMeshSurface surface;
     private Point[,] pointArray = new Point[20,20];
 
-    void Start()
+    private void Awake()
     {
-        surface = GetComponent<NavMeshSurface>();
+        if (surface == null) { surface = GetComponent<NavMeshSurface>(); }
     }
 
     public void SetGridPointContent(Vector2 pos, Point.PointContent newContent)

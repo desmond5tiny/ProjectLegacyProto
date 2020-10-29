@@ -21,16 +21,24 @@ public class Path : MonoBehaviour , IStructure
 
     private List<GameObject> children = new List<GameObject>();
     public Dictionary<Vector2, GameObject> neighbours = new Dictionary<Vector2, GameObject>();
-    private float gridSize = 2.5f;
+    private float gridSize;
+    private NavMeshModifier navMod;
+
+    private Dictionary<ItemData, int> buildCost = new Dictionary<ItemData, int>();
+
 
     public enum PathShape { Single,Deadend,Corner,Straight,Split,Cross,CornerFill,SideFill,CenterFill}
     private PathShape myShape;
+    private void Awake()
+    {
+        gridSize = WorldManager.gridSize;
+
+        
+    }
 
     void Start()
     {
-        //AddToGrid();
-        gameObject.AddComponent<NavMeshModifier>().overrideArea = true;
-        gameObject.GetComponent<NavMeshModifier>().area = 3;
+        AddToGrid();
 
         childSingle = Instantiate(pathData.single,transform);
         children.Add(childSingle);
@@ -265,6 +273,18 @@ public class Path : MonoBehaviour , IStructure
 
     public void RemoveFromGrid()
     {
-        throw new System.NotImplementedException();
+        Chunk chunk = WorldManager.Instance.GetChunk(transform.position);
+        chunk.SetGridPointContent(new Vector2(transform.position.x, transform.position.z), Point.PointContent.Empty);
+        CityManager.Instance.RemoveConstruct(transform.position);
+    }
+
+    public Dictionary<ItemData, int> GetBuildDict()
+    {
+        buildCost.Clear();
+        for (int i = 0; i < pathData.buildItemList.Count; i++)
+        {
+            buildCost.Add(pathData.buildItemList[i], pathData.buildItemAmountList[i]);
+        }
+        return buildCost;
     }
 }

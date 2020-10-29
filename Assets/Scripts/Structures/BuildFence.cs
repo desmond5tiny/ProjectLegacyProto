@@ -10,14 +10,16 @@ public class BuildFence : Interactable , ITakeDamage, IStructure
     private GameObject meshRope;
     private GameObject meshGround;
 
-    //[HideInInspector]
+    [HideInInspector]
     public float currentHealth;
     private float maxHealth=2;
     private List<GameObject> children = new List<GameObject>();
     private Vector2 size;
 
-    [SerializeField]
+    //[SerializeField]
     GameObject construct;
+    GameObject constructPrefab;
+    ConstructionManager.ConstructType constructType;
 
     private void Awake()
     {
@@ -33,15 +35,16 @@ public class BuildFence : Interactable , ITakeDamage, IStructure
         meshGround = _meshGround;
     }
 
-    public void Initialize(Vector2 _area, float _gridSize, GameObject _construct, Chunk _chunk)
+    public void Initialize(Vector2 _area, float _gridSize, GameObject _constructPrefab, Chunk _chunk, ConstructionManager.ConstructType _constructType)
     {
         size = _area;
         AddToGrid();
         transform.gameObject.layer = 10;
-        construct = _construct;
+        constructPrefab = _constructPrefab;
+        constructType = _constructType;
         interactionRadius = ((size.x + size.y) / 2 * 1.5f) + 1.5f;
 
-        IStructure structure = _construct.GetComponent<IStructure>(); //get maxhealth of the building and set it as the goal to reach
+        IStructure structure = _constructPrefab.GetComponent<IStructure>(); //get maxhealth of the building and set it as the goal to reach
         maxHealth = structure.GetMaxHealth();
 
         SetSize(_gridSize);
@@ -111,14 +114,18 @@ public class BuildFence : Interactable , ITakeDamage, IStructure
         if (currentHealth >= maxHealth) { ConstructionCompleet(); }
     }
 
+    public void SpawnConstruct()
+    {
+        construct = Instantiate(constructPrefab);
+        construct.transform.position = transform.position;
+    }
+
     private void ConstructionCompleet()
     {
         RemoveFromGrid();
-        //play constructio complete anim/effect
-        construct.SetActive(true);
-        construct.transform.position = transform.position;
-        IStructure structure = construct.GetComponent<IStructure>();
-        structure.AddToGrid();
+        //play construction complete anim/effect
+        SpawnConstruct();
+        IStructure structure = constructPrefab.GetComponent<IStructure>();
         Destroy(gameObject);
     }
 
@@ -144,7 +151,11 @@ public class BuildFence : Interactable , ITakeDamage, IStructure
         return maxHealth;
     }
 
-    public void AddToGrid()
+    public void AddToGrid() => SetGridPoints(Point.PointContent.Building);
+
+    public void RemoveFromGrid() => SetGridPoints(Point.PointContent.Empty);
+
+    private void SetGridPoints(Point.PointContent _fill)
     {
         Vector3 pos = transform.position;
         float gridSize = WorldManager.gridSize;
@@ -159,29 +170,13 @@ public class BuildFence : Interactable , ITakeDamage, IStructure
             {
                 Vector3 pointPos = new Vector3(pos.x - ((Mathf.FloorToInt((size.x - 1) / 2) * gridSize) + offsetX) + (gridSize * i), pos.y,
                                                 pos.z - ((Mathf.FloorToInt((size.y - 1) / 2) * gridSize) + offsetZ) + (gridSize * j));
-                chunk.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), Point.PointContent.Building);
+                chunk.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), _fill);
             }
         }
-        //add to list of buildsites
     }
 
-    public void RemoveFromGrid()
+    public Dictionary<ItemData, int> GetBuildDict()
     {
-        Vector3 pos = transform.position;
-        float gridSize = WorldManager.gridSize;
-        Chunk chunk = WorldManager.Instance.GetChunk(transform.position);
-
-        float offsetX = ((size.x + 1) % 2) * (gridSize / 2);
-        float offsetZ = ((size.y + 1) % 2) * (gridSize / 2);
-
-        for (int i = 0; i < size.x; i++)
-        {
-            for (int j = 0; j < size.y; j++)
-            {
-                Vector3 pointPos = new Vector3(pos.x - ((Mathf.FloorToInt((size.x - 1) / 2) * gridSize) + offsetX) + (gridSize * i), pos.y,
-                                                pos.z - ((Mathf.FloorToInt((size.y - 1) / 2) * gridSize) + offsetZ) + (gridSize * j));
-                chunk.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), Point.PointContent.Empty);
-            }
-        }
+        throw new System.NotImplementedException();
     }
 }

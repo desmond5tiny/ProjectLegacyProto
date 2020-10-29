@@ -19,4 +19,14 @@ public class PathData : ScriptableObject
     public GameObject cornerFill;
     public GameObject sideFill;
     public GameObject centerFill;
+
+    [HideInInspector]
+    public bool showBuildList = false;
+    [HideInInspector]
+    public ItemData buildItem;
+    [HideInInspector]
+    public List<ItemData> buildItemList = new List<ItemData>();
+    [HideInInspector]
+    public List<int> buildItemAmountList = new List<int>();
+
 }
