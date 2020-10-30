@@ -104,8 +104,10 @@
     <Compile Include="Assets\Scripts\UI\BuildUI.cs" />
     <Compile Include="Assets\Scripts\UI\GlobalSelection.cs" />
     <Compile Include="Assets\Scripts\UI\InfoBar.cs" />
+    <Compile Include="Assets\Scripts\UI\QuitButton.cs" />
     <Compile Include="Assets\Scripts\UI\SelectionDictionary.cs" />
-    <Compile Include="Assets\Scripts\UIHoverTest.cs" />
+    <Compile Include="Assets\Scripts\UI\UIHoverTest.cs" />
+    <Compile Include="Assets\Scripts\UI\UIInteractableMenu.cs" />
     <Compile Include="Assets\Scripts\Unit.cs" />
     <Compile Include="Assets\Scripts\UnitStats.cs" />
     <Compile Include="Assets\Scripts\World.cs" />

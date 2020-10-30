@@ -27,14 +27,14 @@ public class UnitManager : MonoBehaviour
     private void OnEnable()
     {
         InputManager.OnRightMouseUp += MoveUnits;
-        InputManager.OnKeyT += TaskUnits;
+        InputManager.OnKeyT += SetGatherTask;
         InputManager.OnKeyB += UnitsBuild;
     }
     private void OnDisable()
     {
         InputManager.OnRightMouseUp -= MoveUnits;
-        InputManager.OnKeyT -= TaskUnits;
-        InputManager.OnKeyB -= TaskUnits;
+        InputManager.OnKeyT -= SetGatherTask;
+        InputManager.OnKeyB -= SetGatherTask;
     }
     void Start()
     {
@@ -85,11 +85,10 @@ public class UnitManager : MonoBehaviour
 
     public void MoveUnits()
     {
-        var hitResult = inputManager.RaycastGround();
-        if (hitResult != null && GlobalSelection.Instance.selectionDictionary.selectedDict != null)
+        var hitResult = inputManager.RaycastAll();
+        if (hitResult.transform.gameObject.layer == 8 && GlobalSelection.Instance.selectionDictionary.selectedDict != null)
         {
-            Vector3 target = hitResult.Value;
-            //Debug.Log("clickTarget: " + target);
+            Vector3 target = hitResult.point;
             int i = 0;
             foreach (KeyValuePair<int,GameObject> pair in GlobalSelection.Instance.selectionDictionary.selectedDict)
             {
@@ -102,7 +101,7 @@ public class UnitManager : MonoBehaviour
         }
     }
 
-    public void TaskUnits()
+    public void SetGatherTask()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;

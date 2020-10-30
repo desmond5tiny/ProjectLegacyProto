@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Boo.Lang;
+using System;
 using UnityEngine;
 public class Interactable : MonoBehaviour
 {

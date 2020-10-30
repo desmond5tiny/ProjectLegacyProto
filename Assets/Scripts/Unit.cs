@@ -65,6 +65,7 @@ public class Unit : MonoBehaviour
         stateMachine.SetState(idleState);
 
         //transitions
+        AddNewTransition(moveToPoint, idleState, Stuck());
         AddNewTransition(idleState, toResource, HasRTarget());
         AddNewTransition(idleState, moveToBuild, HasBuildTarget());
         AddNewTransition(toResource, harvestResource, ReachedResource());
@@ -88,6 +89,7 @@ public class Unit : MonoBehaviour
         void AddNewTransition(IState fromState, IState toState, Func<bool> condition) => stateMachine.AddTransition(fromState, toState, condition);
 
         //condition functions
+        Func<bool> Stuck() => () => moveToPoint.stuckTime > 1f;
         Func<bool> HasRTarget() => () => resourceTarget != null;
         Func<bool> HasStoreTarget() => () => storeTarget != null;
         Func<bool> HasBuildTarget() => () => buildTarget != null;

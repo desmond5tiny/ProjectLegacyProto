@@ -96,7 +96,7 @@ public class InputManager : MonoBehaviour
         {
             mouseRightDownPos = Input.mousePosition;
             var pos = RaycastAll();
-            if (pos != null) { OnRightMouseClick?.Invoke(); }
+            if (pos.point != null) { OnRightMouseClick?.Invoke(); }
         }
     }
 
@@ -154,14 +154,14 @@ public class InputManager : MonoBehaviour
         return null;
     }
     
-    public Vector3 RaycastAll()
+    public RaycastHit RaycastAll()
     {
         RaycastHit hit;
         Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-        Physics.Raycast(ray, out hit, 5000.0f, groundLayer);
+        Physics.Raycast(ray, out hit, 5000.0f);
 
         Vector3 hitPoint = hit.point;
-        return hitPoint;
+        return hit;
     }
 
 
