@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -10,13 +9,14 @@ public class UIInteractableMenu : MonoBehaviour
     public Transform taskMenu;
     //public Transform taskPanel;
     //public Button roundButton;
-    public Interactable interactable;
+    //public Interactable interactable;
 
     private InputManager inputManager;
     private UnitManager unitManager;
     private bool menuActive = false;
+    private bool setInactive = false;
 
-    private void Awake() => DisableMenu();
+    private void Awake() => taskMenu.gameObject.SetActive(false);
     private void OnMouseEnter()
     {
         InputManager.OnRightMouseUp += EnableMenu;
@@ -30,13 +30,17 @@ public class UIInteractableMenu : MonoBehaviour
 
     private void Update()
     {
-        if (menuActive)
+        if (EventSystem.current.IsPointerOverGameObject()) 
         {
-            //look to camera
+            if (setInactive) 
+            { 
+                menuActive = true; 
+                StopCoroutine("DisableMenu"); 
+                setInactive = false;
+            }
+            return; 
         }
-
-        if (EventSystem.current.IsPointerOverGameObject()) { return; }
-        if (!menuActive) { DisableMenu(); }
+        if (!menuActive && !setInactive) { StartCoroutine("DisableMenu"); setInactive = true; }
     }
 
     public void SetTaskButtons() //dynamically fill the taskpanel with buttons
@@ -50,13 +54,23 @@ public class UIInteractableMenu : MonoBehaviour
     public void EnableMenu()
     {
         taskMenu.gameObject.SetActive(true);
+
+        //set rotation to face camera
+        Vector3 direction = (taskMenu.transform.position - Camera.main.transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, direction.y, direction.z));
+        taskMenu.transform.rotation = lookRotation;
+
+        Vector3 mouseClickPos = inputManager.RaycastAll().point;
+        taskMenu.transform.position = new Vector3(transform.position.x, mouseClickPos.y + 2f, transform.position.z);
+
         menuActive = true;
     }
 
-    public void DisableMenu()
+    IEnumerator DisableMenu()
     {
+        yield return new WaitForSeconds(.12f);
         taskMenu.gameObject.SetActive(false);
-        menuActive = false;
+        StopCoroutine("DisableMenu");
     }
 
     private void OnMouseExit()

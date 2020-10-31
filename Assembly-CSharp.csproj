@@ -100,6 +100,9 @@
     <Compile Include="Assets\Scripts\Structures\Building.cs" />
     <Compile Include="Assets\Scripts\Structures\IStructure.cs" />
     <Compile Include="Assets\Scripts\Structures\Path.cs" />
+    <Compile Include="Assets\Scripts\Tasks\GatherTask.cs" />
+    <Compile Include="Assets\Scripts\Tasks\ITask.cs" />
+    <Compile Include="Assets\Scripts\Tasks\InspectTask.cs" />
     <Compile Include="Assets\Scripts\UI\BuildButton.cs" />
     <Compile Include="Assets\Scripts\UI\BuildUI.cs" />
     <Compile Include="Assets\Scripts\UI\GlobalSelection.cs" />

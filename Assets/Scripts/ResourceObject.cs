@@ -34,8 +34,10 @@ public class ResourceObject : Interactable, ITakeDamage
         interactionRadius = resourceData.interactRadius;
         if (interactionTransform == null) { interactionTransform = transform; }
 
-        //gameObject.AddComponent<UIHoverTest>().myString = "Tree";
-        //gameObject.GetComponent
+        BoxCollider myCollider = transform.gameObject.AddComponent<BoxCollider>();
+        myCollider.size = resourceTop.GetComponent<BoxCollider>().size;
+        myCollider.center = resourceTop.GetComponent<BoxCollider>().center;
+        resourceTop.GetComponent<BoxCollider>().enabled = false;
     }
     private void OnEnable() => InputManager.OnKeyN += KillRescource;
     private void OnDisable() => InputManager.OnKeyN -= KillRescource;
@@ -49,13 +51,14 @@ public class ResourceObject : Interactable, ITakeDamage
             currentHealth = 0;
             Collapse();
             if (currentResourceAmount > 0) { DropResource(currentResourceAmount); }
-            Destroy(this, 5);
+            Destroy(transform.gameObject, 5);
         }
     }
 
     public void Collapse()
     {
         resourceTop.SetActive(false);
+        Destroy(transform.GetComponent<BoxCollider>());
         //Debug.Log("Resource Empty");
     }
 

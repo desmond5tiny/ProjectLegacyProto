@@ -33,5 +33,4 @@ public class SelectionDictionary : MonoBehaviour
         }*/
         selectedDict.Clear();
     }
-
 }
