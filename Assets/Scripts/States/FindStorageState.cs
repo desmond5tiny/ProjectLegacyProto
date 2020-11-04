@@ -2,10 +2,10 @@
 
 public class FindStorageState : IState
 {
-    private Unit unit;
+    private PlayerUnit unit;
     private ItemData item;
 
-    public FindStorageState(Unit _unit)
+    public FindStorageState(PlayerUnit _unit)
     {
         unit = _unit;
     }

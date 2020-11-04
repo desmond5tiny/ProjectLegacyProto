@@ -49,9 +49,8 @@ public class ResourceObject : Interactable, ITakeDamage
         {
             isEmpty = true;
             currentHealth = 0;
-            Collapse();
             if (currentResourceAmount > 0) { DropResource(currentResourceAmount); }
-            Destroy(transform.gameObject, 5);
+            Collapse();
         }
     }
 
@@ -59,7 +58,7 @@ public class ResourceObject : Interactable, ITakeDamage
     {
         resourceTop.SetActive(false);
         Destroy(transform.GetComponent<BoxCollider>());
-        //Debug.Log("Resource Empty");
+        DestroyObject();
     }
 
     public bool GetRescource(float damage, out int woodDrop) //change to out a list of drop items
@@ -128,5 +127,17 @@ public class ResourceObject : Interactable, ITakeDamage
     public void KillRescource()
     {
         TakeDamage(currentHealth);
+    }
+
+    public void DestroyObject()
+    {
+        //remove from grid
+        WorldManager.GetMap().SetGridPointContent(new Vector2(transform.position.x, transform.position.z), Point.PointContent.Empty);
+        Destroy(gameObject, 2);
+    }
+
+    public float GetCurrentHealth()
+    {
+        return currentHealth;
     }
 }

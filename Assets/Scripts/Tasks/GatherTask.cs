@@ -11,7 +11,7 @@ public class GatherTask : MonoBehaviour, ITask
         foreach (KeyValuePair<int, GameObject> pair in GlobalSelection.Instance.selectionDictionary.selectedDict)
         {
             GameObject unit = GlobalSelection.Instance.selectionDictionary.selectedDict.ElementAt(i).Value;
-            unit.GetComponent<Unit>().SetResourceTarget(transform.GetComponent<ResourceObject>());
+            unit.GetComponent<PlayerUnit>().SetResourceTarget(transform.GetComponent<ResourceObject>());
             i++;
         }
     }

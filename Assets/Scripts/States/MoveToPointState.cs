@@ -3,12 +3,12 @@ using UnityEngine.AI;
 
 public class MoveToPointState : IState
 {
-    private readonly Unit unit;
+    private readonly PlayerUnit unit;
     private NavMeshAgent agent;
     private Vector3 lastPos = Vector3.zero;
     public float stuckTime;
 
-    public MoveToPointState(Unit _unit, NavMeshAgent _agent)
+    public MoveToPointState(PlayerUnit _unit, NavMeshAgent _agent)
     {
         unit = _unit;
         agent = _agent;

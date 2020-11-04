@@ -4,12 +4,22 @@ using UnityEngine;
 
 public class UnitStats
 {
-    //attributes
+    //Base stats
+    public float maxHealth;
+    public float currentHealth;
+    public int currentLevel;
+    public float experience;
+    public int age;
+    public float gender;
+
+    //Personalty
+
+    //Attributes
     public float attIntelligence;
     public float attSpeed;
     public float attStrength;
 
-    //skills
+    //Skills
     public float skillBuild;
     public float skillGather;
     public float skillDiscover;

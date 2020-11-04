@@ -1,8 +1,8 @@
 ﻿public class IdleState : IState
 {
-    private readonly Unit unit;
+    private readonly PlayerUnit unit;
 
-    public IdleState(Unit _unit)
+    public IdleState(PlayerUnit _unit)
     {
         unit = _unit;
     }

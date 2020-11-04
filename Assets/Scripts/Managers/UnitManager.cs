@@ -27,14 +27,10 @@ public class UnitManager : MonoBehaviour
     private void OnEnable()
     {
         InputManager.OnRightMouseUp += MoveUnits;
-        InputManager.OnKeyT += SetGatherTask;
-        InputManager.OnKeyB += UnitsBuild;
     }
     private void OnDisable()
     {
         InputManager.OnRightMouseUp -= MoveUnits;
-        InputManager.OnKeyT -= SetGatherTask;
-        InputManager.OnKeyB -= SetGatherTask;
     }
     void Start()
     {
@@ -79,7 +75,8 @@ public class UnitManager : MonoBehaviour
         for (int i = 0; i < amount; i++)
         {
             Vector2 randomPoint = UnityEngine.Random.insideUnitCircle * 2;
-            SpawnUnit(new Vector3(spawnPoint.x + randomPoint.x, spawnPoint.y, spawnPoint.z + randomPoint.y));
+            //SpawnUnit(new Vector3(spawnPoint.x + randomPoint.x, spawnPoint.y, spawnPoint.z + randomPoint.y));
+            SpawnUnit(new Vector3(spawnPoint.x, spawnPoint.y, spawnPoint.z));
         }
     }
 
@@ -93,7 +90,7 @@ public class UnitManager : MonoBehaviour
             foreach (KeyValuePair<int,GameObject> pair in GlobalSelection.Instance.selectionDictionary.selectedDict)
             {
                 GameObject unit = GlobalSelection.Instance.selectionDictionary.selectedDict.ElementAt(i).Value;
-                Unit unitMove = unit.GetComponent<Unit>();
+                PlayerUnit unitMove = unit.GetComponent<PlayerUnit>();
 
                 unitMove.MoveTo(target, 0.4f);
                 i++;
@@ -101,7 +98,7 @@ public class UnitManager : MonoBehaviour
         }
     }
 
-    public void SetGatherTask()
+    public void SetGatherTask() //depricated
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -115,14 +112,14 @@ public class UnitManager : MonoBehaviour
                 foreach (KeyValuePair<int, GameObject> pair in GlobalSelection.Instance.selectionDictionary.selectedDict)
                 {
                     GameObject unit = GlobalSelection.Instance.selectionDictionary.selectedDict.ElementAt(i).Value;
-                    unit.GetComponent<Unit>().SetResourceTarget(ParentObject.GetComponent<ResourceObject>());
+                    unit.GetComponent<PlayerUnit>().SetResourceTarget(ParentObject.GetComponent<ResourceObject>());
                     i++;
                 }
             }
         }
     }
 
-    public void UnitsBuild()
+    public void UnitsBuild() //depricated
     {
         //Debug.Log("Task Build");
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -135,7 +132,7 @@ public class UnitManager : MonoBehaviour
                 foreach (KeyValuePair<int, GameObject> pair in GlobalSelection.Instance.selectionDictionary.selectedDict)
                 {
                     GameObject unit = GlobalSelection.Instance.selectionDictionary.selectedDict.ElementAt(i).Value;
-                    unit.GetComponent<Unit>().SetBuildTarget(hit.transform.GetComponent<BuildFence>());
+                    unit.GetComponent<PlayerUnit>().SetBuildTarget(hit.transform.GetComponent<BuildFence>());
                     i++;
                 }
             }

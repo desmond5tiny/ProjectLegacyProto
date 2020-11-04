@@ -22,13 +22,10 @@ public class ConstructionManager : MonoBehaviour
     [SerializeField]
     private Camera mainCam;
 
-    public GameObject buildFenceCorner;
-    public GameObject buildFenceRope;
-    public GameObject buildFenceGround;
+    public GameObject buildFence;
 
-    private WorldManager worldManager;
     private InputManager inputManager;
-    private Chunk currentChunk;
+    private Map worldMap;
     private LayerMask groundLayer;
     private float gridSize = 2.5f;
 
@@ -57,11 +54,10 @@ public class ConstructionManager : MonoBehaviour
 
     private void Start()
     {
-        worldManager = WorldManager.Instance;
         inputManager = InputManager.Instance;
         groundLayer = inputManager.groundLayer;
         gridSize = WorldManager.gridSize;
-        currentChunk = worldManager.sceneChunk;
+        worldMap = WorldManager.GetMap();
     }
 
     private void Update()
@@ -75,12 +71,14 @@ public class ConstructionManager : MonoBehaviour
             RaycastHit hit;
             Physics.Raycast(ray, out hit, 50000.0f, groundLayer);
             currentPos = new Vector2((Mathf.RoundToInt((hit.point.x - xOffset)/gridSize) * gridSize)+xOffset, (Mathf.RoundToInt((hit.point.z-zOffset)/gridSize) * gridSize)+zOffset);
-            Vector2 hitChunkPos = new Vector2(Mathf.FloorToInt(currentPos.x / worldManager.chunkSize), Mathf.FloorToInt(currentPos.y / worldManager.chunkSize)) * worldManager.chunkSize;
 
+            //if(currentPos.x < 0 || currentPos.y< 0 || currentPos.x > worldMap.mapSize.x * gridSize || currentPos.y > worldMap.mapSize.y * gridSize) { return; } //return of mouse is out of map bounds
 
-            if (currentPos != prevPos)
+            if (currentPos != prevPos) //only executes when the mouse goes to a new gridpoint
             {
-                buildPos = new Vector3(currentPos.x, currentChunk.GetPoint(currentPos).buildHeight, currentPos.y);
+                if(previewConstruct == null) { SetConstructPrefab(); }
+
+                buildPos = new Vector3(currentPos.x, worldMap.GetPoint(currentPos).buildHeight, currentPos.y);
 
                 previewConstruct.transform.position = buildPos;
 
@@ -90,21 +88,13 @@ public class ConstructionManager : MonoBehaviour
                     for (int y = 0; y < buildArea.y; y++)
                     {
                         Vector3 pointPos = new Vector3(buildPos.x - (xOffset * (buildArea.x - 1)) + (gridSize * x), buildPos.y, buildPos.z - (zOffset * (buildArea.y - 1)) + (gridSize * y));
-                        if(!currentChunk.GetPoint(new Vector2(pointPos.x, pointPos.z)).buildable)
+                        if(!worldMap.GetPoint(new Vector2(pointPos.x, pointPos.z)).buildable)
                         {
                             canBuild = false;
                         }
                     }
                 }
-
-                //Debug.Log("can build: " + canBuild);
                 DragPlace(inputManager.GetDragMode());
-
-                if (new Vector2(currentChunk.transform.position.x, currentChunk.transform.position.z) != hitChunkPos)
-                {
-                    currentChunk = worldManager.GetChunk(hit.transform.position);
-                }
-
                 prevPos = currentPos;
             }
         }
@@ -121,11 +111,15 @@ public class ConstructionManager : MonoBehaviour
         }
     }
 
-    public void SetConstructPrefab( ConstructType _strucType, GameObject _constructPrefab)
+    public void StartPreview(ConstructType _strucType, GameObject _constructPrefab)
     {
         constructPrefab = _constructPrefab;
         currentType = _strucType;
+        preview = true;
+    }
 
+    public void SetConstructPrefab()
+    {
         xOffset = 0;
         zOffset = 0;
         buildArea = new Vector2(1, 1);
@@ -144,8 +138,6 @@ public class ConstructionManager : MonoBehaviour
         previewConstruct.name = "PreviewObject";
         previewConstruct.SetActive(true);
         SetPreviewMat(previewConstruct);
-
-        preview = true;
     }
 
     public void StopPreview()
@@ -161,17 +153,15 @@ public class ConstructionManager : MonoBehaviour
     {
         if (canBuild && mode == InputManager.InputMode.BuildMode)
         {
-            GameObject buildSite = new GameObject(name="buildSite");
+            GameObject buildSite = Instantiate(buildFence);
             buildSite.transform.position = buildPos;
-            buildSite.AddComponent<BuildFence>().SetMeshes( buildFenceCorner, buildFenceRope, buildFenceGround );
-            buildSite.GetComponent<BuildFence>().Initialize( buildArea, gridSize, constructPrefab, currentChunk, currentType);
+            buildSite.GetComponent<BuildFence>().Initialize( buildArea, gridSize, constructPrefab, worldMap, currentType);
             buildSite.SetActive(true);
         }
     }
 
     private void SetPreviewMat(GameObject parent)
     {
-
         if (parent.transform.childCount != 0)
         {
             for (int i = 0; i < parent.transform.childCount; i++)

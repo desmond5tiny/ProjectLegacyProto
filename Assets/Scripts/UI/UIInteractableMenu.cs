@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class UIInteractableMenu : MonoBehaviour
 {
     public Transform taskMenu;
+    public Button repairButton;
     //public Transform taskPanel;
     //public Button roundButton;
     //public Interactable interactable;
@@ -16,7 +17,12 @@ public class UIInteractableMenu : MonoBehaviour
     private bool menuActive = false;
     private bool setInactive = false;
 
-    private void Awake() => taskMenu.gameObject.SetActive(false);
+    private void Awake()
+    {
+        if (repairButton != null) { repairButton.gameObject.SetActive(false); }
+        taskMenu.gameObject.SetActive(false);
+    }
+
     private void OnMouseEnter()
     {
         InputManager.OnRightMouseUp += EnableMenu;
@@ -32,6 +38,11 @@ public class UIInteractableMenu : MonoBehaviour
     {
         if (EventSystem.current.IsPointerOverGameObject()) 
         {
+            if (repairButton != null)
+            {
+                if (!repairButton.IsActive() && transform.GetComponent<RepairTask>().structureDamaged()) { repairButton.gameObject.SetActive(true); }
+                else if (repairButton.IsActive() && !transform.GetComponent<RepairTask>().structureDamaged()) { repairButton.gameObject.SetActive(false); }
+            }
             if (setInactive) 
             { 
                 menuActive = true; 
@@ -76,6 +87,11 @@ public class UIInteractableMenu : MonoBehaviour
     private void OnMouseExit()
     {
         menuActive = false;
+        InputManager.OnRightMouseUp -= EnableMenu;
+    }
+
+    private void OnDisable()
+    {
         InputManager.OnRightMouseUp -= EnableMenu;
     }
 }

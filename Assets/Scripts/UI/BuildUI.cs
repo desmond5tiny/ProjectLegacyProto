@@ -34,9 +34,8 @@ public class BuildUI : MonoBehaviour
         {
             if (checkAvailableResources(_buildCost))
             {
-                //inputManager.buildMode = true;
                 inputManager.SetInputMode(InputManager.InputMode.BuildMode);
-                constructionManager.SetConstructPrefab(_constructType, _constructPrefab);
+                constructionManager.StartPreview(_constructType, _constructPrefab);
             }
         }
     }

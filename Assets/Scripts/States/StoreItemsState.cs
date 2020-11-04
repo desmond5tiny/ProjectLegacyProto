@@ -1,8 +1,8 @@
 ﻿public class StoreItemsState : IState
 {
-    private readonly Unit unit;
+    private readonly PlayerUnit unit;
 
-    public StoreItemsState(Unit _unit)
+    public StoreItemsState(PlayerUnit _unit)
     {
         unit = _unit;
     }

@@ -150,7 +150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AgentTypeID: 0
   m_CollectObjects: 1
-  m_Size: {x: 50, y: 15, z: 50}
+  m_Size: {x: 51, y: 15, z: 51}
   m_Center: {x: 23.75, y: 5, z: 23.75}
   m_LayerMask:
     serializedVersion: 2
@@ -177,6 +177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccf959eb270681447bdcfd81f81751fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  surface: {fileID: 4401572028678145678}
 --- !u!1 &5491977171785847783
 GameObject:
   m_ObjectHideFlags: 0

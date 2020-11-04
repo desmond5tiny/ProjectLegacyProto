@@ -2,10 +2,10 @@
 
 public class MoveToStorageState : IState
 {
-    private readonly Unit unit;
+    private readonly PlayerUnit unit;
     private NavMeshAgent agent;
 
-    public MoveToStorageState(Unit _unit, NavMeshAgent _agent)
+    public MoveToStorageState(PlayerUnit _unit, NavMeshAgent _agent)
     {
         unit = _unit;
         agent = _agent;

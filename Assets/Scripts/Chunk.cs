@@ -7,12 +7,14 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshSurface))]
 public class Chunk : MonoBehaviour
 {
+    public Vector2Int chunkSize = Vector2Int.zero;
     [SerializeField]
     private NavMeshSurface surface;
-    private Point[,] pointArray = new Point[20,20];
+    private Point[,] pointArray; // = new Point[20,20];
 
     private void Awake()
     {
+        pointArray = new Point[chunkSize.x, chunkSize.y];
         if (surface == null) { surface = GetComponent<NavMeshSurface>(); }
     }
 

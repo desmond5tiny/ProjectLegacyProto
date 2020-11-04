@@ -4,12 +4,12 @@ using UnityEngine.AI;
 
 public class FindResourceState : IState
 {
-    private Unit unit;
+    private PlayerUnit unit;
     private NavMeshAgent agent;
     private Vector3 searchPos;
     private List<ResourceObject> nearByResources = new List<ResourceObject>();
 
-    public FindResourceState(Unit _unit, NavMeshAgent _agent)
+    public FindResourceState(PlayerUnit _unit, NavMeshAgent _agent)
     {
         unit = _unit;
         agent = _agent;

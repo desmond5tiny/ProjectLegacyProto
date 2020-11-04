@@ -69,6 +69,7 @@
     <Compile Include="Assets\ScriptableObjects\Scripts\ResourceObjectData.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Chunk.cs" />
+    <Compile Include="Assets\Scripts\GridGenerator.cs" />
     <Compile Include="Assets\Scripts\IResource.cs" />
     <Compile Include="Assets\Scripts\ITakeDamage.cs" />
     <Compile Include="Assets\Scripts\Interactable.cs" />
@@ -80,6 +81,8 @@
     <Compile Include="Assets\Scripts\Managers\UIManager.cs" />
     <Compile Include="Assets\Scripts\Managers\UnitManager.cs" />
     <Compile Include="Assets\Scripts\Managers\WorldManager.cs" />
+    <Compile Include="Assets\Scripts\Map.cs" />
+    <Compile Include="Assets\Scripts\PlayerUnit.cs" />
     <Compile Include="Assets\Scripts\Point.cs" />
     <Compile Include="Assets\Scripts\ResourceObject.cs" />
     <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
@@ -100,9 +103,14 @@
     <Compile Include="Assets\Scripts\Structures\Building.cs" />
     <Compile Include="Assets\Scripts\Structures\IStructure.cs" />
     <Compile Include="Assets\Scripts\Structures\Path.cs" />
+    <Compile Include="Assets\Scripts\Tasks\BuildTask.cs" />
     <Compile Include="Assets\Scripts\Tasks\GatherTask.cs" />
     <Compile Include="Assets\Scripts\Tasks\ITask.cs" />
     <Compile Include="Assets\Scripts\Tasks\InspectTask.cs" />
+    <Compile Include="Assets\Scripts\Tasks\MoveInTask.cs" />
+    <Compile Include="Assets\Scripts\Tasks\ProduceTask.cs" />
+    <Compile Include="Assets\Scripts\Tasks\RepairTask.cs" />
+    <Compile Include="Assets\Scripts\Tile.cs" />
     <Compile Include="Assets\Scripts\UI\BuildButton.cs" />
     <Compile Include="Assets\Scripts\UI\BuildUI.cs" />
     <Compile Include="Assets\Scripts\UI\GlobalSelection.cs" />
@@ -111,7 +119,6 @@
     <Compile Include="Assets\Scripts\UI\SelectionDictionary.cs" />
     <Compile Include="Assets\Scripts\UI\UIHoverTest.cs" />
     <Compile Include="Assets\Scripts\UI\UIInteractableMenu.cs" />
-    <Compile Include="Assets\Scripts\Unit.cs" />
     <Compile Include="Assets\Scripts\UnitStats.cs" />
     <Compile Include="Assets\Scripts\World.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />

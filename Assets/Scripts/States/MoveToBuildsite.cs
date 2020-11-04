@@ -5,10 +5,10 @@ using UnityEngine.AI;
 
 public class MoveToBuildsite : IState
 {
-    private Unit unit;
+    private PlayerUnit unit;
     private NavMeshAgent agent;
 
-    public MoveToBuildsite(Unit _unit, NavMeshAgent _agent)
+    public MoveToBuildsite(PlayerUnit _unit, NavMeshAgent _agent)
     {
         unit = _unit;
         agent = _agent;

@@ -5,10 +5,10 @@ using UnityEngine.AI;
 
 public class MoveToResourceState : IState
 {
-    private readonly Unit unit;
+    private readonly PlayerUnit unit;
     private NavMeshAgent agent;
 
-    public MoveToResourceState(Unit _unit, NavMeshAgent _agent)
+    public MoveToResourceState(PlayerUnit _unit, NavMeshAgent _agent)
     {
         unit = _unit;
         agent = _agent;

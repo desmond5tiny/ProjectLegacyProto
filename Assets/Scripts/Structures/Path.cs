@@ -266,15 +266,15 @@ public class Path : MonoBehaviour , IStructure
 
     public void AddToGrid()
     {
-        Chunk chunk = WorldManager.Instance.GetChunk(transform.position);
-        chunk.SetGridPointContent(new Vector2(transform.position.x, transform.position.z), Point.PointContent.Path);
+        Map worldMap = WorldManager.GetMap();
+        worldMap.SetGridPointContent(new Vector2(transform.position.x, transform.position.z), Point.PointContent.Path);
         CityManager.Instance.AddConstruct(transform.position, gameObject);
     }
 
     public void RemoveFromGrid()
     {
-        Chunk chunk = WorldManager.Instance.GetChunk(transform.position);
-        chunk.SetGridPointContent(new Vector2(transform.position.x, transform.position.z), Point.PointContent.Empty);
+        Map worldMap = WorldManager.GetMap();
+        worldMap.SetGridPointContent(new Vector2(transform.position.x, transform.position.z), Point.PointContent.Empty);
         CityManager.Instance.RemoveConstruct(transform.position);
     }
 

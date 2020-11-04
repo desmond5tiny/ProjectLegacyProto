@@ -4,15 +4,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [SelectionBase]
-public class Building : Interactable, IStructure
+public class Building : Interactable, IStructure, ITakeDamage
 {
     public BuildingData buildingData;
 
     private GameObject buildingFloor;
     private GameObject buildingMain;
     [HideInInspector]
-    public int currentHealth;
+    public float currentHealth;
+    public int occupancy;
     public Inventory storage;
+
+    public List<PlayerUnit> occupents = new List<PlayerUnit>();
 
     public static Action<ItemData,int> ItemStored;
     public static Action<ItemData, int> ItemTaken;
@@ -21,10 +24,10 @@ public class Building : Interactable, IStructure
 
     private void Awake()
     {
+        occupancy = buildingData.capacity;
         storage = new Inventory(buildingData.maxStorage);
         interactionRadius = buildingData.interactionRadius;
         if (interactionTransform == null) { interactionTransform = transform; }
-        
     }
 
     void Start()
@@ -33,11 +36,21 @@ public class Building : Interactable, IStructure
         AddToGrid();
     }
 
-    public void SetInhabitant(Unit newHabitant)
+    public void AddInhabitant(PlayerUnit _unit)
     {
-        //add unit as living here
+        if (occupancy > 0)
+        {
+            occupents.Add(_unit);
+            occupancy--;
+        }
     }
     
+    public void RemoveInhabitant(PlayerUnit _unit)
+    {
+        occupents.Remove(_unit);
+        occupancy++;
+    }
+
     public int GetStorageSpaceLeft()
     {
         return (buildingData.maxStorage - storage.container.Count);
@@ -50,7 +63,7 @@ public class Building : Interactable, IStructure
         {
             _result = storage.AddItem(_item, _amount);
             ItemStored?.Invoke(_item, _amount - _result);
-            Debug.Log("Add "+ _item + ": " + (_amount-_result));
+            //Debug.Log("Add "+ _item + ": " + (_amount-_result));
             return true;
         }
         else { return false; }
@@ -96,8 +109,9 @@ public class Building : Interactable, IStructure
     private void SetGridPoints(Point.PointContent _fill)
     {
         Vector3 pos = transform.position;
+        Debug.Log(pos);
         float gridSize = WorldManager.gridSize;
-        Chunk chunk = WorldManager.Instance.GetChunk(transform.position);
+        Map worldMap = WorldManager.GetMap();
 
         float offsetX = ((buildingData.TileSizeX + 1) % 2) * (gridSize / 2);
         float offsetZ = ((buildingData.TileSizeZ + 1) % 2) * (gridSize / 2);
@@ -108,7 +122,7 @@ public class Building : Interactable, IStructure
             {
                 Vector3 pointPos = new Vector3(pos.x - ((Mathf.FloorToInt((buildingData.TileSizeX - 1) / 2) * gridSize) + offsetX) + (gridSize * i), pos.y,
                                                 pos.z - ((Mathf.FloorToInt((buildingData.TileSizeZ - 1) / 2) * gridSize) + offsetZ) + (gridSize * j));
-                chunk.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), _fill);
+                worldMap.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), _fill);
             }
         }
     }
@@ -121,5 +135,23 @@ public class Building : Interactable, IStructure
             buildCost.Add(buildingData.buildItemList[i], buildingData.buildItemAmountList[i]);
         }
         return buildCost;
+    }
+
+    public void TakeDamage(float dam)
+    {
+        currentHealth -= dam;
+        if (currentHealth <= 0) { DestroyObject(); }
+    }
+
+    public float GetCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    public void DestroyObject()
+    {
+        //play destroyed anim
+        RemoveFromGrid();
+        Destroy(gameObject);
     }
 }

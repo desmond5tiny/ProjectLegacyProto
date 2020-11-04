@@ -7,7 +7,6 @@ public class Interactable : MonoBehaviour
     public float interactionRadius = 0;
     public Transform interactionTransform;
 
-    public string task =  "Task";
     public Action<GameObject> EndTask;
     
     public virtual void Inspect()
@@ -19,6 +18,6 @@ public class Interactable : MonoBehaviour
     public virtual string UnitInteract()
     {
         //Debug.Log("Interact with: " + transform.name);
-        return task;
+        return "interact with: " + transform.name;
     }
 }

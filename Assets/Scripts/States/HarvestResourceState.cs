@@ -2,12 +2,12 @@
 
 public class HarvestResourceState : IState
 {
-    private Unit unit;
+    private PlayerUnit unit;
     private float harvestSpeed =1; //set to _harvestSpeed
 
     private float nextHarvest;
 
-    public HarvestResourceState(Unit _unit) //add _harvestSpeed based on unit skills&attributes
+    public HarvestResourceState(PlayerUnit _unit) //add _harvestSpeed based on unit skills&attributes
     {
         unit = _unit;
     }

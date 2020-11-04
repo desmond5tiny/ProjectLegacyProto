@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class BuildState : IState
 {
-    private Unit unit;
+    private PlayerUnit unit;
     private float buildSpeed;
 
     private float nextBuild;
 
-    public BuildState(Unit _unit, float _buildSkill)
+    public BuildState(PlayerUnit _unit, float _buildSkill)
     {
         unit = _unit;
         buildSpeed = 1 - (_buildSkill / 10);

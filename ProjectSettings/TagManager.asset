@@ -8,6 +8,7 @@ TagManager:
   - Building
   - Item
   - Tree
+  - Tile
   layers:
   - Default
   - TransparentFX

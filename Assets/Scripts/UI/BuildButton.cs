@@ -41,12 +41,12 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void Unlock() => button.interactable = true;
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public void OnPointerEnter(PointerEventData eventData) //shows the cost of buildiing
     {
         if (!isLocked) { costPanel.gameObject.SetActive(true); }
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public void OnPointerExit(PointerEventData eventData) //hides the cost of buildiing
     {
         costPanel.gameObject.SetActive(false);
     }

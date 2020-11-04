@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using System.Linq;
 
 [CustomEditor(typeof(BuildingData))]
 public class BuildingDataEditor : Editor
@@ -28,6 +27,8 @@ public class BuildingDataEditor : Editor
                     {
                         itemList.RemoveAt(itemList.Count - 1);
                         itemAmountList.RemoveAt(itemAmountList.Count - 1);
+                        buildingData.buildItemList = itemList;
+                        buildingData.buildItemAmountList = itemAmountList;
                     }
                 }
                 EditorGUILayout.LabelField(itemList.Count.ToString(),GUILayout.MaxWidth(30));
@@ -35,7 +36,8 @@ public class BuildingDataEditor : Editor
                 {
                     itemList.Add(buildingData.buildItem);
                     itemAmountList.Add(new int());
-                    //buildingData.UpdateDictionary();
+                    buildingData.buildItemList = itemList;
+                    buildingData.buildItemAmountList = itemAmountList;
                 }
             EditorGUILayout.EndHorizontal();
 

@@ -1,14 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 [SelectionBase]
 public class BuildFence : Interactable , ITakeDamage, IStructure
 {
-    private GameObject meshCorner;
-    private GameObject meshRope;
-    private GameObject meshGround;
+    public GameObject meshCorner;
+    public GameObject meshRope;
+    public GameObject meshGround;
 
     [HideInInspector]
     public float currentHealth;
@@ -24,18 +23,10 @@ public class BuildFence : Interactable , ITakeDamage, IStructure
     private void Awake()
     {
         interactionTransform = transform;
-        currentHealth = 1;
-        task = "Build";
+        currentHealth = 5;
     }
 
-    public void SetMeshes(GameObject _meshCorner, GameObject _meshRope, GameObject _meshGround)
-    {
-        meshCorner = _meshCorner;
-        meshRope = _meshRope;
-        meshGround = _meshGround;
-    }
-
-    public void Initialize(Vector2 _area, float _gridSize, GameObject _constructPrefab, Chunk _chunk, ConstructionManager.ConstructType _constructType)
+    public void Initialize(Vector2 _area, float _gridSize, GameObject _constructPrefab, Map _worldMap, ConstructionManager.ConstructType _constructType)
     {
         size = _area;
         AddToGrid();
@@ -50,11 +41,7 @@ public class BuildFence : Interactable , ITakeDamage, IStructure
         SetSize(_gridSize);
         transform.gameObject.AddComponent<BoxCollider>().size = new Vector3(size.x * _gridSize, 1.5f, size.y * _gridSize);
         transform.gameObject.GetComponent<BoxCollider>().center = new Vector3(0, 0.75f, 0);
-        transform.gameObject.AddComponent<NavMeshModifier>().overrideArea = true;
-        transform.gameObject.GetComponent<NavMeshModifier>().area = 1;
-
-        //add to chunkgrid
-        WorldManager.Instance.GetChunk(transform.position).NavMeshUpdate();
+        _worldMap.NavMeshUpdate();
     }
 
     public void SetSize( float _gridSize)
@@ -114,42 +101,22 @@ public class BuildFence : Interactable , ITakeDamage, IStructure
         if (currentHealth >= maxHealth) { ConstructionCompleet(); }
     }
 
+    private void ConstructionCompleet()
+    {
+        RemoveFromGrid();
+        //play construction complete anim/effect
+        SpawnConstruct();
+        //IStructure structure = constructPrefab.GetComponent<IStructure>();
+        Destroy(gameObject);
+    }
+
     public void SpawnConstruct()
     {
         construct = Instantiate(constructPrefab);
         construct.transform.position = transform.position;
     }
 
-    private void ConstructionCompleet()
-    {
-        RemoveFromGrid();
-        //play construction complete anim/effect
-        SpawnConstruct();
-        IStructure structure = constructPrefab.GetComponent<IStructure>();
-        Destroy(gameObject);
-    }
-
     public void SetHealth(float _maxHealth) => maxHealth = _maxHealth;
-
-    public void TakeDamage(float dam)
-    {
-        currentHealth -= dam;
-        if (currentHealth <= 0)
-        {
-            Destroy(this);
-        }
-    }
-
-    public void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(interactionTransform.position, interactionRadius);
-    }
-
-    public float GetMaxHealth()
-    {
-        return maxHealth;
-    }
 
     public void AddToGrid() => SetGridPoints(Point.PointContent.Building);
 
@@ -159,7 +126,7 @@ public class BuildFence : Interactable , ITakeDamage, IStructure
     {
         Vector3 pos = transform.position;
         float gridSize = WorldManager.gridSize;
-        Chunk chunk = WorldManager.Instance.GetChunk(transform.position);
+        Map worldMap = WorldManager.GetMap();
 
         float offsetX = ((size.x + 1) % 2) * (gridSize / 2);
         float offsetZ = ((size.y + 1) % 2) * (gridSize / 2);
@@ -170,13 +137,42 @@ public class BuildFence : Interactable , ITakeDamage, IStructure
             {
                 Vector3 pointPos = new Vector3(pos.x - ((Mathf.FloorToInt((size.x - 1) / 2) * gridSize) + offsetX) + (gridSize * i), pos.y,
                                                 pos.z - ((Mathf.FloorToInt((size.y - 1) / 2) * gridSize) + offsetZ) + (gridSize * j));
-                chunk.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), _fill);
+                worldMap.SetGridPointContent(new Vector2(pointPos.x, pointPos.z), _fill);
             }
         }
     }
 
-    public Dictionary<ItemData, int> GetBuildDict()
+    public Dictionary<ItemData, int> GetBuildDict() => throw new System.NotImplementedException();
+
+    public void TakeDamage(float dam)
     {
-        throw new System.NotImplementedException();
+        currentHealth -= dam;
+        if (currentHealth <= 0)
+        {
+            Destroy(this);
+        }
+    }
+
+    public float GetMaxHealth()
+    {
+        return maxHealth;
+    }
+
+    public void DestroyObject()
+    {
+        RemoveFromGrid();
+        //play destroyed animation
+        Destroy(gameObject);
+    }
+
+    public void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(interactionTransform.position, interactionRadius);
+    }
+
+    public float GetCurrentHealth()
+    {
+        return currentHealth;
     }
 }
