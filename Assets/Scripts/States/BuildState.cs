@@ -5,14 +5,15 @@ using UnityEngine;
 public class BuildState : IState
 {
     private PlayerUnit unit;
+    private UnitStats stats;
     private float buildSpeed;
 
     private float nextBuild;
 
-    public BuildState(PlayerUnit _unit, float _buildSkill)
+    public BuildState(PlayerUnit _unit)
     {
         unit = _unit;
-        buildSpeed = 1 - (_buildSkill / 10);
+        stats = unit.stats;
     }
     public void Tick()
     {

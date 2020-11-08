@@ -11,7 +11,7 @@ public class PathDataEditor : Editor
     {
         base.OnInspectorGUI();
 
-        PathData pathData = (PathData)target;
+        /*PathData pathData = (PathData)target;
 
         pathData.showBuildList = EditorGUILayout.Foldout(pathData.showBuildList, "Build Materials", true);
         if (pathData.showBuildList)
@@ -44,7 +44,7 @@ public class PathDataEditor : Editor
                 itemAmountList[i] = EditorGUILayout.IntField(itemAmountList[i]);
                 EditorGUILayout.EndHorizontal();
             }
-        }
+        }*/
 
     }
 }

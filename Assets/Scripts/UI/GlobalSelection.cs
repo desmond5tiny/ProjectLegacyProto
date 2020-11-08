@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 public class GlobalSelection : MonoBehaviour
 {
     #region Singleton
@@ -203,6 +202,16 @@ public class GlobalSelection : MonoBehaviour
         if (other.CompareTag("Unit"))
         {
             selectionDictionary.addSelected(other.gameObject);
+        }
+    }
+
+    private void OnGUI()
+    {
+        if (inputManager.GetDragMode() == InputManager.DragMode.LeftDrag && inputManager.GetInputMode() != InputManager.InputMode.BuildMode)
+        {
+            var rect = Utils.GetScreenRect(inputManager.GetMouseLDownPos(), Input.mousePosition);
+            Utils.DrawScreenRect(rect, new Color(0.8f, 0.8f, 0.95f, 0.25f));
+            Utils.DrawScreenRectBorder(rect, 2, new Color(0.8f, 0.8f, 0.95f));
         }
     }
 }

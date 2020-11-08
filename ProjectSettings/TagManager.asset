@@ -7,8 +7,8 @@ TagManager:
   - Unit
   - Building
   - Item
-  - Tree
   - Tile
+  - Resource
   layers:
   - Default
   - TransparentFX

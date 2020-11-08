@@ -63,13 +63,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\ScriptableObjects\Scripts\BuildingData.cs" />
-    <Compile Include="Assets\ScriptableObjects\Scripts\ItemData.cs" />
-    <Compile Include="Assets\ScriptableObjects\Scripts\PathData.cs" />
-    <Compile Include="Assets\ScriptableObjects\Scripts\ResourceObjectData.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
-    <Compile Include="Assets\Scripts\Chunk.cs" />
-    <Compile Include="Assets\Scripts\GridGenerator.cs" />
+    <Compile Include="Assets\Scripts\Depricated\Chunk.cs" />
+    <Compile Include="Assets\Scripts\Depricated\World.cs" />
+    <Compile Include="Assets\Scripts\DnaGenerator.cs" />
     <Compile Include="Assets\Scripts\IResource.cs" />
     <Compile Include="Assets\Scripts\ITakeDamage.cs" />
     <Compile Include="Assets\Scripts\Interactable.cs" />
@@ -85,8 +82,11 @@
     <Compile Include="Assets\Scripts\PlayerUnit.cs" />
     <Compile Include="Assets\Scripts\Point.cs" />
     <Compile Include="Assets\Scripts\ResourceObject.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObjects\Scripts\BuildingData.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObjects\Scripts\ItemData.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObjects\Scripts\PathData.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObjects\Scripts\ResourceObjectData.cs" />
     <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
-    <Compile Include="Assets\Scripts\StateMachine.cs" />
     <Compile Include="Assets\Scripts\States\BuildState.cs" />
     <Compile Include="Assets\Scripts\States\FindResourceState.cs" />
     <Compile Include="Assets\Scripts\States\FindStorageState.cs" />
@@ -120,7 +120,9 @@
     <Compile Include="Assets\Scripts\UI\UIHoverTest.cs" />
     <Compile Include="Assets\Scripts\UI\UIInteractableMenu.cs" />
     <Compile Include="Assets\Scripts\UnitStats.cs" />
-    <Compile Include="Assets\Scripts\World.cs" />
+    <Compile Include="Assets\Scripts\Utils\GridGenerator.cs" />
+    <Compile Include="Assets\Scripts\Utils\StateMachine.cs" />
+    <Compile Include="Assets\Scripts\Utils\Utils.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
@@ -735,6 +737,9 @@
     <Reference Include="Unity.RenderPipelines.Core.Runtime">
       <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.VisualEffectGraph.Runtime">
+      <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.VisualEffectGraph.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
@@ -767,6 +772,9 @@
     </Reference>
     <Reference Include="Unity.Postprocessing.Runtime">
       <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualEffectGraph.Editor">
+      <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.VisualEffectGraph.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.ShaderGraph.Editor">
       <HintPath>C:/Desmond5tiny/Private Work/ProjectLegacyProto/Library/ScriptAssemblies/Unity.ShaderGraph.Editor.dll</HintPath>

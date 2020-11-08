@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [SelectionBase] [RequireComponent(typeof(NavMeshAgent))]
-public class PlayerUnit : MonoBehaviour
+public class PlayerUnit : MonoBehaviour, ITakeDamage
 {
     public UnitStats stats;
     public int inventorySize = 0;
@@ -21,7 +21,7 @@ public class PlayerUnit : MonoBehaviour
 
     private StateMachine stateMachine;
     public enum unitTask { None, Move, Gather, Build}
-    unitTask currentTask;
+    unitTask currentTask = unitTask.None;
 
     private NavMeshAgent agent;
     [HideInInspector]
@@ -61,7 +61,7 @@ public class PlayerUnit : MonoBehaviour
         FindResourceState findResource = new FindResourceState(this, agent);
         MoveToStorageState toStorage = new MoveToStorageState(this, agent);
         StoreItemsState storeItems = new StoreItemsState(this);
-        BuildState buildState = new BuildState(this, skillBuild);
+        BuildState buildState = new BuildState(this);
 
         stateMachine.SetState(idleState);
 
@@ -105,6 +105,11 @@ public class PlayerUnit : MonoBehaviour
         Func<bool> GatherAndNoTarget() => () => inventory.container.Count == 0 && resourceTarget == null && currentTask == unitTask.Gather;
         Func<bool> NoResourceNearbyEmpty() => () => inventory.container.Count == 0 && resourceTarget == null && nearbyRescources.Count == 0;
         Func<bool> NoResourceNearbyNotEmpty() => () => inventory.container.Count > 0 && resourceTarget == null;
+    }
+
+    public void Initialize(string _dna)
+    {
+        stats = new UnitStats(_dna);
     }
 
     void Update() => stateMachine.Tick();
@@ -229,5 +234,23 @@ public class PlayerUnit : MonoBehaviour
                 _amount = 0;
             }
         }
+    }
+
+    public float GetCurrentHealth()
+    {
+        return stats.currentHealth;
+    }
+
+    public void TakeDamage(float dam)
+    {
+        if(stats.currentHealth < 0) { return; }
+        stats.currentHealth -= dam;
+        if (stats.currentHealth <= 0) { DestroyObject(); }
+    }
+
+    public void DestroyObject()
+    {
+        //play death anim
+        Destroy(gameObject);
     }
 }

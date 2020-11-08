@@ -8,7 +8,7 @@ public class BuildingDataEditor : Editor
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI(); //calls original and executes
-        BuildingData buildingData = (BuildingData)target;
+       /* BuildingData buildingData = (BuildingData)target;
 
 
         GUILayout.Space(10);
@@ -49,7 +49,7 @@ public class BuildingDataEditor : Editor
                 itemAmountList[i] = EditorGUILayout.IntField(itemAmountList[i]);
                 EditorGUILayout.EndHorizontal();
             }
-        }
+        }*/
     }
     private static void DrawProducts(BuildingData buildingData)
     {

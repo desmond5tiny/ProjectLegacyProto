@@ -11,6 +11,7 @@ public class UnitManager : MonoBehaviour
 
     [SerializeField]
     private GameObject unitBase;
+    [SerializeReference]
     public Transform UnitSpawnPoint;
     public static Action<int> PopulationChanged;
 
@@ -21,7 +22,6 @@ public class UnitManager : MonoBehaviour
     {
         if (Instance == null){ Instance = this; }
         else { Debug.LogError("more then once instance of UnitManager found!"); }
-
     }
 
     private void OnEnable()
@@ -65,8 +65,8 @@ public class UnitManager : MonoBehaviour
 
     public void SpawnUnit(Vector3 _target)
     {
-        GameObject newUnit = Instantiate(unitBase);
-        newUnit.transform.position = _target;
+        GameObject newUnit = Instantiate(unitBase, _target, Quaternion.identity);
+        newUnit.GetComponent<PlayerUnit>().Initialize(GetRandomDna());
         AddUnit(newUnit);
     }
 
@@ -78,6 +78,13 @@ public class UnitManager : MonoBehaviour
             //SpawnUnit(new Vector3(spawnPoint.x + randomPoint.x, spawnPoint.y, spawnPoint.z + randomPoint.y));
             SpawnUnit(new Vector3(spawnPoint.x, spawnPoint.y, spawnPoint.z));
         }
+    }
+
+    
+    public string GetRandomDna()
+    {
+        Debug.Log(DnaGenerator.CreateRandomDna());
+        return ("a121231a0203040303052Bu1Ga22Ma1Iv2");
     }
 
     public void MoveUnits()
@@ -94,47 +101,6 @@ public class UnitManager : MonoBehaviour
 
                 unitMove.MoveTo(target, 0.4f);
                 i++;
-            }
-        }
-    }
-
-    public void SetGatherTask() //depricated
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 5000.0f, 1<<11))
-        {
-            if (hit.transform.parent != null && hit.transform.parent.gameObject.GetComponent<ResourceObject>())
-            {
-                GameObject ParentObject = hit.transform.parent.gameObject;
-                //Debug.Log(ParentObject.name);
-                int i = 0;
-                foreach (KeyValuePair<int, GameObject> pair in GlobalSelection.Instance.selectionDictionary.selectedDict)
-                {
-                    GameObject unit = GlobalSelection.Instance.selectionDictionary.selectedDict.ElementAt(i).Value;
-                    unit.GetComponent<PlayerUnit>().SetResourceTarget(ParentObject.GetComponent<ResourceObject>());
-                    i++;
-                }
-            }
-        }
-    }
-
-    public void UnitsBuild() //depricated
-    {
-        //Debug.Log("Task Build");
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 5000.0f, 1<<10))
-        {
-            if (hit.transform.GetComponent<BuildFence>())
-            {
-                int i = 0;
-                foreach (KeyValuePair<int, GameObject> pair in GlobalSelection.Instance.selectionDictionary.selectedDict)
-                {
-                    GameObject unit = GlobalSelection.Instance.selectionDictionary.selectedDict.ElementAt(i).Value;
-                    unit.GetComponent<PlayerUnit>().SetBuildTarget(hit.transform.GetComponent<BuildFence>());
-                    i++;
-                }
             }
         }
     }

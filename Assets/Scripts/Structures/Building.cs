@@ -109,7 +109,7 @@ public class Building : Interactable, IStructure, ITakeDamage
     private void SetGridPoints(Point.PointContent _fill)
     {
         Vector3 pos = transform.position;
-        Debug.Log(pos);
+        //Debug.Log(pos);
         float gridSize = WorldManager.gridSize;
         Map worldMap = WorldManager.GetMap();
 

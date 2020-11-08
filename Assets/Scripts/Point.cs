@@ -5,7 +5,7 @@ using UnityEngine;
 public class Point //change to struct?
 {
     public GameObject pointTile;
-    public enum PointContent { Empty, Building, Path, Tree, Rock }
+    public enum PointContent { Empty, Building, Path, Resource }
     public PointContent contains;
     public bool buildable=true;
     public float buildHeight;

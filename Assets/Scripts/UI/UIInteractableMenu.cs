@@ -14,7 +14,7 @@ public class UIInteractableMenu : MonoBehaviour
 
     private InputManager inputManager;
     private UnitManager unitManager;
-    private bool menuActive = false;
+    private bool onHitBox = false;
     private bool setInactive = false;
 
     private void Awake()
@@ -26,6 +26,7 @@ public class UIInteractableMenu : MonoBehaviour
     private void OnMouseEnter()
     {
         InputManager.OnRightMouseUp += EnableMenu;
+        onHitBox = true;
     }
 
     private void Start()
@@ -44,14 +45,14 @@ public class UIInteractableMenu : MonoBehaviour
                 else if (repairButton.IsActive() && !transform.GetComponent<RepairTask>().structureDamaged()) { repairButton.gameObject.SetActive(false); }
             }
             if (setInactive) 
-            { 
-                menuActive = true; 
+            {
                 StopCoroutine("DisableMenu"); 
                 setInactive = false;
             }
             return; 
         }
-        if (!menuActive && !setInactive) { StartCoroutine("DisableMenu"); setInactive = true; }
+
+        if (!setInactive && !EventSystem.current.IsPointerOverGameObject() && !onHitBox) { StartCoroutine("DisableMenu"); setInactive = true; }
     }
 
     public void SetTaskButtons() //dynamically fill the taskpanel with buttons
@@ -72,21 +73,20 @@ public class UIInteractableMenu : MonoBehaviour
         taskMenu.transform.rotation = lookRotation;
 
         Vector3 mouseClickPos = inputManager.RaycastAll().point;
-        taskMenu.transform.position = new Vector3(transform.position.x, mouseClickPos.y + 2f, transform.position.z);
-
-        menuActive = true;
+        taskMenu.transform.position = new Vector3(transform.position.x, mouseClickPos.y + 1.5f, transform.position.z);
+        //onHitBox = true;
     }
 
     IEnumerator DisableMenu()
     {
-        yield return new WaitForSeconds(.12f);
+        yield return new WaitForSeconds(.1f);
         taskMenu.gameObject.SetActive(false);
         StopCoroutine("DisableMenu");
     }
 
     private void OnMouseExit()
     {
-        menuActive = false;
+        onHitBox = false;
         InputManager.OnRightMouseUp -= EnableMenu;
     }
 

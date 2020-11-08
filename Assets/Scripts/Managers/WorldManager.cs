@@ -7,11 +7,7 @@ public class WorldManager : MonoBehaviour
     public static WorldManager Instance { get; private set; }
     public static float gridSize = 2.5f;
 
-    [SerializeField]
-    private bool worldChunks = false;
-    public Vector2 mapSize;
-    public Chunk sceneChunk;
-
+    private Vector2 mapSize;
     [SerializeField]
     private Map currentMap;
 
@@ -19,13 +15,19 @@ public class WorldManager : MonoBehaviour
     {
         if (Instance == null) { Instance = this; }
         else {Debug.LogError("more then once instance of WorldManager found!");}
-        if(currentMap.getGrid() == null) { GetComponent<GridGenerator>().SetGridMap(); }
+
         mapSize = currentMap.mapSize;
+        if (currentMap.getGrid() != null)
+        {
+            Debug.Log(currentMap.getGrid().Length);
+            if(currentMap.getGrid().Length < mapSize.x * mapSize.y) { currentMap.ClearGrid(); }
+        }
+        if (currentMap.getGrid() == null) { GridGenerator.SetGridMap(currentMap); }
     }
 
     void Start()
     {
-        StartCoroutine("AddTrees");
+        currentMap.NavMeshUpdate();
     }
 
     public static Map GetMap()
@@ -35,16 +37,16 @@ public class WorldManager : MonoBehaviour
 
     IEnumerator AddTrees()//temp method
     {
-        GameObject[] trees = GameObject.FindGameObjectsWithTag("Tree"); ;
+        GameObject[] trees = GameObject.FindGameObjectsWithTag("Resource"); ;
         int i = 0;
         foreach (GameObject tree in trees)
         {
             //Debug.Log("found tree at: " + trees[i].transform.position.x +","+ trees[i].transform.position.z);
-            currentMap.SetGridPointContent(new Vector2(trees[i].transform.position.x, trees[i].transform.position.z), Point.PointContent.Tree);
+            currentMap.SetGridPointContent(new Vector2(trees[i].transform.position.x, trees[i].transform.position.z), Point.PointContent.Resource);
             i++;
         }
         yield return null ;
-        sceneChunk.NavMeshUpdate();
+        currentMap.NavMeshUpdate();
         StopCoroutine("AddTrees");
     }
 
