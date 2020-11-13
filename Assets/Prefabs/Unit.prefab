@@ -179,12 +179,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c738d01de6387b643a28d6d5569475bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventorySize: 2
-  dPS: 20
+  inventorySize: 4
   resourceSearchColl: {fileID: 1268620645380246050}
+  dPS: 20
   resourceTarget: {fileID: 0}
   prevResourcePos: {x: 0, y: 0, z: 0}
+  resourceItem: {fileID: 0}
   storeTarget: {fileID: 0}
+  storeItem: {fileID: 0}
   buildTarget: {fileID: 0}
   clickTarget: {x: 0, y: 0, z: 0}
   clickMove: 0

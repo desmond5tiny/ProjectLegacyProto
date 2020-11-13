@@ -1,38 +1,79 @@
-﻿using System.Linq;
+﻿using Boo.Lang;
+using System.Linq;
 using UnityEngine;
 
 public class DnaGenerator
 {
-    public static string CreateRandomDna()
+    private static List<string> startSkills = new List<string>(new string[] { "Bu", "Ga", "Dc", "Cb", "Ls" });
+    private static List<string> startTraits = new List<string>(new string[] { "Bl", "Pr", "Vr", "Lb" });
+    private static string letters = "abcdefghijklmnopqrstuvwxyz";
+
+    public static string CreateDna()
     {
-        string letters = "abcdefghijklmnopqrstuvwxyz";
-
         //base stats
-        string dna = letters.ElementAt(Random.Range(0, 26)).ToString();
-        dna = dna + Random.Range(0, 10) + Random.Range(0, 10); //set unique id
+        string dna = GenID(); //set unique id
 
-        string healthGene = Random.Range(050, 121).ToString();
-        if(healthGene.Length<3) { healthGene = healthGene.Insert(0, "0"); }
-        dna += healthGene; // set health stat
+        string addString = Random.Range(050, 121).ToString();
+        if(addString.Length<3) { addString = addString.Insert(0, "0"); }
+        dna += addString; // set health stat
         dna += Mathf.FloorToInt(Random.Range(0, 1.2f)).ToString(); // set base level
-        string genders = "mf";
-        dna += genders.ElementAt(Random.Range(0, 2));
+        addString = "mf";
+        dna += addString.ElementAt(Random.Range(0, 2)); // set gender
 
-        //attributes
-        int totalAttPoints = Random.Range(18, 24);
-        int[] attributes = new int[6];
-
-        for (int i = 0; i < totalAttPoints; i++) { attributes[Random.Range(0, 6)]++; }
-        string att = "";
-        for (int i = 0; i < attributes.Length; i++)
-        {
-            if (attributes[i] < 10) { att += "0"; }
-            att += attributes[i].ToString();
-        }
-        dna += att;
-
-        //skills
+        dna += GenAttributes(Random.Range(18, 24)); //attributes
+        dna += GenVarGene(Random.Range(1, 4), startSkills); //skills
+        dna += GenVarGene(Random.Range(0, 3), startTraits); //traits
 
        return dna;
+    }
+
+    public static string CreateDna(string _parentA, string _parentB)
+    {
+        string dna = GenID();
+
+
+        return dna;
+    }
+
+    private static string GenID()
+    {
+        string id = letters.ElementAt(Random.Range(0, 26)).ToString();
+        id = id + Random.Range(0, 10) + Random.Range(0, 10);
+        return id;
+    }
+
+    private static string GenAttributes(int _points)
+    {
+        string attGenome = "";
+        int[] attributes = new int[6];
+
+        for (int i = 0; i < _points; i++) { attributes[Random.Range(0, 6)]++; }
+
+        for (int i = 0; i < attributes.Length; i++)
+        {
+            if (attributes[i] < 10) { attGenome += "0"; }
+            attGenome += attributes[i].ToString();
+        }
+
+        return attGenome;
+    }
+
+    private static string GenVarGene(int _amount, List<string> _possibleSkills)
+    {
+        string genome = _amount.ToString();
+        List<string> addedSoFar = new List<string>();
+
+        for (int i = 0; i < _amount; i++)
+        {
+            string nextskill = _possibleSkills[Random.Range(0, _possibleSkills.Count)];
+            if (addedSoFar.Contains(nextskill)) { i--; }
+            else
+            {
+                genome += nextskill + Random.Range(1, 6);
+                addedSoFar.Add(nextskill);
+            }
+        }
+
+        return genome;
     }
 }

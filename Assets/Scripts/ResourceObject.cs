@@ -113,7 +113,7 @@ public class ResourceObject : Interactable, ITakeDamage
         if (interactionTransform == null) { interactionTransform = transform; }
 
         Gizmos.color = Color.green;
-        Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 4f, transform.position.z), new Vector3(0.8f,8,0.8f));
+        Gizmos.DrawCube(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z), new Vector3(0.8f,2,0.8f));
     }
 
     void OnDrawGizmosSelected()

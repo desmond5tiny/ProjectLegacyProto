@@ -28,12 +28,12 @@ public class PlayerUnit : MonoBehaviour, ITakeDamage
     public ResourceObject resourceTarget;
     [HideInInspector]
     public Vector3 prevResourcePos;
-    private ItemData resourceItem;
+    public ItemData resourceItem;
     List<ResourceObject> nearbyRescources = new List<ResourceObject>();
 
     [HideInInspector]
     public Building storeTarget;
-    private ItemData storeItem;
+    public ItemData storeItem;
 
     [HideInInspector]
     public BuildFence buildTarget;
@@ -134,18 +134,13 @@ public class PlayerUnit : MonoBehaviour, ITakeDamage
         stopDistance = _target.interactionRadius;
     }
 
-    public void Build()
-    {
-        //Debug.Log("Build");
-        buildTarget.AddHealth(((skillBuild / 2) + (attSpeed / 4)) * 2);
-    }
-
     public ItemData GetStoreItem() { return storeItem; }
 
     public void SetResourceTarget(ResourceObject _target)
     {
         currentTask = unitTask.Gather;
         resourceTarget = _target;
+        prevResourcePos = _target.transform.position;
         resourceItem = resourceTarget.GetResourceItemData();
         stopDistance = resourceTarget.interactionRadius;
     }
@@ -173,7 +168,7 @@ public class PlayerUnit : MonoBehaviour, ITakeDamage
         return nearbyRescources;
     }
 
-    public void TakeResource()
+    public void TakeResource() //depricated
     {
         int takeResult, surplus;
         if(inventory.CanAdd(resourceItem)) //redundant?

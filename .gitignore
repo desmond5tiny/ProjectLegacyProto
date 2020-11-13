@@ -1,0 +1,10 @@
+Library/il2cpp_cache/
+Library/il2cpp_cache 2019.4.7f1 (e992b1a16e65)
+Library/
+Logs/
+
+.hg
+.git
+.vs
+*.user
+*.userprefs

@@ -83,8 +83,8 @@ public class UnitManager : MonoBehaviour
     
     public string GetRandomDna()
     {
-        Debug.Log(DnaGenerator.CreateRandomDna());
-        return ("a121231a0203040303052Bu1Ga22Ma1Iv2");
+        Debug.Log(DnaGenerator.CreateDna());
+        return ("a121231m0203040303052Bu1Ga22Ma1Iv2");
     }
 
     public void MoveUnits()

@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Pine Tree
   maxHealth: 100
   resourceItemData: {fileID: 11400000, guid: a49adc1c9b40acc4b9ef1b6319b4cfd1, type: 2}
-  maxItemAmount: 25
+  maxItemAmount: 10
   interactRadius: 2
   prefabBase: {fileID: 1671774047695907475, guid: 7deb76c34d2d29d40b492dd3e27bbba4,
     type: 3}

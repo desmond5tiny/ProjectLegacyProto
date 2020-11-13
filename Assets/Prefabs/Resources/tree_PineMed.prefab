@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 1463972272668421305}
   m_Layer: 11
   m_Name: tree_PineMed
-  m_TagString: Tree
+  m_TagString: Resource
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

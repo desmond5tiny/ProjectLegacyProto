@@ -3,7 +3,11 @@
 public class HarvestResourceState : IState
 {
     private PlayerUnit unit;
-    private float harvestSpeed =1; //set to _harvestSpeed
+    private UnitStats stats;
+
+    private ResourceObject target;
+    private float harvestSpeed;
+    private float harvestStrength;
 
     private float nextHarvest;
 
@@ -17,7 +21,21 @@ public class HarvestResourceState : IState
         {
             if(nextHarvest <= (Time.time + harvestSpeed))
             {
-                unit.TakeResource();
+                int takeResult, surplus;
+                if (unit.inventory.CanAdd(unit.resourceItem)) //redundant?
+                {
+                    if (target.GetRescource(harvestStrength, out takeResult)) //if target has resources; do damage to target and out itemsget
+                    {
+                        surplus = unit.inventory.AddItem(unit.resourceItem, takeResult);
+                        unit.storeItem = unit.resourceItem;
+                        if (surplus > 0) { unit.DropResource(unit.resourceItem, surplus); }
+                    }
+                    else //target is empty
+                    {
+                        //unit.prevResourcePos = target.transform.position;
+                        unit.resourceTarget = null;
+                    }
+                }
                 nextHarvest += harvestSpeed;
             }
         }
@@ -26,6 +44,10 @@ public class HarvestResourceState : IState
     public void OnEnter()
     {
         nextHarvest = Time.time;
+        stats = unit.stats;
+        target = unit.resourceTarget;
+        harvestSpeed = 3 - stats.GetSkillLevel("Ga") * 0.1f - (stats.attStrength + stats.attEndurance) * 0.025f;
+        harvestStrength = stats.attStrength * 1.2f + (stats.GetSkillLevel("Ga") * 1.5f) + (stats.attEndurance * 0.5f);
     }
 
     public void OnExit()

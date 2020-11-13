@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: StoneBlocks
   m_EditorClassIdentifier: 
   name: Stone Blocks
-  maxStackSize: 10
+  maxStackSize: 5
   consumable: 0
   equipable: 0
-  basePrefab: {fileID: 0}
-  stackMPrefab: {fileID: 0}
-  StackLPrefab: {fileID: 0}
+  basePrefab: {fileID: 919132149155446097, guid: 0eb8930e120dce049889060d5ecc99d6,
+    type: 3}
+  stackMPrefab: {fileID: 919132149155446097, guid: 0eb8930e120dce049889060d5ecc99d6,
+    type: 3}
+  StackLPrefab: {fileID: 919132149155446097, guid: 0eb8930e120dce049889060d5ecc99d6,
+    type: 3}

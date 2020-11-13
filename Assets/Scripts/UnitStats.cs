@@ -9,13 +9,13 @@ public class UnitStats
     private string dna;
     private string[] parentsId = new string[2];
     public string unitName;
-    public float maxHealth;     //
+    public float maxHealth;     
     public float currentHealth;
-    public int currentLevel;    //
+    public int currentLevel;    
     public float experience;
     public float expToNextLevel;
     public float age;
-    public string gender;        //
+    public string gender;        
 
     //Personalty
 
@@ -23,17 +23,14 @@ public class UnitStats
 
     //Attributes
     public int attDexterity { private set; get; }  // Speed
-    public int attDefense { private set; get; }    // Resistance
-    public int attEndurance { private set; get; }  // Grit
+    public int attDefense { private set; get; }    // Resistance / fortitude
+    public int attEndurance { private set; get; }  // Grit 
     public int attIntelligence { private set; get; }//
     public int attSocial { private set; get; }      // charisma
     public int attStrength { private set; get; }   //
 
     //Skills
     Dictionary<string, int> skills = new Dictionary<string, int>();
-    /*  public float skillBuild;
-        public float skillGather;
-        public float skillDiscover; */
     
     //Unique traits
     Dictionary<string, int> traits = new Dictionary<string, int>();
@@ -51,39 +48,44 @@ public class UnitStats
     private void SetStats()
     {
         unitName = "Hank";//assign random name from names file
-        string statGene = dna.Substring(3, 5);
-        maxHealth = int.Parse(statGene.Substring(0, 3));
-        if (statGene.ElementAt(4).ToString() == "F") { gender = "Female"; }
-        if (statGene.ElementAt(4).ToString() == "M") { gender = "Male"; }
+        string statGenome = dna.Substring(3, 5);
+        maxHealth = int.Parse(statGenome.Substring(0, 3));
+        if (statGenome.ElementAt(4).ToString() == "F") { gender = "Female"; }
+        if (statGenome.ElementAt(4).ToString() == "M") { gender = "Male"; }
     }
 
     private void SetAttributes()
     {
-        string attGene = dna.Substring(8, 12);
-        //Debug.Log("attribute gene: " + attGene);
+        string attGenome = dna.Substring(8, 12);
+        Debug.Log("attribute gene: " + attGenome);
+
+        attDexterity = int.Parse(attGenome.Substring(0, 2));
+        attDefense = int.Parse(attGenome.Substring(2, 2));
+        attEndurance = int.Parse(attGenome.Substring(4, 2));
+        attIntelligence = int.Parse(attGenome.Substring(6, 2));
+        attSocial = int.Parse(attGenome.Substring(8, 2));
+        attStrength = int.Parse(attGenome.Substring(10, 2));
     }
 
     private void SetSkills()
     {
-        int skillGeneLength = 1 + int.Parse(dna.ElementAt(20).ToString()) * 3;
-        string skillGene = dna.Substring(20, skillGeneLength);
-        Debug.Log("skills gene: " + skillGene);
+        int skillGenomeLength = 1 + int.Parse(dna.ElementAt(20).ToString()) * 3;
+        string skillGenome = dna.Substring(20, skillGenomeLength);
 
-        for (int i = 0; i < int.Parse(skillGene.ElementAt(0).ToString()); i++)
+        for (int i = 0; i < int.Parse(skillGenome.ElementAt(0).ToString()); i++)
         {
-            skills.Add(skillGene.Substring(1 + (i * 3), 2), int.Parse(skillGene.ElementAt(3 + (i * 3)).ToString()));
+            skills.Add(skillGenome.Substring(1 + (i * 3), 2), int.Parse(skillGenome.ElementAt(3 + (i * 3)).ToString()));
         }
     }
 
     private void SetTraits()
     {
         int traitLoc = 21 + int.Parse(dna.ElementAt(20).ToString()) * 3;
-        string traitGene = dna.Substring(traitLoc, 1 + int.Parse(dna.ElementAt(traitLoc).ToString()) * 3);
-        //Debug.Log("trait gene: " + traitGene);
+        string traitGenome = dna.Substring(traitLoc, 1 + int.Parse(dna.ElementAt(traitLoc).ToString()) * 3);
 
-        for (int i = 0; i < int.Parse(traitGene.ElementAt(0).ToString()); i++)
+        for (int i = 0; i < int.Parse(traitGenome.ElementAt(0).ToString()); i++)
         {
-            traits.Add(traitGene.Substring(1 + (i * 3),2), int.Parse(traitGene.ElementAt(3 + (i * 3)).ToString()));
+            traits.Add(traitGenome.Substring(1 + (i * 3),2), int.Parse(traitGenome.ElementAt(3 + (i * 3)).ToString()));
         }
     }
 
@@ -123,6 +125,13 @@ public class UnitStats
     {
         if (skills.ContainsKey(_skill)) { skills[_skill] += _amount; }
         else { skills.Add(_skill, _amount); }
+    }
+
+    public int GetSkillLevel(string _skill)
+    {
+        if (!skills.ContainsKey(_skill)) { return 0; }
+
+        return skills[_skill];
     }
 
     public void AddTrait(string _trait, int _amount)
