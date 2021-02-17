@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -12,12 +10,6 @@ public class PlayerUnit : MonoBehaviour, ITakeDamage
     public int inventorySize = 0;
     public Inventory inventory;
     public Collider resourceSearchColl;
-
-    //temp //temp get from unit stats
-    public float dPS;
-    private readonly float attSpeed = 5;
-    private readonly float skillGather = 4;
-    private readonly float skillBuild = 2;
 
     private StateMachine stateMachine;
     public enum unitTask { None, Move, Gather, Build}
@@ -90,7 +82,7 @@ public class PlayerUnit : MonoBehaviour, ITakeDamage
         void AddNewTransition(IState fromState, IState toState, Func<bool> condition) => stateMachine.AddTransition(fromState, toState, condition);
 
         //condition functions
-        Func<bool> Stuck() => () => moveToPoint.stuckTime > 1f;
+        Func<bool> Stuck() => () => moveToPoint.stuckTime > 0.8f;
         Func<bool> HasRTarget() => () => resourceTarget != null;
         Func<bool> HasStoreTarget() => () => storeTarget != null;
         Func<bool> HasBuildTarget() => () => buildTarget != null;
@@ -107,9 +99,10 @@ public class PlayerUnit : MonoBehaviour, ITakeDamage
         Func<bool> NoResourceNearbyNotEmpty() => () => inventory.container.Count > 0 && resourceTarget == null;
     }
 
-    public void Initialize(string _dna)
+    public void Initialize(string _dna, int _age)
     {
-        stats = new UnitStats(_dna);
+        stats = new UnitStats(_dna, _age);
+        name = stats.unitName;
     }
 
     void Update() => stateMachine.Tick();
@@ -168,7 +161,7 @@ public class PlayerUnit : MonoBehaviour, ITakeDamage
         return nearbyRescources;
     }
 
-    public void TakeResource() //depricated
+    /*public void TakeResource() //depricated
     {
         int takeResult, surplus;
         if(inventory.CanAdd(resourceItem)) //redundant?
@@ -185,7 +178,7 @@ public class PlayerUnit : MonoBehaviour, ITakeDamage
                 resourceTarget = null;
             }
         }
-    }
+    }*/
 
     public void SetStoreTarget(Building _target)
     {

@@ -14,9 +14,10 @@ public class GlobalSelection : MonoBehaviour
     }
     #endregion
 
-    private InputManager inputManager;
-
     public LayerMask groundLayer;
+
+
+    private InputManager inputManager;
     [HideInInspector]
     public SelectionDictionary selectionDictionary;
     private RaycastHit hit;

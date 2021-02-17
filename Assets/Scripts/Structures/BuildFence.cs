@@ -15,10 +15,11 @@ public class BuildFence : Interactable , ITakeDamage, IStructure
     private List<GameObject> children = new List<GameObject>();
     private Vector2 size;
 
-    //[SerializeField]
     GameObject construct;
     GameObject constructPrefab;
     ConstructionManager.ConstructType constructType;
+
+    public Inventory inventory;
 
     private void Awake()
     {

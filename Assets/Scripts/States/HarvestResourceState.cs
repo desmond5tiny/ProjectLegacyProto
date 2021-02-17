@@ -32,7 +32,6 @@ public class HarvestResourceState : IState
                     }
                     else //target is empty
                     {
-                        //unit.prevResourcePos = target.transform.position;
                         unit.resourceTarget = null;
                     }
                 }

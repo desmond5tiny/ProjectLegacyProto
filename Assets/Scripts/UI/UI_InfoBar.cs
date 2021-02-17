@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InfoBar : MonoBehaviour
+public class UI_InfoBar : MonoBehaviour
 {
     public TextMeshProUGUI woodAmount;
     public ItemData woodLogs;
@@ -13,12 +13,14 @@ public class InfoBar : MonoBehaviour
     private void OnEnable()
     {
         Stockpile.StockpileChanged += UpdateInfo;
-        UnitManager.PopulationChanged += UpdatePopulation;
+        UnitManager.PopulationIncreased += UpdatePopulation;
+        UnitManager.PopulationDecreased += UpdatePopulation;
     }
     private void OnDisable()
     {
         Stockpile.StockpileChanged -= UpdateInfo;
-        UnitManager.PopulationChanged -= UpdatePopulation;
+        UnitManager.PopulationIncreased -= UpdatePopulation;
+        UnitManager.PopulationDecreased -= UpdatePopulation;
     }
 
     public void UpdateInfo()
@@ -27,9 +29,9 @@ public class InfoBar : MonoBehaviour
         stoneAmount.text = CityManager.Instance.GetStockpileItem(stoneBlocks).ToString();
     }
 
-    public void UpdatePopulation(int _amount)
+    public void UpdatePopulation(PlayerUnit _unit)
     {
-        populationAmount.text = _amount.ToString();
+        populationAmount.text = UnitManager.Instance.unitDict.Count.ToString();
     }
 
 }

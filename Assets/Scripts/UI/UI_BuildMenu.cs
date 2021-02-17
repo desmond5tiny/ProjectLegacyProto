@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class BuildUI : MonoBehaviour
+public class UI_BuildMenu : MonoBehaviour
 {
     #region Singleton
-    public static BuildUI Instance { get; private set; }
+    public static UI_BuildMenu Instance { get; private set; }
 
     private void Awake()
     {

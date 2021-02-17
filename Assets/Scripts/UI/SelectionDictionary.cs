@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SelectionDictionary : MonoBehaviour
 {
+    public ParticleSystem unitSelectPrefab;
+
     public Dictionary<int, GameObject> selectedDict = new Dictionary<int, GameObject>();
 
     public void addSelected(GameObject go)
@@ -13,24 +15,24 @@ public class SelectionDictionary : MonoBehaviour
         if (!(selectedDict.ContainsKey(id)))
         {
             selectedDict.Add(id, go);
-            //go.AddComponent<Selection_Component>(); //add selection ui feedback
+            go.AddComponent<UI_SelectedUnit>().selectionPrefab = unitSelectPrefab; //add selection ui feedback
         }
     }
     public void deselect(int id)
     {
-        //Destroy(selectedDict[id].GetComponent<Selection_Component>());
+        Destroy(selectedDict[id].GetComponent<UI_SelectedUnit>());
         selectedDict.Remove(id);
     }
 
     public void deselectAll()
     {
-        /*foreach (KeyValuePair<int, GameObject> pair in selectedDict)
+        foreach (KeyValuePair<int, GameObject> pair in selectedDict)
         {
             if (pair.Value != null)
             {
-                Destroy(selectedDict[pair.Key].GetComponent<Selection_Component>());
+                Destroy(selectedDict[pair.Key].GetComponent<UI_SelectedUnit>());
             }
-        }*/
+        }
         selectedDict.Clear();
     }
 }

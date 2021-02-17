@@ -6,7 +6,7 @@ using UnityEngine;
 public class UnitStats
 {
     //Base stats
-    private string dna;
+    public string dna { get; private set; }
     private string[] parentsId = new string[2];
     public string unitName;
     public float maxHealth;     
@@ -19,7 +19,7 @@ public class UnitStats
 
     //Personalty
 
-    public enum Attribute { Dexterity, Defense, Endurance, Strength, Intelligence, Social }
+    public enum Attribute { Dexterity, Defense, Endurance, Intelligence, Social, Strength }
 
     //Attributes
     public int attDexterity { private set; get; }  // Speed
@@ -35,21 +35,35 @@ public class UnitStats
     //Unique traits
     Dictionary<string, int> traits = new Dictionary<string, int>();
 
-    public UnitStats(string _dna)
+    public UnitStats(string _dna, int _age)
     {
         dna = _dna;
-        SetStats();
+        SetStats(_age);
         SetAttributes();
         SetSkills();
         SetTraits();
         SetStartLevel();
     }
 
-    private void SetStats()
+    public UnitStats(string _dna, string _parentA, string _parentB)
+    {
+        dna = _dna;
+        parentsId[0] = _parentA;
+        parentsId[1] = _parentB;
+        SetStats(0);
+        SetAttributes();
+        SetSkills();
+        SetTraits();
+        SetStartLevel();
+    }
+
+    private void SetStats(int _age)
     {
         unitName = "Hank";//assign random name from names file
         string statGenome = dna.Substring(3, 5);
         maxHealth = int.Parse(statGenome.Substring(0, 3));
+        currentHealth = maxHealth;
+        age = _age;
         if (statGenome.ElementAt(4).ToString() == "F") { gender = "Female"; }
         if (statGenome.ElementAt(4).ToString() == "M") { gender = "Male"; }
     }

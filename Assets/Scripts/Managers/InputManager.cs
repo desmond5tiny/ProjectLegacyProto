@@ -73,7 +73,7 @@ public class InputManager : MonoBehaviour
             Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             Physics.Raycast(ray, out hit, 5000.0f,groundLayer);
-            unitManager.SpawnUnit(hit.point);
+            unitManager.SpawnRandomUnit(hit.point);
         }
     }
 

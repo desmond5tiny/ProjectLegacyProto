@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,10 +12,11 @@ public class UnitManager : MonoBehaviour
     private GameObject unitBase;
     [SerializeReference]
     public Transform UnitSpawnPoint;
-    public static Action<int> PopulationChanged;
+    public static Action<PlayerUnit> PopulationIncreased;
+    public static Action<PlayerUnit> PopulationDecreased;
 
     private InputManager inputManager;
-    private Dictionary<int, GameObject> unitDict;
+    public Dictionary<int, GameObject> unitDict { get; private set; }
 
     private void Awake()
     {
@@ -32,6 +32,7 @@ public class UnitManager : MonoBehaviour
     {
         InputManager.OnRightMouseUp -= MoveUnits;
     }
+
     void Start()
     {
         inputManager = InputManager.Instance;
@@ -39,22 +40,23 @@ public class UnitManager : MonoBehaviour
         StartSpawn(UnitSpawnPoint.position, unitsToSpawn);
     }
 
-    public void AddUnit(GameObject _newUnit)
+    public void AddUnit(GameObject _unit)
     {
-        int id = _newUnit.GetInstanceID();
+        int id = _unit.GetInstanceID();
         if (!(unitDict.ContainsKey(id)))
         {
-            unitDict.Add(id, _newUnit);
-            PopulationChanged?.Invoke(unitDict.Count);
+            unitDict.Add(id, _unit);
+            PopulationIncreased?.Invoke(_unit.GetComponent<PlayerUnit>());
         }
     }
 
-    public void RemoveUnit(int id)
+    public void RemoveUnit(GameObject _unit)
     {
+        var id = _unit.GetInstanceID();
         if(unitDict.ContainsKey(id))
         {
             unitDict.Remove(id);
-            PopulationChanged?.Invoke(unitDict.Count);
+            PopulationDecreased?.Invoke(_unit.GetComponent<PlayerUnit>());
         }
     }
 
@@ -63,10 +65,10 @@ public class UnitManager : MonoBehaviour
         return unitDict[id];
     }
 
-    public void SpawnUnit(Vector3 _target)
+    public void SpawnRandomUnit(Vector3 _target)
     {
         GameObject newUnit = Instantiate(unitBase, _target, Quaternion.identity);
-        newUnit.GetComponent<PlayerUnit>().Initialize(GetRandomDna());
+        newUnit.GetComponent<PlayerUnit>().Initialize(DnaGenerator.CreateDna(), UnityEngine.Random.Range(18,30));
         AddUnit(newUnit);
     }
 
@@ -75,16 +77,17 @@ public class UnitManager : MonoBehaviour
         for (int i = 0; i < amount; i++)
         {
             Vector2 randomPoint = UnityEngine.Random.insideUnitCircle * 2;
-            //SpawnUnit(new Vector3(spawnPoint.x + randomPoint.x, spawnPoint.y, spawnPoint.z + randomPoint.y));
-            SpawnUnit(new Vector3(spawnPoint.x, spawnPoint.y, spawnPoint.z));
+            SpawnRandomUnit(new Vector3(spawnPoint.x + randomPoint.x, spawnPoint.y, spawnPoint.z + randomPoint.y));
         }
     }
 
     
-    public string GetRandomDna()
+    public string GetOffspringDna(GameObject _parentA, GameObject _parentB)
     {
-        Debug.Log(DnaGenerator.CreateDna());
-        return ("a121231m0203040303052Bu1Ga22Ma1Iv2");
+        string dnaA = _parentA.GetComponent<PlayerUnit>().stats.dna;
+        string dnaB = _parentB.GetComponent<PlayerUnit>().stats.dna;
+
+        return DnaGenerator.CreateDna(dnaA, dnaB);
     }
 
     public void MoveUnits()

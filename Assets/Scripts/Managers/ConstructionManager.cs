@@ -88,8 +88,8 @@ public class ConstructionManager : MonoBehaviour
                     for (int y = 0; y < buildArea.y; y++)
                     {
                         Vector3 pointPos = new Vector3(buildPos.x - (xOffset * (buildArea.x - 1)) + (gridSize * x), buildPos.y, buildPos.z - (zOffset * (buildArea.y - 1)) + (gridSize * y));
-                        if(!worldMap.GetPoint(new Vector2(pointPos.x, pointPos.z)).buildable)
-                        {
+                        if(!worldMap.GetPoint(new Vector2(pointPos.x, pointPos.z)).buildable || worldMap.GetPoint(new Vector2(pointPos.x, pointPos.z)).buildHeight != buildPos.y)
+                        { //check if all of the points in grid are free to build and on the same height. if not you can't build
                             canBuild = false;
                         }
                     }

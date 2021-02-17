@@ -16,19 +16,17 @@ MonoBehaviour:
   maxHealth: 100
   capacity: 0
   maxStorage: 20
-  storagePriority: 1
-  buildBase: 0
+  storagePriority: 2
+  maxAmount: 1
   TileSizeX: 3
   TileSizeZ: 3
+  buildBase: 0
   interactionRadius: 4
   ShowProduction: 1
   produce: 1
   product: {fileID: 0}
   produceItems:
   - {fileID: 11400000, guid: 51d52ab7bf8ea3d438a06f21cf391e64, type: 2}
-  showBuildList: 1
   buildItem: {fileID: 11400000, guid: bb0085b0b2f2a5f4c95bb9d3c36a701d, type: 2}
-  buildItemList:
-  - {fileID: 11400000, guid: a49adc1c9b40acc4b9ef1b6319b4cfd1, type: 2}
-  - {fileID: 11400000, guid: bb0085b0b2f2a5f4c95bb9d3c36a701d, type: 2}
-  buildItemAmountList: 1400000005000000
+  buildItemList: []
+  buildItemAmountList: 

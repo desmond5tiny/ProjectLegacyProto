@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Interactable))]
-public class UIInteractableMenu : MonoBehaviour
+public class UI_InteractableMenu : MonoBehaviour
 {
     public Transform taskMenu;
     public Button repairButton;

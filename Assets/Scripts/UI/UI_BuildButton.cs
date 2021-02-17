@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class UI_BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
 
     public GameObject constructPrefab;
@@ -15,7 +15,7 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public GameObject costPanel;
     public TextMeshProUGUI textPrefab;
 
-    private BuildUI buildUI;
+    private UI_BuildMenu buildUI;
     private UnityEngine.UI.Button button;
     private Dictionary<ItemData, int> buildCost = new Dictionary<ItemData, int>();
 
@@ -23,7 +23,7 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private void Start()
     {
-        buildUI = BuildUI.Instance;
+        buildUI = UI_BuildMenu.Instance;
         if (isLocked) { button.interactable = false; }
         buildCost = constructPrefab.GetComponent<IStructure>().GetBuildDict();
         FillCostPanel();
@@ -52,13 +52,23 @@ public class BuildButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     }
 
     public void FillCostPanel()
-    {
-        for (int i = 0; i < buildCost.Count; i++)
+    {       
+        if(buildCost == null || buildCost.Count == 0)
         {
             TextMeshProUGUI costInfo = Instantiate(textPrefab, costPanel.transform);
             costInfo.transform.parent = costPanel.transform;
-            costInfo.text = buildCost.ElementAt(i).Key.name + ": " + buildCost.ElementAt(i).Value.ToString();
+            costInfo.text = "No Cost";
+        }
+        else
+        {
+            for (int i = 0; i < buildCost.Count; i++)
+            {
+                TextMeshProUGUI costInfo = Instantiate(textPrefab, costPanel.transform);
+                costInfo.transform.parent = costPanel.transform;
+            
+                costInfo.text = buildCost.ElementAt(i).Key.name + ": " + buildCost.ElementAt(i).Value.ToString();
 
+            }
         }
     }
 }

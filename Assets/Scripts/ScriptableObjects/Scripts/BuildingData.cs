@@ -12,35 +12,32 @@ public class BuildingData : ScriptableObject
     public int capacity;
     public int maxStorage;
     public int storagePriority;
-    [Tooltip("This determines if building can be build on top of this building")]
-    public bool buildBase;
+    [Tooltip("The maximum bumber of buildings can exist of this type; 0 means infinite.")]
+    public int maxAmount = 0;
 
-    [Space]
     [Header("Techical")]
     public int TileSizeX;
     public int TileSizeZ;
+    public bool buildBase;
+    [Tooltip("This determines if building can be build on top of this building")]
     public float interactionRadius;
-
 
     //production
     [HideInInspector]
     public bool ShowProduction=false;
-    //[HideInInspector]
+    [Header("Production")]
     public bool produce;
     [HideInInspector]
     public ItemData product;
-    //[HideInInspector]
     public List<ItemData> produceItems = new List<ItemData>();
 
 
-    //build cost
-    [HideInInspector]
-    public bool showBuildList=false;
+    //public bool showBuildList=false;
     [HideInInspector]
     public ItemData buildItem;
-    //[HideInInspector]
+
+    [Header("Build Cost")]
     public List<ItemData> buildItemList = new List<ItemData>();
-    //[HideInInspector]
     public List<int> buildItemAmountList = new List<int>();
 
 
